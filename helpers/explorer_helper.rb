@@ -68,6 +68,24 @@ module ExplorerHelper
 		data = HTTParty.get(EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}")
 
 		raw_data =  data.parsed_response
+	end
+
+	def number_of_cc_tx_by_dates(start_day,end_day)
+
+		raw_start_time = Time.parse(start_day)
+		# p "raw_start_time #{raw_start_time}"		
+		raw_end_time = Time.parse(end_day)+3600*24
+		# p "raw_end_time #{raw_end_time}"		
+		start_time = raw_start_time.to_i * 1000
+		# p "start_time #{start_time}"
+		end_time = raw_end_time.to_i * 1000
+		# p "end_time #{end_time}"
+
+		bucket_ms = 1000*3600*24
+		
+		data = HTTParty.get(EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}")
+
+		raw_data =  data.parsed_response
 	end	
 end
 
