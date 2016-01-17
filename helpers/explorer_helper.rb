@@ -1,5 +1,6 @@
 module ExplorerHelper
-
+	require __dir__+'/views_helper'
+	include ViewsHelper
 	def number_of_cc_tx_in_month(month_offset=0)
 		# total number of cctx in a calendar month. Without offset its the current month. offset of 1, previous month, as so on.
 		now_date = Date.parse(Time.now.to_s)
@@ -64,14 +65,16 @@ module ExplorerHelper
 		start_time = start_hour_time.to_i * 1000
 		# p "start_time #{start_time}"
 		bucket_ms = 1000*3600
-		
-		data = HTTParty.get(EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}")
-
+		init_time = Time.now
+		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"
+		p "Calling Explorer API with [#{query}]"
+		data = HTTParty.get(query)
+		p "Explorer API replied [#{time_diff(init_time)}]"
 		raw_data =  data.parsed_response
 	end
 
-	def number_of_cc_tx_by_dates(start_day,end_day)
-
+	def number_of_cc_tx_by_dates(start_day,end_day=nil)
+		end_day = Time.now.strftime("%d/%m/%Y") unless end_day
 		raw_start_time = Time.parse(start_day)
 		# p "raw_start_time #{raw_start_time}"		
 		raw_end_time = Time.parse(end_day)+3600*24
@@ -82,9 +85,11 @@ module ExplorerHelper
 		# p "end_time #{end_time}"
 
 		bucket_ms = 1000*3600*24
-		
-		data = HTTParty.get(EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}")
-
+		init_time = Time.now
+		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"
+		p "Calling Explorer API with [#{query}]"
+		data = HTTParty.get(query)
+		p "Explorer API replied [#{time_diff(init_time)}]"
 		raw_data =  data.parsed_response
 	end	
 end

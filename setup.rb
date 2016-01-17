@@ -3,6 +3,7 @@ require 'yaml'
 require 'json'
 require 'time'
 require 'httparty'
+require __dir__+'/helpers/views_helper'
 require __dir__+'/helpers/explorer_helper'
 include ExplorerHelper
 
