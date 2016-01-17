@@ -15,9 +15,7 @@ module ExplorerHelper
 		start_time = this_month_time.to_i * 1000
 		bucket_ms = end_time - start_time
 		
-		data = HTTParty.get(EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}")
-
-		raw_data =  data.parsed_response
+		query(start_time,end_time,bucket_ms)
 	end
 
 	def number_of_cc_tx_in_last_hours(hours=24)
@@ -28,9 +26,7 @@ module ExplorerHelper
 		group_by_number_of_hours = 1
 		bucket_ms = ms_in_hour * group_by_number_of_hours
 		
-		data = HTTParty.get(EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}")
-
-		raw_data =  data.parsed_response
+		query(start_time,end_time,bucket_ms)
 	end
 
 	def number_of_cc_tx_by_hour(hours = 0)
@@ -65,12 +61,7 @@ module ExplorerHelper
 		start_time = start_hour_time.to_i * 1000
 		# p "start_time #{start_time}"
 		bucket_ms = 1000*3600
-		init_time = Time.now
-		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"
-		p "Calling Explorer API with [#{query}]"
-		data = HTTParty.get(query)
-		p "Explorer API replied [#{time_diff(init_time)}]"
-		raw_data =  data.parsed_response
+		query(start_time,end_time,bucket_ms)
 	end
 
 	def number_of_cc_tx_by_dates(start_day,end_day=nil)
@@ -85,12 +76,17 @@ module ExplorerHelper
 		# p "end_time #{end_time}"
 
 		bucket_ms = 1000*3600*24
+		query(start_time,end_time,bucket_ms)
+	end
+
+	def query(start_time,end_time,bucket_ms)
 		init_time = Time.now
-		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"
+		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
+		p "start_time: [#{Time.at(start_time/1000)}], end_time [#{Time.at(end_time/1000)}]"
 		p "Calling Explorer API with [#{query}]"
 		data = HTTParty.get(query)
 		p "Explorer API replied [#{time_diff(init_time)}]"
-		raw_data =  data.parsed_response
-	end	
+		raw_data =  data.parsed_response		
+	end
 end
 
