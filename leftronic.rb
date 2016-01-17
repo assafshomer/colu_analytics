@@ -43,6 +43,7 @@ class Leftronic
     leaderboard = hash.inject([]) do |array, (key, value)|
       array << {'name' => key, 'value' => value}
     end
+    p leaderboard
     post stream, 'leaderboard' => leaderboard
   end
 

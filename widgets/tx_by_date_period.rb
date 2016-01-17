@@ -1,4 +1,4 @@
-require '../setup'
+require __dir__+'/../setup'
 
 stream = '00323f702a'
 
