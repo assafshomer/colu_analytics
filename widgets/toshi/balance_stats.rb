@@ -1,4 +1,4 @@
-require __dir__+'/../setup'
+require __dir__+'/../../setup'
 
 def toshi_api(network)	
 	case network.to_sym

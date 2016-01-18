@@ -1,8 +1,11 @@
-require __dir__+'/../setup'
+require __dir__+'/../../setup'
 
-stream = 'GMgit0FL'
+require __dir__+'/../../helpers/explorer_helper'
+include ExplorerHelper
 
-data = number_of_cc_tx_by_hour(24)
+stream = '00323f702a'
+
+data = number_of_cc_tx_by_dates('12/01/2016')
 
 parsed_data = data.map do |x|	
 	hash = {"number" => x["txsSum"], "timestamp" => x["from"]/1000}

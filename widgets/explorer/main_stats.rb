@@ -1,4 +1,7 @@
-require __dir__+'/../setup'
+require __dir__+'/../../setup'
+
+require __dir__+'/../../helpers/explorer_helper'
+include ExplorerHelper
 
 main_stats = HTTParty.get(EXPLORER_API+'getmainstats')
 
