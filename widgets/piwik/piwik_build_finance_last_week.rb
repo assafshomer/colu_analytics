@@ -3,13 +3,13 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
-stream = 'c537e9c563'
+stream = 'QzlPda2m'
 
 result = []
 
 7.times do |n|	
 	curdate = Time.at(Time.now.to_i - 3600*24*n)
-	segment = "pageUrl%3D@build_finance"
+	segment = "pageUrl%3D%40build_finance"
 	result << piwik_data_during_day(curdate,segment,{debug: true})
 end
 
