@@ -1,5 +1,4 @@
 require __dir__+'/../../setup'
-
 require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
