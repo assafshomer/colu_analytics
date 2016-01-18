@@ -6,7 +6,6 @@ require 'httparty'
 require __dir__+'/helpers/views_helper'
 require __dir__+'/helpers/explorer_helper'
 include ExplorerHelper
-
   
 APP_CONFIG = YAML.load(File.read(File.expand_path('../config.yml', __FILE__)))
 
