@@ -1,21 +1,23 @@
 dirname = "widgets"
 
-only_run_me = [
-	'main_stats',
-	'tx_last_24h',
-	'tx_since_launch_by_month',
-	'tx_last_week',
-	'balance_stats',
-	'machine_stats',
-	'piwik_transmit_last_week',
-	'piwik_mobile_send_last_week',
-	'piwik_build_finance_last_week'
-	]
+active_widgets = %w(
+	main_stats 
+	monthly_cc_tx
+	balance_stats
+	machine_stats
+	tx_last_week
+	piwik_transmit_last_week
+	piwik_mobile_send_last_week
+	piwik_build_finance_last_week
+)
+
+
+	
 
 
 all_widgets = Dir["#{dirname}/**/*.rb"]
 
-widgets = only_run_me.map do |desired_widget|
+widgets = active_widgets.map do |desired_widget|
 	all_widgets.select{|widget| widget =~ /#{desired_widget}/}
 end.flatten
 

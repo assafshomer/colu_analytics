@@ -12,7 +12,6 @@ module ConfigLoader
 	  config_order = [default_configs,user_configs,environment_configs]
 
 	  configs = config_order.inject { |a, b| a.merge(b) }	
-	  p configs  
 	  OpenStruct.new(symbolize_keys(configs))
 	end
 
