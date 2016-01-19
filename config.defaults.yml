@@ -1,0 +1,9 @@
+leftronic_key: 
+explorer_api_url: 
+piwik_auth_token: 
+mainnet_prod_address: 
+testnet_prod_address: 
+jenkins_ip: 
+jenkins_username: 
+jenkins_password:
+foo: bar

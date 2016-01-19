@@ -2,17 +2,25 @@
 require 'ostruct'
 
 module ConfigLoader
+	DEFAULT_CONFIGS = "config.defaults.yml"
+  USER_CONFIGS = "config.yml"
 	def load_app_config
-	  user_configs = read_yaml_file
+		default_configs = read_yaml_file(DEFAULT_CONFIGS)
+	  user_configs = read_yaml_file(USER_CONFIGS)
 	  environment_configs = ENV || {}
 	  
-	  config_order = [user_configs, environment_configs]
+	  config_order = [default_configs,user_configs,environment_configs]
 
-	  configs = config_order.inject { |a, b| a.merge(b) }	  
-	  OpenStruct.new(configs.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo})
+	  configs = config_order.inject { |a, b| a.merge(b) }	
+	  p configs  
+	  OpenStruct.new(symbolize_keys(configs))
 	end
 
-	def read_yaml_file
-		YAML.load(File.read(File.expand_path('../../config.yml', __FILE__)))
-	end	
+	def read_yaml_file(file_name)
+		YAML.load(File.read(File.expand_path("../../#{file_name}", __FILE__)))
+	end
+	def symbolize_keys(hash)
+		return hash unless hash.class == 'Hash'
+		hash.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+	end
 end
