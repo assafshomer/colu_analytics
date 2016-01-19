@@ -1,4 +1,6 @@
 require '../setup'
+require __dir__+'/../helpers/explorer_helper'
+include ExplorerHelper
 
 result = []
 10.times do |month|
