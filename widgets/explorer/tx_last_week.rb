@@ -3,7 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
-stream = 'AESSls3U'
+stream = 'ZfLVeunS'
 
 week_ago = Time.at(Time.now.to_i - 3600*24*7).strftime("%d/%m/%Y")
 

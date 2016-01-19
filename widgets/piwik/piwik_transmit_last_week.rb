@@ -3,7 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
-stream = 'ZfLVeunS'
+stream = 'AESSls3U'
 
 result = []
 
