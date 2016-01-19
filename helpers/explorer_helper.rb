@@ -1,6 +1,9 @@
 module ExplorerHelper
 	require __dir__+'/views_helper'
 	include ViewsHelper
+	require __dir__+'/date_helper'
+	include DateHelper	
+
 	def number_of_cc_tx_in_month(month_offset=0)
 		# total number of cctx in a calendar month. Without offset its the current month. offset of 1, previous month, as so on.
 		now_date = Date.parse(Time.now.to_s)
@@ -65,18 +68,33 @@ module ExplorerHelper
 	end
 
 	def number_of_cc_tx_by_dates(start_day,end_day=nil)
-		end_day = Time.now.strftime("%d/%m/%Y") unless end_day
-		raw_start_time = Time.parse(start_day)
-		# p "raw_start_time #{raw_start_time}"		
-		raw_end_time = Time.parse(end_day)+3600*24
-		# p "raw_end_time #{raw_end_time}"		
-		start_time = raw_start_time.to_i * 1000
-		# p "start_time #{start_time}"
-		end_time = raw_end_time.to_i * 1000
-		# p "end_time #{end_time}"
+		times = dates_are_numbers(start_day,end_day)
+		# p Time.at(times[:from]*1000)
+		# p Time.at(times[:till]*1000)
+		# 24h buckets
+		bucket_miliseconds = 1000*3600*24
+		query(times[:from],times[:till],bucket_miliseconds)
+	end
 
-		bucket_ms = 1000*3600*24
-		query(start_time,end_time,bucket_ms)
+	def total_number_of_cc_tx_by_days(limit=0,offset=0)
+		times = days_are_numbers(limit,offset)
+		p Time.at(times[:from]/1000)
+		p Time.at(times[:till]/1000)
+		# one bucket
+		bucket_miliseconds = 1000*3600*24*(limit+1)
+		result = query(times[:from],times[:till],bucket_miliseconds)
+		return result.first['txsSum']
+	end
+
+	def get_transactions_last_days(num_of_days=1)
+		init_time = Time.now
+		num_of_tx = total_number_of_cc_tx_by_days(num_of_days)
+		p num_of_tx
+		query = EXPLORER_API+ "getcctransactions?limit=#{num_of_tx}"
+		p query
+		data = HTTParty.get(query)
+		p "Explorer API replied [#{time_diff(init_time)}]"
+		raw_data =  data.parsed_response		
 	end
 
 	def query(start_time,end_time,bucket_ms,debug=false)

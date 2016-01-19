@@ -19,3 +19,4 @@ p result.flatten.map{|e| [e[:from].strftime("%B")+' '+e[:from].strftime("%Y"),e[
 
 # p data.map{|p| Time.at(p.first)}
 
+# [["January 2016", 4070], ["December 2015", 2774], ["November 2015", 1644], ["October 2015", 1274], ["September 2015", 1215], ["August 2015", 881], ["July 2015", 581], ["June 2015", 0], ["May 2015", 0], ["April 2015", 0]]
