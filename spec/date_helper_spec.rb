@@ -4,10 +4,16 @@ require __dir__+'/../helpers/date_helper.rb'
 include DateHelper
 
 describe "HeadersHelper" do
+	describe 'dates_are_numbers' do
+	  it 'should return the integer time representations' do
+			dates_are_numbers('14/01/2016','19/01/2016').should == {:from=>1452722400000, :till=>1453240800000} 	  	
+	  end
+	end
 	describe 'days_are_numbers' do
 	  it 'should return the integer time representations' do
-			days_are_numbers('14/01/2016','19/01/2016').should == {:from=>1452722400000, :till=>1453240800000} 	  	
-	  end
+	  	x = days_are_numbers
+			(x[:till] - x[:from]).should == 1000*3600*24
+	  end	  
 	end
 	# in web console
 	# new Date(1452722400000)
