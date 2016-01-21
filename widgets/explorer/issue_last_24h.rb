@@ -3,7 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
-stream = 'GMgit0FL'
+stream = '14mIMbJM'
 
 raw_data = get_cc_tx_last_days(0)
 issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
