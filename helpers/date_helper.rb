@@ -24,5 +24,11 @@ module DateHelper
 		p Time.at(start_time/1000)
 		p Time.at(end_time/1000)		
 		return {from: start_time, till: end_time}		
-	end	
+	end
+
+	def group_by_day(array_of_hashes_with_time_key)
+		array_of_hashes_with_time_key.group_by do |element|
+			Time.at(element[:time]/1000).strftime("%d/%m/%Y")
+		end
+	end
 end

@@ -38,7 +38,10 @@ describe "HeadersHelper" do
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end.uniq			
 			dates.count.should == 2
-		end		
+		end
+		# it 'limit 1 should include tx from two days' do
+		# 	get_cc_tx_last_days(1).group_by{|x| Time.at(x[:time]/1000).strftime("%d/%m/%Y")}.count.should == 2
+		# end		
 	end
 
 

@@ -4,9 +4,8 @@ require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
 stream = 'H2L1ArR6'
-UPDATE.clear(stream)
 
-timeout = 60
+timeout = 90
 
 begin
   Timeout::timeout(timeout) do
@@ -21,7 +20,7 @@ begin
 			hash = {"number" => x["txsSum"], "timestamp" => x["from"]/1000}
 			JSON.parse(hash.to_json)
 		end
-
+		UPDATE.clear(stream)
 		UPDATE.push_line(stream,parsed_data)	
   end
 rescue Timeout::Error
