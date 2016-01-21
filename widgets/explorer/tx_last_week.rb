@@ -7,8 +7,9 @@ stream = 'ZfLVeunS'
 
 week_ago = Time.at(Time.now.to_i - 3600*24*7).strftime("%d/%m/%Y")
 
+timeout = 30
 begin
-  Timeout::timeout(30) do
+  Timeout::timeout(timeout) do
 		data = number_of_cc_tx_by_dates(week_ago)
 
 		parsed_data = data.map do |x|	
@@ -20,6 +21,6 @@ begin
 		UPDATE.push_line(stream,parsed_data)		
   end
 rescue Timeout::Error
-	p "Explorer call timed out"
+	p "Explorer call timed out after #{timeout} seconds"
 end	
 

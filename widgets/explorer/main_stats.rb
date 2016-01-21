@@ -4,9 +4,10 @@ require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
 stream = '6c54e5cdfd'
+timeout = 30
 
 begin
-  Timeout::timeout(30) do
+  Timeout::timeout(timeout) do
 		main_stats = HTTParty.get(EXPLORER_API+'getmainstats')
 		total_assets = main_stats.parsed_response['numOfAssets']
 		total_tx = main_stats.parsed_response['numOfCCTransactions']
@@ -22,7 +23,7 @@ begin
 		UPDATE.push_line(stream,point)		
   end
 rescue Timeout::Error
-	p "Explorer call timed out"
+	p "Explorer call timed out after #{timeout} seconds"
 end	
 
 

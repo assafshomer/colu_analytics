@@ -4,9 +4,10 @@ require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
 stream = 'H2L1ArR6'
+timeout = 60
 
 begin
-  Timeout::timeout(60) do
+  Timeout::timeout(timeout) do
 		data = []
 		12.times do |month|
 			month_data = number_of_cc_tx_in_month(month)
@@ -23,6 +24,6 @@ begin
 		UPDATE.push_line(stream,parsed_data)	
   end
 rescue Timeout::Error
-	p "Explorer call timed out"
+	p "Explorer call timed out after #{timeout} seconds"
 end
 
