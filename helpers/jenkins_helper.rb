@@ -1,5 +1,7 @@
 
 require 'jenkins_api_client'
+require 'active_support/time'
+
 module JenkinsHelper
 	JENKINS = JenkinsApi::Client.new(
 		server_ip: APP_CONFIG['jenkins_ip'],
@@ -14,11 +16,11 @@ module JenkinsHelper
 	def translate_status(status)
 		case status
 		when 'SUCCESS'
-			"UP (#{Time.now.strftime("%H:%M")})"
+			"UP (#{Time.now.in_time_zone('Jerusalem').strftime("%H:%M")})"
 		when "FAILURE"
-			"DOWN (#{Time.now.strftime("%H:%M")})"
+			"DOWN (#{Time.now.in_time_zone('Jerusalem').strftime("%H:%M")})"
 		else
-			"N/A (#{Time.now.strftime("%H:%M")})"
+			"N/A (#{Time.now.in_time_zone('Jerusalem').strftime("%H:%M")})"
 		end		
 	end
 
