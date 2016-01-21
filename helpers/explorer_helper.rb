@@ -78,23 +78,25 @@ module ExplorerHelper
 
 	def total_number_of_cc_tx_by_days(limit=0,offset=0)
 		times = days_are_numbers(limit,offset)
-		p Time.at(times[:from]/1000)
-		p Time.at(times[:till]/1000)
 		# one bucket
 		bucket_miliseconds = 1000*3600*24*(limit+1)
 		result = query(times[:from],times[:till],bucket_miliseconds)
 		return result.first['txsSum']
 	end
 
-	def get_transactions_last_days(num_of_days=1)
+	def get_cc_tx_last_days(limit=0,offset=0)
 		init_time = Time.now
-		num_of_tx = total_number_of_cc_tx_by_days(num_of_days)
+		num_of_tx = total_number_of_cc_tx_by_days(limit,offset)
 		p num_of_tx
 		query = EXPLORER_API+ "getcctransactions?limit=#{num_of_tx}"
-		p query
 		data = HTTParty.get(query)
-		p "Explorer API replied [#{time_diff(init_time)}]"
-		raw_data =  data.parsed_response		
+		# p "Explorer API replied [#{time_diff(init_time)}]"
+		raw_data = data.parsed_response
+		raw_data.map{|tx| {
+			time: tx['blocktime'],
+			type: tx['ccdata'].first['type'],
+			asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
+			}}
 	end
 
 	def query(start_time,end_time,bucket_ms,debug=false)

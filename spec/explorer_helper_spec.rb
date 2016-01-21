@@ -12,15 +12,33 @@ describe "HeadersHelper" do
 	  end
 	end
 	describe 'total_number_of_cc_tx_by_days' do
-	  it 'return correct nuber' do
-	  	get_transactions_last_days(1).should be_a(Integer)
-	  end
+		it 'return correct nuber' do
+			total_number_of_cc_tx_by_days(1).should be_a(Integer)
+		end
 	end
 
-	describe 'get_transactions_last_days' do
-	  it 'should return a json' do
-	  	get_transactions_last_days.should be_nil
-	  end
+	describe 'get_cc_tx_last_days' do
+		it 'should return a json' do
+			get_cc_tx_last_days.should be_a(Array)
+		end
+		# it 'first element should have keys' do			
+		# 	get_cc_tx_last_days.should be_nil
+		# end		
+		it 'first element should have keys' do			
+			get_cc_tx_last_days.first.keys.sort.should == [:asset_ids,:time,:type]
+		end
+		it 'default should only include tx in one day' do
+			dates = get_cc_tx_last_days.map do |data|
+				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
+			end.uniq			
+			dates.count.should == 1
+		end
+		it 'limit 1 should include tx from two days' do
+			dates = get_cc_tx_last_days(1).map do |data|
+				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
+			end.uniq			
+			dates.count.should == 2
+		end		
 	end
 
 
