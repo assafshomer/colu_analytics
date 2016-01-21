@@ -11,4 +11,15 @@ module JenkinsHelper
 		"/job/#{job_name}/lastBuild/api/json"
 	end
 
+	def translate_status(status)
+		case status
+		when 'SUCCESS'
+			"UP (#{Time.now.strftime("%H:%M")})"
+		when "FAILURE"
+			"DOWN (#{Time.now.strftime("%H:%M")})"
+		else
+			"N/A (#{Time.now.strftime("%H:%M")})"
+		end		
+	end
+
 end

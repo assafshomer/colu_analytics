@@ -18,11 +18,19 @@ p testnet_reply = JENKINS.api_get_request(testnet_request)
 p testnet_status = testnet_reply['result']
 p "JENKINS API replied within [#{time_diff(init_time)}]"
 
-if (mainnet_status && testnet_status)
-	p pretty_mainnet_status = mainnet_status == 'SUCCESS' ? "UP (#{Time.now.strftime("%H:%M")})" : "DOWN (#{Time.now.strftime("%H:%M")})"
-	p pretty_testnet_status = testnet_status == 'SUCCESS' ? "UP (#{Time.now.strftime("%H:%M")})" : "DOWN (#{Time.now.strftime("%H:%M")})"
+# p pretty_mainnet_status = mainnet_status == 'SUCCESS' ? "UP (#{Time.now.strftime("%H:%M")})" : "DOWN (#{Time.now.strftime("%H:%M")})"
+# p pretty_testnet_status = testnet_status == 'SUCCESS' ? "UP (#{Time.now.strftime("%H:%M")})" : "DOWN (#{Time.now.strftime("%H:%M")})"
 
-	stream = 'JLZKlvnA'
+pretty_mainnet_status = translate_status(mainnet_status)
+pretty_testnet_status = translate_status(testnet_status)
+
+p "Mainnet: #{pretty_mainnet_status}"
+p "Testnet: #{pretty_testnet_status}"
+
+stream = 'JLZKlvnA'
+
+if pretty_mainnet_status || pretty_testnet_status
+	
 	UPDATE.clear(stream)
 
 	header_row = ["Network", "Status"]
@@ -31,6 +39,6 @@ if (mainnet_status && testnet_status)
 		["Testnet", pretty_testnet_status]
 	]
 
-	UPDATE.push_table stream, header_row, table_rows	
+	UPDATE.push_table stream, header_row, table_rows		
 end
 
