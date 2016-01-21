@@ -4,6 +4,8 @@ require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
 stream = 'H2L1ArR6'
+UPDATE.clear(stream)
+
 timeout = 60
 
 begin
@@ -20,7 +22,6 @@ begin
 			JSON.parse(hash.to_json)
 		end
 
-		UPDATE.clear(stream)
 		UPDATE.push_line(stream,parsed_data)	
   end
 rescue Timeout::Error

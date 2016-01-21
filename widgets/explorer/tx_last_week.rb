@@ -4,10 +4,11 @@ require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
 stream = 'ZfLVeunS'
+UPDATE.clear(stream)
 
 week_ago = Time.at(Time.now.to_i - 3600*24*7).strftime("%d/%m/%Y")
 
-timeout = 30
+timeout = 60
 begin
   Timeout::timeout(timeout) do
 		data = number_of_cc_tx_by_dates(week_ago)
@@ -17,7 +18,7 @@ begin
 			JSON.parse(hash.to_json)
 		end
 
-		UPDATE.clear(stream)
+		
 		UPDATE.push_line(stream,parsed_data)		
   end
 rescue Timeout::Error

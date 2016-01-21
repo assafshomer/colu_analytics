@@ -10,10 +10,6 @@ active_widgets = %w(
 	piwik_mobile_send_last_week	
 )
 
-
-	
-
-
 all_widgets = Dir["#{dirname}/**/*.rb"]
 
 widgets = active_widgets.map do |desired_widget|
