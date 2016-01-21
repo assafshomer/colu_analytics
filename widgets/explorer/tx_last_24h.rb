@@ -11,6 +11,7 @@ parsed_data = data.map do |x|
 	hash = {"number" => x["txsSum"], "timestamp" => x["from"]/1000}
 	JSON.parse(hash.to_json)
 end
+p parsed_data
 
 UPDATE.clear(stream)
 UPDATE.push_line(stream,parsed_data)

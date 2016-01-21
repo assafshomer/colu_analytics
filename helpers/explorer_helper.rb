@@ -87,16 +87,23 @@ module ExplorerHelper
 	def get_cc_tx_last_days(limit=0,offset=0)
 		init_time = Time.now
 		num_of_tx = total_number_of_cc_tx_by_days(limit,offset)
-		p num_of_tx
-		query = EXPLORER_API+ "getcctransactions?limit=#{num_of_tx}"
-		data = HTTParty.get(query)
-		# p "Explorer API replied [#{time_diff(init_time)}]"
-		raw_data = data.parsed_response
-		raw_data.map{|tx| {
-			time: tx['blocktime'],
-			type: tx['ccdata'].first['type'],
-			asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
-			}}
+		p "Total number of cc tx in this period: #{num_of_tx}"
+		result = []
+		num_of_tx.times.each_slice(100).each_with_index do |s,i|
+			query = EXPLORER_API+ "getcctransactions?limit=#{s.last}?skip=#{100*i}"
+			p query
+			data = HTTParty.get(query)
+			p "Explorer API replied [#{time_diff(init_time)}]"
+			raw_data = data.parsed_response
+			batch = raw_data.map{|tx| {
+				time: tx['blocktime'],
+				type: tx['ccdata'].first['type'],
+				asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
+				}}
+			p batch
+			result << batch
+		end
+		result.flatten
 	end
 
 	def query(start_time,end_time,bucket_ms,debug=false)
