@@ -7,8 +7,7 @@ active_widgets = %w(
 	machine_stats
 	tx_last_week
 	piwik_transmit_last_week
-	piwik_mobile_send_last_week
-	piwik_build_finance_last_week
+	piwik_mobile_send_last_week	
 )
 
 
