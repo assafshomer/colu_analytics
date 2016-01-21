@@ -1,19 +1,21 @@
 require __dir__+'/../../setup'
 require __dir__+'/../../helpers/jenkins_helper'
 include JenkinsHelper
-
+include ViewsHelper
 # puts JENKINS.job.list("^Test")
 mainnet_request = last_build_url('Test-GetData-MainNet')
 testnet_request = last_build_url('Test-GetData-TestNet')
 
 p "Getting Mainnet Machine Status from Jenkins"
 init_time = Time.now
-mainnet_status = JENKINS.api_get_request(mainnet_request)['result']
+p mainnet_reply = JENKINS.api_get_request(mainnet_request)
+p mainnet_status = mainnet_reply['result']
 p "JENKINS API replied within [#{time_diff(init_time)}]"
 
 p "Getting Testnet Machine Status from Jenkins"
 init_time = Time.now
-testnet_status = JENKINS.api_get_request(testnet_request)['result']
+p testnet_reply = JENKINS.api_get_request(testnet_request)
+p testnet_status = testnet_reply['result']
 p "JENKINS API replied within [#{time_diff(init_time)}]"
 
 if (mainnet_status && testnet_status)
