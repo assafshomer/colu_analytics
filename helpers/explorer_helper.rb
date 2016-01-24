@@ -73,25 +73,22 @@ module ExplorerHelper
 		p "Total number of cc tx in this period: #{num_of_tx}"
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
-			p s
 			query = EXPLORER_API+ "getcctransactions?limit=#{s.last-s.first}&skip=#{s.first}"
 			p query
 			data = HTTParty.get(query)
 			p "Explorer API replied [#{time_diff(init_time)}]"
 			raw_data = data.parsed_response
-			p raw_data
 			batch = raw_data.map{|tx| {
 				time: tx['blocktime'],
 				type: tx['ccdata'].first['type'],
 				asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
 				}}
-			p batch
 			result << batch
 		end
 		result.flatten
 	end
 
-	def query(start_time,end_time,bucket_ms,debug=true)
+	def query(start_time,end_time,bucket_ms,debug=false)
 		init_time = Time.now
 		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: [#{Time.at(start_time/1000)}], end_time [#{Time.at(end_time/1000)}]" if debug
