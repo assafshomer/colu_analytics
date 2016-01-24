@@ -35,34 +35,17 @@ module ExplorerHelper
 	def number_of_cc_tx_by_hour(hours = 0)
 		# by defaults gives total number of CC tx in last hour. if you set hours gives hourly since hours ago
 		now = Time.now
-
 		now_hour_number = now.strftime("%H").to_i
-		# p "now_hour_number #{now_hour_number}"
 		now_day = now.strftime("%d")
-		# p "now_day #{now_day}"
-
 		raw_start_time = now - 3600 * hours
-		# p "raw_start_time #{raw_start_time}"		
-		
 		start_hour_number = raw_start_time.strftime("%H").to_i
-		# p "start_hour_number #{start_hour_number}"
 		start_day = raw_start_time.strftime("%d")
-		# p "start_day #{start_day}"
-
 		next_hour_number = (now_hour_number % 24) + 1
-		# p "next_hour_number #{next_hour_number}"
 		next_hour_day = now_hour_number == 24 ? now_day.to_i + 1 : now_day
-		# p "next_hour_day #{next_hour_day}"
-		
 		start_hour_time = Time.parse("#{start_day} #{start_hour_number}")
-		# p "start_hour_time #{start_hour_time}"
 		end_hour_time = Time.parse("#{next_hour_day} #{next_hour_number}")
-		# p "end_hour_time #{end_hour_time}"
-
 		end_time = end_hour_time.to_i * 1000
-		# p "end_time #{end_time}"
 		start_time = start_hour_time.to_i * 1000
-		# p "start_time #{start_time}"
 		bucket_ms = 1000*3600
 		query(start_time,end_time,bucket_ms)
 	end
@@ -90,11 +73,13 @@ module ExplorerHelper
 		p "Total number of cc tx in this period: #{num_of_tx}"
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
-			query = EXPLORER_API+ "getcctransactions?limit=#{s.last}?skip=#{100*i}"
+			p s
+			query = EXPLORER_API+ "getcctransactions?limit=#{s.last-s.first}&skip=#{s.first}"
 			p query
 			data = HTTParty.get(query)
 			p "Explorer API replied [#{time_diff(init_time)}]"
 			raw_data = data.parsed_response
+			p raw_data
 			batch = raw_data.map{|tx| {
 				time: tx['blocktime'],
 				type: tx['ccdata'].first['type'],
@@ -106,7 +91,7 @@ module ExplorerHelper
 		result.flatten
 	end
 
-	def query(start_time,end_time,bucket_ms,debug=false)
+	def query(start_time,end_time,bucket_ms,debug=true)
 		init_time = Time.now
 		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: [#{Time.at(start_time/1000)}], end_time [#{Time.at(end_time/1000)}]" if debug
