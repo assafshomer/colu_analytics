@@ -88,7 +88,7 @@ module ExplorerHelper
 		result.flatten
 	end
 
-	def query(start_time,end_time,bucket_ms,debug=false)
+	def query(start_time,end_time,bucket_ms,debug=true)
 		init_time = Time.now
 		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: [#{Time.at(start_time/1000)}], end_time [#{Time.at(end_time/1000)}]" if debug

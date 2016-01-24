@@ -6,13 +6,15 @@ include ExplorerHelper
 issuance_stream = '14mIMbJM'
 transfer_stream = 'uZTTTg9B'
 
-raw_data = get_cc_tx_last_days(0)
+number_of_days = 1
+
+raw_data = get_cc_tx_last_days(number_of_days-1)
 
 p issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
 p transfer_raw_data = raw_data.select{|d| d[:type] == 'transfer'}
 
-issuance_data = group_by_day(issuance_raw_data)
-transfer_data = group_by_day(transfer_raw_data)
+issuance_data = group_by_hour(issuance_raw_data)
+transfer_data = group_by_hour(transfer_raw_data)
 
 parsed_issuance_data = issuance_data.map do |k,v|	
 	hash = {"number" => v.count, "timestamp" => Time.parse(k).to_i}

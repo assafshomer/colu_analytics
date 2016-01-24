@@ -31,4 +31,9 @@ module DateHelper
 			Time.at(element[:time]/1000).strftime("%d/%m/%Y")
 		end
 	end
+	def group_by_hour(array_of_hashes_with_time_key)
+		array_of_hashes_with_time_key.group_by do |element|
+			Time.at(element[:time]/1000).strftime("%d/%m/%Y %H:00")
+		end
+	end	
 end
