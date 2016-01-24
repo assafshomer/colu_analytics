@@ -16,12 +16,16 @@ module JenkinsHelper
 	def translate_status(status)
 		case status
 		when 'SUCCESS'
-			"UP (#{Time.now.in_time_zone('Jerusalem').strftime("%H:%M")})"
+			"UP (#{timestamp})"
 		when "FAILURE"
-			"DOWN (#{Time.now.in_time_zone('Jerusalem').strftime("%H:%M")})"
+			"DOWN (#{timestamp})"
 		else
-			"N/A (#{Time.now.in_time_zone('Jerusalem').strftime("%H:%M")})"
+			"N/A (#{timestamp})"
 		end		
+	end
+
+	def timestamp
+		Time.now.in_time_zone('Jerusalem').strftime("%H:%M")
 	end
 
 end
