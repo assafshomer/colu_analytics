@@ -3,15 +3,15 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
-issuance_stream = '14mIMbJM'
-transfer_stream = 'uZTTTg9B'
+issuance_stream = 'wbCblg7t'
+transfer_stream = 'AIceGGMQ'
 
 number_of_days = 1
 
 raw_data = get_cc_tx_last_days(number_of_days-1)
-
-p issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
-p transfer_raw_data = raw_data.select{|d| d[:type] == 'transfer'}
+# File.write("#{__dir__}/../../data/#{File.basename(__FILE__,".*")}",raw_data)
+issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
+transfer_raw_data = raw_data.select{|d| d[:type] == 'transfer'}
 
 issuance_data = group_by_hour(issuance_raw_data)
 transfer_data = group_by_hour(transfer_raw_data)

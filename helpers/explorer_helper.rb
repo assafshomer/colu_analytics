@@ -67,22 +67,27 @@ module ExplorerHelper
 		return result.first['txsSum']
 	end
 
-	def get_cc_tx_last_days(limit=0,offset=0)
+	def get_cc_tx_last_days(limit=0,offset=0,debug=false)
 		init_time = Time.now
 		num_of_tx = total_number_of_cc_tx_by_days(limit,offset)
 		p "Total number of cc tx in this period: #{num_of_tx}"
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
-			query = EXPLORER_API+ "getcctransactions?limit=#{s.last-s.first}&skip=#{s.first}"
-			p query
+			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{s.first}"
+			query = EXPLORER_API+ endpoint
+			init_time = Time.now
+			p "Calling Explorer API with [#{query}]" if debug
 			data = HTTParty.get(query)
-			p "Explorer API replied [#{time_diff(init_time)}]"
+			p "Explorer API replied [#{time_diff(init_time)}]" if debug
 			raw_data = data.parsed_response
 			batch = raw_data.map{|tx| {
+				txid: tx['txid'],
 				time: tx['blocktime'],
+				pretty_time: Time.at(tx['blocktime']/1000),
 				type: tx['ccdata'].first['type'],
 				asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
 				}}
+			File.write("#{__dir__}/../data/#{endpoint}.txt",batch) if debug
 			result << batch
 		end
 		result.flatten
@@ -91,7 +96,7 @@ module ExplorerHelper
 	def query(start_time,end_time,bucket_ms,debug=true)
 		init_time = Time.now
 		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
-		p "start_time: [#{Time.at(start_time/1000)}], end_time [#{Time.at(end_time/1000)}]" if debug
+		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
 		p "Calling Explorer API with [#{query}]" if debug
 		data = HTTParty.get(query)
 		p "Explorer API replied [#{time_diff(init_time)}]" if debug
