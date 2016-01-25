@@ -45,3 +45,6 @@ end
 point = {"leaderboard": asset_data.first(5) }
 UPDATE.push_line(assets_stream,point)
 
+
+# path = "#{__dir__}/../../data/asset_leaderboard.html"
+# UPDATE.push_html 'INcnONyU', File.read(path)

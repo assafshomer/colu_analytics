@@ -76,11 +76,19 @@ describe "HeadersHelper" do
 	  end
 	end
 	describe 'get_asset_name' do
-		let(:aid) { 'LEL5H3V37xXRxZGdwhMXUYXrjnEa1xwmNS8rQ' }
-		let(:metadata) { {"assetName"=>"Vallium", "issuer"=>"Dr. Rob OConner", "description"=>"1M mg of Vallium"} }
-	  it 'should get the asset name from asset id' do
-	  	get_asset_metadata(aid).should == metadata
-	  end
+		describe 'an asset with a name' do
+			let(:aid) { 'LEL5H3V37xXRxZGdwhMXUYXrjnEa1xwmNS8rQ' }
+			let(:metadata) { {"assetName"=>"Vallium", "issuer"=>"Dr. Rob OConner", "description"=>"1M mg of Vallium"} }
+		  it 'should get the asset name from asset id' do
+		  	get_asset_metadata(aid).should == metadata
+		  end		  
+		end
+		describe 'an asset without a name' do
+			let(:aid) { 'LE9mi9Da7urJcdawYLVFQPtScUR8rcggxYtub' }
+		  it 'should return nil' do
+		  	get_asset_metadata(aid).should be_nil
+		  end		  
+		end
 	end
 
 

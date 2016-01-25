@@ -117,26 +117,33 @@ module ExplorerHelper
 		result = html_start
 		ordered_asset_ids.each do |data_point|
 			asset_id = data_point.keys.first
+			short_asset_id = asset_id[0..9]+'...'
+			metadata = get_asset_metadata(asset_id)
+			max_length = 'Turkish Electronic Currency'.length
+			asset_name = metadata ? metadata['assetName'][0..max_length] : short_asset_id
+			issuer_name = metadata ? metadata['issuer'] : ''
+			asset_desc = metadata ? metadata['description'] : ''
+			p "name: #{asset_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
 			frequency = data_point[asset_id]			
-			line = %Q(<p><a href="http://coloredcoins.org/explorer/asset/#{asset_id}">#{asset_id}</a></p>)
+			line = %Q(<p><div style="line-height:40px; height:59px; font-size:30px;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" title="foobar" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;">#{frequency}</div></div></p>)
 			result << line
 		end
 		result << html_end
-		path = "#{__dir__}/../data/asset_leaderboard.html"
-		File.write(path,result)
-		Launchy.open(path)
+		# path = "#{__dir__}/../data/asset_leaderboard.html"
+		# File.write(path,result)
+		# Launchy.open(path)
 	end
 
 	def get_asset_metadata(asset_id)
 		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}")['issuances'].first
 		txid = issuances['txid']
-		# p "txid: #{txid}"
 		vout = issuances['vout'].select do |vout|
-			!vout['assets'].empty? && vout['assets'].first['assetId'] == asset_id
+			!vout['assets'].empty? 
+			# vout['assets'].first['assetId'] == asset_id
 		end.first
 		index = vout['n']
-		# p "index: #{index}"		
-		metadata = query_cc_api("assetmetadata/#{asset_id}/#{txid}%3A#{index}")['metadataOfIssuence']['data']
+		asset_metadata = query_cc_api("assetmetadata/#{asset_id}/#{txid}%3A#{index}")
+		metadata = asset_metadata['metadataOfIssuence']['data'] if asset_metadata['metadataOfIssuence'] && asset_metadata['metadataOfIssuence']['data'] 
 		return metadata
 	end
 
