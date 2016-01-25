@@ -77,8 +77,9 @@ describe "HeadersHelper" do
 	end
 	describe 'get_asset_name' do
 		let(:aid) { 'LEL5H3V37xXRxZGdwhMXUYXrjnEa1xwmNS8rQ' }
+		let(:metadata) { {"assetName"=>"Vallium", "issuer"=>"Dr. Rob OConner", "description"=>"1M mg of Vallium"} }
 	  it 'should get the asset name from asset id' do
-	  	get_asset_name(aid).should be_nil
+	  	get_asset_metadata(aid).should == metadata
 	  end
 	end
 

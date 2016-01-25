@@ -127,8 +127,17 @@ module ExplorerHelper
 		Launchy.open(path)
 	end
 
-	def get_asset_name(asset_id)
-		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}")['issuances']
+	def get_asset_metadata(asset_id)
+		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}")['issuances'].first
+		txid = issuances['txid']
+		# p "txid: #{txid}"
+		vout = issuances['vout'].select do |vout|
+			!vout['assets'].empty? && vout['assets'].first['assetId'] == asset_id
+		end.first
+		index = vout['n']
+		# p "index: #{index}"		
+		metadata = query_cc_api("assetmetadata/#{asset_id}/#{txid}%3A#{index}")['metadataOfIssuence']['data']
+		return metadata
 	end
 
 	def query_explorer_api(endpoint, debug=true)
