@@ -3,6 +3,7 @@ module ExplorerHelper
 	include ViewsHelper
 	require __dir__+'/date_helper'
 	include DateHelper	
+	require 'launchy'
 
 	def number_of_cc_tx_in_month(month_offset=0)
 		# total number of cctx in a calendar month. Without offset its the current month. offset of 1, previous month, as so on.
@@ -81,13 +82,13 @@ module ExplorerHelper
 			p "Explorer API replied [#{time_diff(init_time)}]" if debug
 			raw_data = data.parsed_response
 			batch = raw_data.map{|tx| {
-				txid: tx['txid'],
+				# txid: tx['txid'],
 				time: tx['blocktime'],
-				pretty_time: Time.at(tx['blocktime']/1000),
+				# pretty_time: Time.at(tx['blocktime']/1000),
 				type: tx['ccdata'].first['type'],
 				asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
 				}}
-			File.write("#{__dir__}/../data/#{endpoint}.txt",batch) if debug
+			File.write("#{__dir__}/../data/#{endpoint}.json",batch.to_json) if debug
 			result << batch
 		end
 		result.flatten
@@ -102,5 +103,51 @@ module ExplorerHelper
 		p "Explorer API replied [#{time_diff(init_time)}]" if debug
 		raw_data =  data.parsed_response		
 	end
+
+	def order_asset_ids(raw_data)
+		assetids = raw_data.map{|e| e.reject{|k,v| k!=:asset_ids}}.map{|e| e[:asset_ids]}.flatten
+		counted_asset_ids = assetids.group_by{|a| a}.map{|k,v| {"#{k}": v.count}}
+		counted_asset_ids.sort_by{|e| e[e.keys.first]}.reverse		
+	end
+# [{:bar=>4}, {:buzz=>3}, {:foo=>3}, {:LESHzTRG8XiG4E7Ge6nLWbcUvuV1gXUKPpod7=>2}, {:LEQpuWnvjWkZwEunARWKUFg2aWpje9egzVJhc=>2}, {:LEkhz2HBKyJqhsGG64baGc8igo43ct5EavRvT=>2}, {:LHEguQB8A9y1SBvPk3fufrSH4zZmNatwDPhrJ=>2}, {:LFEwGetQXJYPpR6ZKeZEiCDXbQVphx1BShpPe=>2}, {:LE5MRwYjxCRuk7dMx6avUApWr3XdPh7t6EfbA=>2}, {:LHcYKZhXK2EUPECkN11pKzvqtktCoZqN6CJHw=>2}, {:LHMP883rSqkme8pQbGMojrRYJpasRiSB1nMbu=>2}, {:LE9RBvdNh6wsB2d7zqrKNXJ6rTtByecTbxGZi=>2}, {:LHu7VTQAHK2xo3Z3nBqoZSZGcKSS3vQ94ZQgY=>2}, {:LJQsZP4ZQakfuvHvpxRcAa4S9bns6hZfEHLt1=>1}, {:LDtrN338nTDonBoqmeXpPEEdYrGse3CoL7Qfx=>1}, {:LD7zexk3KvgxJJW2MV3gsvsXLT5Qz77cHGXLM=>1}]
+
+	def prepare_asset_leaderboard(ordered_asset_ids)
+		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
+		html_end = '</body></html>'
+		result = html_start
+		ordered_asset_ids.each do |data_point|
+			asset_id = data_point.keys.first
+			frequency = data_point[asset_id]			
+			line = %Q(<p><a href="http://coloredcoins.org/explorer/asset/#{asset_id}">#{asset_id}</a></p>)
+			result << line
+		end
+		result << html_end
+		path = "#{__dir__}/../data/asset_leaderboard.html"
+		File.write(path,result)
+		Launchy.open(path)
+	end
+
+	def get_asset_name(asset_id)
+		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}")['issuances']
+	end
+
+	def query_explorer_api(endpoint, debug=true)
+		init_time = Time.now
+		query = EXPLORER_API+ endpoint		
+		p "Calling Explorer API with [#{query}]" if debug
+		data = HTTParty.get(query)
+		p "Explorer API replied [#{time_diff(init_time)}]" if debug
+		data.parsed_response			
+	end
+
+	def query_cc_api(endpoint, debug=true)
+		init_time = Time.now
+		query = CC_API+ endpoint		
+		p "Calling CC API with [#{query}]" if debug
+		data = HTTParty.get(query)
+		p "CC API replied [#{time_diff(init_time)}]" if debug
+		data.parsed_response			
+	end
+
 end
 

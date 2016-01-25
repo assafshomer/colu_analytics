@@ -56,5 +56,33 @@ describe "HeadersHelper" do
 		# end		
 	end
 
+	describe 'ordered asset ids' do
+	  let(:raw_data) { [
+	  	{:time=>1453587759477, :type=>"issuance", :asset_ids=>["a","b","z"]},
+	  	{:time=>1453716035000, :type=>"transfer", :asset_ids=>["a","z"]},
+	  	{:time=>1453716035000, :type=>"issuance", :asset_ids=>["a"]},
+	  	{:time=>1453712336000, :type=>"transfer", :asset_ids=>["b","a"]},
+	  	{:time=>1453712336000, :type=>"issuance", :asset_ids=>["b"]},
+	  	{:time=>1453711100000, :type=>"issuance", :asset_ids=>["c"]}	  	 
+	  	] }
+	  	let(:ordered_asset_ids) { order_asset_ids(raw_data) }
+	  it 'should order asset ids' do
+	  	ordered_asset_ids.should == [{:a=>4}, {:b=>3}, {:z=>2}, {:c=>1}]
+	  end
+	  describe 'html' do
+	  	it 'prepare the correct HTML' do
+	  		prepare_asset_leaderboard(ordered_asset_ids).should_not be_nil
+	  	end
+	  end
+	end
+	describe 'get_asset_name' do
+		let(:aid) { 'LEL5H3V37xXRxZGdwhMXUYXrjnEa1xwmNS8rQ' }
+	  it 'should get the asset name from asset id' do
+	  	get_asset_name(aid).should be_nil
+	  end
+	end
+
+
+
 
 end
