@@ -115,6 +115,7 @@ module ExplorerHelper
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'
 		result = html_start
+		result << '<div class="widgetTitle lt-widget-title" style="max-width: 312.7px; left: 20.65px; font-size: 20.65px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets last 24h</h1></div>'
 		ordered_asset_ids.each do |data_point|
 			asset_id = data_point.keys.first
 			short_asset_id = asset_id[0..9]+'...'
@@ -124,8 +125,9 @@ module ExplorerHelper
 			issuer_name = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : ''
 			p "name: #{asset_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
-			frequency = data_point[asset_id]			
-			line = %Q(<p><div style="line-height:40px; height:59px; font-size:30px;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" title="foobar" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;">#{frequency}</div></div></p>)
+			frequency = data_point[asset_id]
+			title = %Q(#{asset_name} issued by #{issuer_name} #{asset_desc})
+			line = %Q(<p><div style="line-height:35px; height:50px; font-size:30px;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;">#{frequency}</div></div></p>)
 			result << line
 		end
 		result << html_end

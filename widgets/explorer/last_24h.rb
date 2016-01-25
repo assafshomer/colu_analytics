@@ -5,7 +5,7 @@ include ExplorerHelper
 
 issuance_stream = 'wbCblg7t'
 transfer_stream = 'AIceGGMQ'
-assets_stream = 'eExlZhAZ'
+assets_stream = 'aEu4sfdm'
 
 number_of_days = 1
 start_days_past = 0
@@ -39,12 +39,13 @@ UPDATE.clear(transfer_stream)
 UPDATE.push_line(transfer_stream,parsed_transfer_data)
 
 
-asset_data = ordered_asset_ids.map do |e| 
-	{name: e.keys.first, value: e[e.keys.first]}
-end
-point = {"leaderboard": asset_data.first(5) }
-UPDATE.push_line(assets_stream,point)
+# asset_data = ordered_asset_ids.map do |e| 
+# 	{name: e.keys.first, value: e[e.keys.first]}
+# end
+# point = {"leaderboard": asset_data.first(5) }
+# UPDATE.push_line(assets_stream,point)
 
-
-# path = "#{__dir__}/../../data/asset_leaderboard.html"
-# UPDATE.push_html 'INcnONyU', File.read(path)
+ordered_asset_ids = order_asset_ids(raw_data).first(5)
+html = prepare_asset_leaderboard(ordered_asset_ids)
+# UPDATE.clear(assets_stream)
+UPDATE.push_html assets_stream, html

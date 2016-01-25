@@ -1,7 +1,7 @@
 dirname = "widgets"
 
 active_widgets = %w(
-	issue_send_last_24h_by_hour	
+	last_24h	
 	main_stats 
 	monthly_cc_tx
 	balance_stats
