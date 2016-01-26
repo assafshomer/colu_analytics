@@ -4,13 +4,15 @@ require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
 stream = 'AESSls3U'
+number_of_days = 7
 
 result = []
 
-7.times do |n|	
+number_of_days.times do |n|	
 	curdate = Time.at(Time.now.to_i - 3600*24*n)
+	method = "Actions.getPageUrls"
 	segment = "pageTitle%3D%3Dengine.transmit_financed"
-	result << piwik_data_during_day(curdate,segment,{debug: true})
+	result << piwik_data_during_day(curdate,opts={segment: segment, method: method, debug: true})
 end
 
 

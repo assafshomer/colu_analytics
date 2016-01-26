@@ -4,13 +4,15 @@ require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
 stream = 'QzlPda2m'
+number_of_days = 7
 
 result = []
 
-7.times do |n|	
+number_of_days.times do |n|	
 	curdate = Time.at(Time.now.to_i - 3600*24*n)
-	segment = "pageUrl%3D%40build_finance"
-	result << piwik_data_during_day(curdate,segment,{debug: true})
+	method = "Actions.getPageUrls"
+	segment = "pageUrl%3D%40build_finance"	
+	result << piwik_data_during_day(curdate,opts={segment: segment, method: method, debug: true})
 end
 
 
