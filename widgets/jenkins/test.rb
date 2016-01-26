@@ -1,5 +1,5 @@
 require 'active_support/time'
-require '../../helpers/date_helper'
+require __dir__+'/../../helpers/date_helper'
 include DateHelper
 
 dan = days_are_numbers
