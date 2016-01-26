@@ -40,4 +40,7 @@ module DateHelper
 	def hour_offset_to_israel
 		Time.now.in_time_zone('Jerusalem').strftime("%z").to_i/100 - Time.now.strftime("%z").to_i/100
 	end
+	def timestamp
+		Time.now.in_time_zone('Jerusalem').strftime("%H:%M")
+	end	
 end

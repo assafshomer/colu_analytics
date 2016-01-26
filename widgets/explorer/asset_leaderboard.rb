@@ -4,7 +4,7 @@ require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
 
 assets_stream = 'aEu4sfdm'
-number_of_assets = 8
+number_of_assets = 1
 number_of_days = 1
 start_days_past = 0
 debug = false

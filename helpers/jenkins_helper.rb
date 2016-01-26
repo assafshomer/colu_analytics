@@ -1,6 +1,7 @@
 
 require 'jenkins_api_client'
-require 'active_support/time'
+require __dir__+'/date_helper'
+include DateHelper
 
 module JenkinsHelper
 	JENKINS = JenkinsApi::Client.new(
@@ -24,8 +25,6 @@ module JenkinsHelper
 		end		
 	end
 
-	def timestamp
-		Time.now.in_time_zone('Jerusalem').strftime("%H:%M")
-	end
+
 
 end

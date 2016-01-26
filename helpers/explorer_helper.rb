@@ -115,7 +115,7 @@ module ExplorerHelper
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'
 		result = html_start
-		result << '<div class="widgetTitle lt-widget-title" style="max-width: 312.7px; left: 20.65px; font-size: 20.65px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Daily Leading Assets (> midnight)</h1></div>'
+		result << %Q(<div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 20.65px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div>)
 		ordered_asset_ids.each do |data_point|
 			asset_id = data_point.keys.first
 			short_asset_id = asset_id[0..9]+'...'
