@@ -8,7 +8,8 @@ active_widgets = %w(
 	machine_stats
 	tx_last_week
 	piwik_transmit_last_week
-	piwik_mobile_send_last_week	
+	piwik_mobile_send_last_week
+	piwik_countries_last_week	
 )
 
 all_widgets = Dir["#{dirname}/**/*.rb"]
