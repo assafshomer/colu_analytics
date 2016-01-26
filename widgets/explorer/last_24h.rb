@@ -45,7 +45,7 @@ UPDATE.push_line(transfer_stream,parsed_transfer_data)
 # point = {"leaderboard": asset_data.first(5) }
 # UPDATE.push_line(assets_stream,point)
 
-ordered_asset_ids = order_asset_ids(raw_data).first(5)
+ordered_asset_ids = order_asset_ids(raw_data).first(8)
 html = prepare_asset_leaderboard(ordered_asset_ids)
 # UPDATE.clear(assets_stream)
 UPDATE.push_html assets_stream, html
