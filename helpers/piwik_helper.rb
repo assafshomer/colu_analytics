@@ -16,11 +16,20 @@ module PiwikHelper
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
 		p piwik_url if debug
-		response = HTTParty.get(piwik_url).parsed_response
-		hits = response.map{|r| r['nb_hits']}.inject(:+)
+		response = HTTParty.get(piwik_url).parsed_response			
+	end
+
+	def count_hits(piwik_response,date)
+		hits = piwik_response.map{|r| r['nb_hits']}.inject(:+)
 		date_midnight = Time.parse(date.strftime("%Y-%m-%d")).to_i
 		hash = {"number" => hits, "timestamp" => date_midnight}	
-		JSON.parse(hash.to_json)				
+		JSON.parse(hash.to_json)			
+	end
+
+	def extract_country_data(piwik_response)
+		piwik_response.map do |cdata|
+			{name: cdata["label"], value: cdata["nb_visits"]}
+		end
 	end
 
 	def piwik_countries_during_day(date,segment,opts={debug: false})

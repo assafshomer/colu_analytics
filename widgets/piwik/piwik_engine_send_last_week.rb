@@ -12,7 +12,8 @@ number_of_days.times do |n|
 	curdate = Time.at(Time.now.to_i - 3600*24*n)
 	method = "Actions.getPageUrls"
 	segment = "pageTitle%3D%3D%2520engine.build_finance_send"
-	result << piwik_data_during_day(curdate,opts={segment: segment, method: method, debug: true})
+	raw = piwik_data_during_day(curdate,segment: segment, method: method, debug: false)
+	result << count_hits(raw,curdate)
 end
 
 
