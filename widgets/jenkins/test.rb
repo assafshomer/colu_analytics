@@ -8,5 +8,6 @@ dan = days_are_numbers
 
 # p "herenow :#{herenow}, #{Time.at(herenow)}"
 
-p "here"+(Time.now.strftime("%z").to_i/100).to_s
-p "Jer" +(Time.now.in_time_zone('Jerusalem').strftime("%z").to_i/100).to_s
+# p "here"+(Time.now.strftime("%z").to_i/100).to_s
+# p "Jer" +(Time.now.in_time_zone('Jerusalem').strftime("%z").to_i/100).to_s
+# p "local time zone #{Time.now.getlocal.zone}"
