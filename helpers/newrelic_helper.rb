@@ -11,8 +11,8 @@ module NewrelicHelper
 	end
 
 	def newrelic_mobile_data(app_id,metric,opts={})
-		from = opts[:from] || datestamp(-1)
-		to = opts[:to] || datestamp
+		from = opts[:from] || datestamp
+		to = opts[:to] || datestamp(+1)
 		period = opts[:period] || (Time.parse(to) - Time.parse(from))
 		newrelic_url = NEWRELIC_BASE
 		newrelic_url += "/#{app_id}/metrics/data.json"

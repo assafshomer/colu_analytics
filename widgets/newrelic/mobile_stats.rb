@@ -11,7 +11,6 @@ android_id = APP_CONFIG['newrelic_android_app_id']
 ios_id = APP_CONFIG['newrelic_ios_app_id']
 
 android_active_users = stat_data.select do |os|
-	p os
 	os["id"] == android_id
 end.first['mobile_summary']['active_users']
 
@@ -45,8 +44,10 @@ ios = ["iOS", ios_active_users]
 metrics.each do |metric|
 	android_metric_name = params[:android].select{|m| m =~ /#{metric}/i}.first
 	if android_metric_name
-		android_metric_avg_value = newrelic_mobile_data(android_id,android_prefix+android_metric_name)['metric_data']['metrics'].first['timeslices'].first['values']['average_value']
-		p "#{android_metric_name}: #{android_metric_avg_value}"
+		android_metric_raw_data = newrelic_mobile_data(android_id,android_prefix+android_metric_name)
+		android_metric_values = android_metric_raw_data['metric_data']['metrics'].first['timeslices'].first['values']
+		p "#{android_metric_name}: #{android_metric_raw_data}"
+		android_metric_avg_value = android_metric_values['average_value']
 		android << android_metric_avg_value.round(1).to_s+' sec'
 	else
 		android << '--'
