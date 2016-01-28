@@ -127,7 +127,7 @@ module ExplorerHelper
 			p "name: #{asset_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
 			frequency = data_point[asset_id]
 			title = %Q(#{asset_name} issued by #{issuer_name} #{asset_desc})
-			line = %Q(<p><div style="line-height:35px; height:50px; font-size:30px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;">#{frequency}</div></div></p>)
+			line = %Q(<p><div style="line-height:35px; height:50px; font-size:30px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;margin-top:4px;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;">#{frequency}</div></div></p>)
 			result << line
 		end
 		result << html_end
