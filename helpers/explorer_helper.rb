@@ -121,7 +121,7 @@ module ExplorerHelper
 			short_asset_id = asset_id[0..20]+'...'
 			metadata = get_asset_metadata(asset_id)			
 			asset_name = if metadata
-				display_name = metadata['assetName']
+				display_name = metadata['assetName'].to_s
 				if display_name.length > max_length
 					display_name = display_name[0..max_length]+'...'
 				end
