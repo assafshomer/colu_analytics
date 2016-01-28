@@ -118,7 +118,7 @@ module ExplorerHelper
 		result << %Q(<div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 23px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div>)
 		ordered_asset_ids.each do |data_point|
 			asset_id = data_point.keys.first
-			short_asset_id = asset_id[0..max_length]+'...'
+			short_asset_id = asset_id[0..15]+'...'
 			metadata = get_asset_metadata(asset_id)			
 			asset_name = if metadata
 				display_name = metadata['assetName']
