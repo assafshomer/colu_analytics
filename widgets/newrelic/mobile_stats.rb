@@ -11,12 +11,12 @@ p "stat_data #{stat_data}"
 android_id = APP_CONFIG['newrelic_android_app_id']
 ios_id = APP_CONFIG['newrelic_ios_app_id']
 
-android_active_users = stat_data.select do |type|
-	type["id"] == android_id
+android_active_users = stat_data.select do |os|
+	os["id"] == android_id
 end.first['mobile_summary']['active_users']
 
-ios_active_users = stat_data.select do |type|
-	type["id"] == ios_id
+ios_active_users = stat_data.select do |os|
+	os["id"] == ios_id
 end.first['mobile_summary']['active_users']
 
 android_prefix = 'Custom/androidCategory/'
@@ -34,9 +34,9 @@ newrelic_mobile_data(android_id,android_prefix+'send+to+address')
 
 UPDATE.clear(stream)
 
-metrics = ["Address", "Phone","Sign","Sync"]
+metrics = ["Address", "Phone","Sync"]
 
-titles = ["Send2A", "Send2P","Sign","Sync Contacts"]
+titles = ["Send2A", "Send2P","Sync Contacts"]
 
 header_row = ["Type", "# Users"] + titles
 android = ["Android", android_active_users]
