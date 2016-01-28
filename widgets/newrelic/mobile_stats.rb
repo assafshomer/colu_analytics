@@ -11,6 +11,12 @@ p "stat_data #{stat_data}"
 android_id = APP_CONFIG['newrelic_android_app_id']
 ios_id = APP_CONFIG['newrelic_ios_app_id']
 
+p "*******DEBUG*****************"
+p stat_data.select do |os|
+	os["id"] == android_id
+end.first['mobile_summary']
+p "*******DEBUG*****************"
+
 android_active_users = stat_data.select do |os|
 	os["id"] == android_id
 end.first['mobile_summary']['active_users']
