@@ -1,6 +1,7 @@
 dirname = "widgets"
 
-active_widgets = %w(	
+active_widgets = %w(
+	mobile_stats	
 	last_24h	
 	main_stats 
 	monthly_cc_tx

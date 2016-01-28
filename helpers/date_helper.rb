@@ -42,5 +42,8 @@ module DateHelper
 	end
 	def timestamp
 		Time.now.in_time_zone('Jerusalem').strftime("%H:%M")
+	end
+	def datestamp(days_ago = 0)
+		(Time.now.in_time_zone('Jerusalem')+days_ago.to_i.days).strftime("%Y-%m-%d")
 	end	
 end

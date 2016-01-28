@@ -4,6 +4,9 @@ require 'json'
 require 'time'
 require 'httparty'
 require __dir__+'/helpers/views_helper'
+include ViewsHelper
+require __dir__+'/helpers/date_helper'
+include DateHelper
 require __dir__+'/helpers/config_loader'
 include ConfigLoader
 require 'byebug'
