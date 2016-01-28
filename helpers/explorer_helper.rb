@@ -109,25 +109,32 @@ module ExplorerHelper
 		counted_asset_ids = assetids.group_by{|a| a}.map{|k,v| {"#{k}": v.count}}
 		counted_asset_ids.sort_by{|e| e[e.keys.first]}.reverse		
 	end
-# [{:bar=>4}, {:buzz=>3}, {:foo=>3}, {:LESHzTRG8XiG4E7Ge6nLWbcUvuV1gXUKPpod7=>2}, {:LEQpuWnvjWkZwEunARWKUFg2aWpje9egzVJhc=>2}, {:LEkhz2HBKyJqhsGG64baGc8igo43ct5EavRvT=>2}, {:LHEguQB8A9y1SBvPk3fufrSH4zZmNatwDPhrJ=>2}, {:LFEwGetQXJYPpR6ZKeZEiCDXbQVphx1BShpPe=>2}, {:LE5MRwYjxCRuk7dMx6avUApWr3XdPh7t6EfbA=>2}, {:LHcYKZhXK2EUPECkN11pKzvqtktCoZqN6CJHw=>2}, {:LHMP883rSqkme8pQbGMojrRYJpasRiSB1nMbu=>2}, {:LE9RBvdNh6wsB2d7zqrKNXJ6rTtByecTbxGZi=>2}, {:LHu7VTQAHK2xo3Z3nBqoZSZGcKSS3vQ94ZQgY=>2}, {:LJQsZP4ZQakfuvHvpxRcAa4S9bns6hZfEHLt1=>1}, {:LDtrN338nTDonBoqmeXpPEEdYrGse3CoL7Qfx=>1}, {:LD7zexk3KvgxJJW2MV3gsvsXLT5Qz77cHGXLM=>1}]
 
 	def prepare_asset_leaderboard(ordered_asset_ids)
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'
+		max_length = 25
 		result = html_start
 		result << %Q(<div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 23px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div>)
 		ordered_asset_ids.each do |data_point|
 			asset_id = data_point.keys.first
-			short_asset_id = asset_id[0..9]+'...'
-			metadata = get_asset_metadata(asset_id)
-			max_length = 'Turkish Electronic Currency'.length
-			asset_name = metadata ? metadata['assetName'][0..max_length] : short_asset_id
+			short_asset_id = asset_id[0..max_length]+'...'
+			metadata = get_asset_metadata(asset_id)			
+			asset_name = if metadata
+				display_name = metadata['assetName']
+				if display_name.length > max_length
+					display_name = display_name[0..max_length]+'...'
+				end
+				display_name
+			else
+				short_asset_id	
+			end
 			issuer_name = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : ''
 			p "name: #{asset_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
 			frequency = data_point[asset_id]
 			title = %Q(#{asset_name} issued by #{issuer_name} #{asset_desc})
-			line = %Q(<p><div style="line-height:35px; height:50px; font-size:30px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;">#{frequency}</div></div></p>)
+			line = %Q(<p><div style="line-height:35px; height:50px; font-size:30px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;margin-top:6px;">#{frequency}</div></div></p>)
 			result << line
 		end
 		result << html_end
