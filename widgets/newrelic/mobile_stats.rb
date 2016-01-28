@@ -6,6 +6,7 @@ include ViewsHelper
 stream = '3UN8UsIx'
 
 stat_data = newrelic_mobile_active_users['applications']
+p "stat_data #{stat_data}"
 
 android_id = APP_CONFIG['newrelic_android_app_id']
 ios_id = APP_CONFIG['newrelic_ios_app_id']
