@@ -5,7 +5,7 @@ active_widgets = %w(
 	main_stats 
 	monthly_cc_tx
 	balance_stats
-	machine_stats
+	machine_stoplights
 	tx_last_week
 	piwik_transmit_last_week
 	piwik_mobile_send_last_week

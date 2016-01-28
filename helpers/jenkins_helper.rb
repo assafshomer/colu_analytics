@@ -25,6 +25,15 @@ module JenkinsHelper
 		end		
 	end
 
-
+	def status_to_i(status)
+		case status
+		when 'SUCCESS'
+			0
+		when "FAILURE"
+			100
+		else
+			50
+		end		
+	end
 
 end
