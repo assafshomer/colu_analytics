@@ -13,14 +13,9 @@ ids = oss.map{|os| [os.to_sym,APP_CONFIG["newrelic_#{os}_app_id"]]}.to_h
 
 active_users = ids.map do |k,v|	
 	tmp = stat_data.select do |d|		
-		(d["id"] || d[:id]).to_i == v.to_i
+		d["id"].to_i == v.to_i
 	end	
-	begin		
-		au = tmp.first[:mobile_summary][:active_users]
-	rescue
-		p "strings"
-		au = tmp.first['mobile_summary']['active_users'] 	
-	end	
+	au = tmp.first['mobile_summary']['active_users'] 	
 	[k,au]
 end.to_h
 
