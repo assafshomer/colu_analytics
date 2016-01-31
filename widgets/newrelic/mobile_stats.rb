@@ -12,6 +12,7 @@ oss = [:android,:ios]
 ids = oss.map{|os| [os.to_sym,APP_CONFIG["newrelic_#{os}_app_id"]]}.to_h
 
 active_users = ids.map do |k,v|
+	p "key: #{k}, value: #{v}"
 	[k,stat_data.select do |d|
 		d["id"] == v
 	end.first['mobile_summary']['active_users']]
