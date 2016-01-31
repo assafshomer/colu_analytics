@@ -13,9 +13,15 @@ ids = oss.map{|os| [os.to_sym,APP_CONFIG["newrelic_#{os}_app_id"]]}.to_h
 
 active_users = ids.map do |k,v|
 	p "key: #{k}, value: #{v}"
-	[k,stat_data.select do |d|
+	tmp = stat_data.select do |d|
 		d["id"] == v
-	end.first['mobile_summary']['active_users']]
+	end
+	begin
+		au = tmp.first[:mobile_summary][:active_users]
+	rescue
+		au = tmp.first['mobile_summary']['active_users'] 	
+	end	
+	[k,au]
 end.to_h
 
 android_prefix = 'Custom/androidCategory/'
