@@ -3,7 +3,7 @@ require __dir__+'/../../helpers/newrelic_helper'
 include NewrelicHelper
 include ViewsHelper
 
-stream = '3UN8UsIx'
+stream = 'xLpTTCGk'
 debug = true
 number_of_days = 1
 
@@ -30,41 +30,42 @@ params = oss.map{|os| [os.to_sym,eval("#{os}_params")]}.to_h
 
 metrics = ["Address", "Phone","Sync"]
 titles = ["Send2A", "Send2P","Sync Contacts"]
-header_row = ["Type", "# Users"] + titles
+header_row = ['Metric', "Android", "iOS"]
 
-rows = {ios:[], android: []}
-rows[:android] = ["Android", active_users[:android]]
-rows[:ios] = ["iOS", active_users[:ios]]
+# rows = {ios:[], android: []}
+rows_titles = ["Active Users", "Send 2 Address", "Send 2 Phone", "Sync Contacts"]
+rows = rows_titles.map{|t| [t,[t]]}.to_h
 
-oss.each do |os|
+rows["Active Users"] <<  oss.map{|os| active_users[os] }
+
+oss.each_with_index do |os,i|
 	metrics.each do |metric|
 		metric_name = params[os].select{|m| m =~ /#{metric}/i}.first
+		row_name = rows_titles.select{|rt| rt =~ /#{metric}/i}.first
 		if metric_name			
 			metric_raw_data = newrelic_mobile_data(ids[os],prefixes[os]+metric_name,{debug: false,to: datestamp(+1),from: datestamp(number_of_days-1)})
 			if metric_raw_data.keys.first == 'error'
 				p "#{os} | #{metric_name}: --" if debug
-				rows[os] << '--'	
+				rows[row_name][i+1] = '--'	
 			else
 				metric_values = metric_raw_data['metric_data']['metrics'].first['timeslices'].first['values']
-				p "metric_values #{metric_values}"
+				# p "metric_values #{metric_values}"
 				metric_avg_value = metric_values['average_value']
 				display = metric_avg_value.round(1).to_s+' sec'
 				p "#{os} | #{metric_name}: #{display}" if debug
-				rows[os] << display
+				rows[row_name][i+1] = display
 			end
 		else
 			p "#{os} | #{metric_name}: --" if debug
-			rows[os] << '--'
+			rows[row_name][i+1] = '--'	
 		end
 	end	
 end
 
-table_rows = oss.map{|os| rows[os]}
+table_rows = rows_titles.map{|rt| rows[rt].flatten}
 
 p header_row
 p table_rows
 
-# UPDATE.clear(stream)
-# UPDATE.push_table stream, header_row, table_rows
-
-
+UPDATE.clear(stream)
+UPDATE.push_table stream, header_row, table_rows

@@ -15,8 +15,7 @@ module NewrelicHelper
 		from = opts[:from] || datestamp
 		to = opts[:to] || datestamp(+1)
 		period = opts[:period] || (Time.parse(to) - Time.parse(from))
-		debug = opts[:debug] || false
-		p "from: #{from}, till: #{to}"
+		debug = opts[:debug] || false		
 		newrelic_url = NEWRELIC_BASE
 		newrelic_url += "/#{app_id}/metrics/data.json"
 		newrelic_url += "?names[]=#{metric}"
