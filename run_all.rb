@@ -1,7 +1,8 @@
 dirname = "widgets"
 
 active_widgets = %w(
-	mobile_stats
+	ios_timing
+	android_timing
 	last_24h	
 	main_stats 
 	monthly_cc_tx
