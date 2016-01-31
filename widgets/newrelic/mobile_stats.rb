@@ -16,6 +16,8 @@ active_users = ids.map do |k,v|
 	tmp = stat_data.select do |d|
 		d["id"] == v
 	end
+	p tmp.first
+	p tmp.first.keys	
 	begin
 		au = tmp.first[:mobile_summary][:active_users]
 	rescue
