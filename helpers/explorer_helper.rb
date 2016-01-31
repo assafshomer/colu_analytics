@@ -120,21 +120,15 @@ module ExplorerHelper
 			asset_id = data_point.keys.first
 			short_asset_id = asset_id[0..20]+'...'
 			metadata = get_asset_metadata(asset_id)			
-			asset_name = if metadata
-				display_name = metadata['assetName'].to_s
-				if display_name.length > max_length
-					display_name = display_name[0..max_length]+'...'
-				end
-				display_name
-			else
-				short_asset_id	
-			end
+			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
+			display_name = display_name.empty? ? short_asset_id : display_name
+			display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
 			issuer_name = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : ''
-			p "name: #{asset_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
+			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
 			frequency = data_point[asset_id]
-			title = %Q(#{asset_name} issued by #{issuer_name} #{asset_desc})
-			line = %Q(<p><div style="line-height:35px; height:50px; font-size:28px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;">#{asset_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;margin-top:6px;">#{frequency}</div></div></p>)
+			title = %Q(#{display_name} issued by #{issuer_name} #{asset_desc})
+			line = %Q(<p><div style="line-height:35px; height:50px; font-size:28px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;">#{display_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;margin-top:6px;">#{frequency}</div></div></p>)
 			result << line
 		end
 		result << html_end
