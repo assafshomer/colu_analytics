@@ -7,7 +7,7 @@ stream = '3UN8UsIx'
 debug = true
 
 stat_data = newrelic_mobile_active_users(debug: true)['applications']
-p "stats data: #{stats_data}"
+p "stat_data: #{stat_data}"
 oss = [:android,:ios]
 
 ids = oss.map{|os| [os.to_sym,APP_CONFIG["newrelic_#{os}_app_id"]]}.to_h
