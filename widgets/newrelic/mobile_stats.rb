@@ -6,7 +6,7 @@ include ViewsHelper
 stream = '3UN8UsIx'
 debug = true
 
-stat_data = newrelic_mobile_active_users(debug: false)['applications']
+stat_data = newrelic_mobile_active_users(debug: true)['applications']
 oss = [:android,:ios]
 
 ids = oss.map{|os| [os.to_sym,APP_CONFIG["newrelic_#{os}_app_id"]]}.to_h
@@ -37,7 +37,7 @@ oss.each do |os|
 	metrics.each do |metric|
 		metric_name = params[os].select{|m| m =~ /#{metric}/i}.first
 		if metric_name			
-			metric_raw_data = newrelic_mobile_data(ids[os],prefixes[os]+metric_name,debug: false)
+			metric_raw_data = newrelic_mobile_data(ids[os],prefixes[os]+metric_name,debug: true)
 			if metric_raw_data.keys.first == 'error'
 				p "#{os} | #{metric_name}: --" if debug
 				rows[os] << '--'	
