@@ -8,7 +8,7 @@ module NewrelicHelper
 	def newrelic_mobile_active_users(opts={})
 		debug = opts[:debug] || false
 		newrelic_url = NEWRELIC_BASE + '.json'
-		call_newrelic_api(newrelic_url,debug)
+		call_newrelic_api(newrelic_url,debug: debug)
 	end
 
 	def newrelic_mobile_data(app_id,metric,opts={})
@@ -22,16 +22,17 @@ module NewrelicHelper
 		newrelic_url += "&from=#{from}" if from
 		newrelic_url += "&to=#{to}" if to
 		newrelic_url += "&period=#{period}" if period
-		call_newrelic_api(newrelic_url,debug)
+		call_newrelic_api(newrelic_url,debug: debug)
 	end
 
-	def call_newrelic_api(url,debug=false)
+	def call_newrelic_api(url,opts={})
+		debug = opts[:debug] || false
 		init_time = Time.now
 		p "Calling Newrelic API with [#{url}]" if debug
 		data = HTTParty.get(url,headers: NEWRELIC_HEADER)
-		p "Explorer API replied [#{time_diff(init_time)}]" if debug
+		p "Newrelic API replied [#{time_diff(init_time)}]" if debug
 		response = data.parsed_response
-		p "newrelic response: #{response}" if debug
+		p "Newrelic response: #{response}" if debug
 		return response
 	end
  

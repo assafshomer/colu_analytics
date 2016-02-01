@@ -15,8 +15,7 @@ module PiwikHelper
 		piwik_url += single_day_setting
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
-		p piwik_url if debug
-		response = HTTParty.get(piwik_url).parsed_response			
+		call_piwik_api(piwik_url,debug: debug)
 	end
 
 	def count_hits(piwik_response,date)
@@ -40,6 +39,17 @@ module PiwikHelper
 		hash = {"number" => hits, "timestamp" => date_midnight}	
 		JSON.parse(hash.to_json)				
 	end
+
+	def call_piwik_api(url,opts={})
+		debug = opts[:debug] || false
+		init_time = Time.now
+		p "Calling Pikiw API with [#{url}]" if debug
+		data = HTTParty.get(url)
+		p "Pikiw API replied [#{time_diff(init_time)}]" if debug
+		response = data.parsed_response
+		p "Pikiw response: #{response}" if debug
+		return response
+	end	
 
 end
 
