@@ -4,17 +4,19 @@ module PiwikHelper
 
 	PIWIK_FILTER_LIMIT = 9999
 
-	PIWIK_BASE = "https://analytics.colu.co/?module=API&idSite=7&format=json&filter_limit=#{PIWIK_FILTER_LIMIT}&token_auth=#{APP_CONFIG['piwik_auth_token']}"
+	PIWIK_BASE = "https://analytics.colu.co/?module=API&idSite=7&format=json&token_auth=#{APP_CONFIG['piwik_auth_token']}"
 
 	def piwik_data_during_day(date,opts={debug: false})
 		debug = opts[:debug]
 		segment = opts[:segment]
 		method = opts[:method]
+		limit = opts[:limit] || PIWIK_FILTER_LIMIT
 		single_day_setting = "&date=#{date.strftime("%Y-%m-%d")}&period=day"
 		piwik_url = PIWIK_BASE
 		piwik_url += single_day_setting
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
+		piwik_url += "&filter_limit=#{limit}" if limit
 		call_piwik_api(piwik_url,debug: debug)
 	end
 
@@ -43,11 +45,11 @@ module PiwikHelper
 	def call_piwik_api(url,opts={})
 		debug = opts[:debug] || false
 		init_time = Time.now
-		p "Calling Pikiw API with [#{url}]" if debug
+		p "Calling Piwik API with [#{url}]" if debug
 		data = HTTParty.get(url)
-		p "Pikiw API replied [#{time_diff(init_time)}]" if debug
+		p "Piwik API replied [#{time_diff(init_time)}]" if debug
 		response = data.parsed_response
-		p "Pikiw response: #{response}" if debug
+		p "Piwik response: #{response}" if debug
 		return response
 	end	
 
