@@ -11,7 +11,7 @@ active_widgets = %w(
 	tx_last_week
 	piwik_transmit_last_week
 	piwik_mobile_send_last_week
-	piwik_countries_last_week	
+	piwik_countries_today
 )
 
 all_widgets = Dir["#{dirname}/**/*.rb"]
