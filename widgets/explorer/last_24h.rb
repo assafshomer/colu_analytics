@@ -7,7 +7,7 @@ issuance_stream = 'wbCblg7t'
 transfer_stream = 'AIceGGMQ'
 assets_stream = 'aEu4sfdm'
 
-number_of_assets = 9
+number_of_assets = 6
 number_of_days = 1
 start_days_past = 0
 debug = false
