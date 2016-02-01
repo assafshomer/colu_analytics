@@ -137,6 +137,33 @@ module ExplorerHelper
 		# Launchy.open(path)
 	end
 
+	def prepare_new_asset_leaderboard(ordered_asset_ids)
+		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
+		html_end = '</body></html>'
+		max_length = 25
+		result = html_start
+		result << %Q(<div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 23px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div>)
+		ordered_asset_ids.each do |data_point|
+			asset_id = data_point.keys.first
+			short_asset_id = asset_id[0..20]+'...'
+			metadata = get_asset_metadata(asset_id)			
+			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
+			display_name = display_name.empty? ? short_asset_id : display_name
+			display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
+			issuer_name = metadata ? metadata['issuer'] : ''
+			asset_desc = metadata ? metadata['description'] : ''
+			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
+			frequency = data_point[asset_id]
+			title = %Q(#{display_name} issued by #{issuer_name} #{asset_desc})
+			line = %Q(<p><div style="line-height:35px; height:50px; font-size:28px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;">#{display_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;margin-top:6px;">#{frequency}</div></div></p>)
+			result << line
+		end
+		result << html_end
+		# path = "#{__dir__}/../data/asset_leaderboard.html"
+		# File.write(path,result)
+		# Launchy.open(path)
+	end
+
 	def get_asset_metadata(asset_id)
 		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}")['issuances'].first
 		txid = issuances['txid']

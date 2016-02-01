@@ -51,7 +51,86 @@ module PiwikHelper
 		response = data.parsed_response
 		p "Piwik response: #{response}" if debug
 		return response
-	end	
+	end
+
+	def parse_actions(visit)
+		black_list = %w(
+			engine.is_addresses_active
+			engine.is_running
+			engine.get_addresses_utxos
+			engine.get_addresses_info
+			user_managment.register_user
+			user_managment.update_user
+			user_managment.verify_user
+			user_managment.get_user
+			mobile_server.sync_contact_deltas
+			mobile_server.verify_sync_contacts
+			mobile_server_new.upsert_wallets
+			mobile_server_new.upgrade_mobile_user
+			mobile_server_new.register_phone_number
+			mobile_server_new.verify_phone_number
+			colusite.index
+			)
+		white_list = %w(
+			url 
+			timeSpentPretty 
+			pageTitle
+			)
+		action_details = visit["actionDetails"]
+		interesting_actions = action_details.reject do |action_detail|
+			action_detail["type"] != "action" || 
+			black_list.include?(action_detail["pageTitle"])
+		end
+		data = interesting_actions.map do |action|
+			action.select{|k,v| white_list.include?(k)}
+		end
+		nice_data = data.map do |x|
+			tmp = x["url"].gsub('?','&').split('&')
+			tmp.shift
+			tmp << "call=#{x['pageTitle']}"
+			tmp.reject{|e| e =~ /numConfirmations/}
+		end.uniq
+		result = nice_data.map do |call|
+			call.map do |detail|
+				[detail.split('=')].to_h
+			end
+		end.flatten.uniq		
+		return result
+	end
+
+	def percolate_asset_id_from_array(parsed_actions)
+		puts "\parsed_actions #{parsed_actions}\n"
+		relevant_data = parsed_actions.reject{|d| d[:actions].nil? || d[:actions].empty?}
+		puts "\nrelevant_data #{relevant_data}\n"
+		asset_data = relevant_data.select do |visit|
+			visit[:actions].map do |action|
+				action.keys.include?("assetId")
+			end.any?
+		end
+		extract_assetid = asset_data.map do |ad|
+			ad.map do |k,v|
+				# p "k: #{k}, v: #{v}"
+				if k == :actions
+					[:asset_id,v.select{|e| e.keys.include?('assetId')}.first['assetId']]
+				else
+					[k,v]
+				end
+			end.to_h
+		end		
+	end
+
+	def percolate_asset_id(data)		
+		return if data.empty?		
+		asset_data = data.select{|e| e.keys.include?("assetId")}
+		return if asset_data.empty?
+		return asset_data.first["assetId"]		
+	end
+	def percolate_user(data)		
+		return if data.empty?		
+		asset_data = data.select{|e| e.keys.include?("userName")}
+		return if asset_data.empty?
+		return asset_data.first["userName"]		
+	end		
 
 end
 
