@@ -3,7 +3,7 @@ include ViewsHelper
 
 dirname = "widgets"
 
-active_widgets = %w(
+active_widgets = %w(	
 	new_asset_leaderboard
 	ios_timing
 	android_timing
@@ -16,6 +16,7 @@ active_widgets = %w(
 	piwik_transmit_last_week
 	piwik_mobile_send_last_week
 	piwik_countries_today
+	engine_timing_today
 )
 
 all_widgets = Dir["#{dirname}/**/*.rb"]
