@@ -26,7 +26,14 @@ end.flatten
 # widgets.each{|w| p w}
 
 widgets.each do |widget|
-	p "#{widget.split('/').last.split('.').first} starting"
+	starting = "#{widget.split('/').last.split('.').first} starting"
+	ending = "#{widget.split('/').last.split('.').first} done"
+	wrapper = "*"*starting.length
+	p wrapper
+	p "***\t #{starting}\t ***"
+	p wrapper
 	load widget
-	p "#{widget.split('/').last.split('.').first} done"
+	p wrapper
+	p "***\t #{ending}\t ***"
+	p wrapper
 end
