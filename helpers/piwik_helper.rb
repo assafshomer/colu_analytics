@@ -20,6 +20,20 @@ module PiwikHelper
 		call_piwik_api(piwik_url,debug: debug)
 	end
 
+	def piwik_data_during_week(date,opts={debug: false})
+		debug = opts[:debug]
+		segment = opts[:segment]
+		method = opts[:method]
+		limit = opts[:limit] || PIWIK_FILTER_LIMIT
+		single_day_setting = "&date=#{date.strftime("%Y-%m-%d")}&period=week"
+		piwik_url = PIWIK_BASE
+		piwik_url += single_day_setting
+		piwik_url += "&segment=#{segment}" if segment
+		piwik_url += "&method=#{method}" if method
+		piwik_url += "&filter_limit=#{limit}" if limit
+		call_piwik_api(piwik_url,debug: debug)
+	end
+
 	def count_hits(piwik_response,date)
 		hits = piwik_response.map{|r| r['nb_hits']}.inject(:+)
 		date_midnight = Time.parse(date.strftime("%Y-%m-%d")).to_i
@@ -130,7 +144,38 @@ module PiwikHelper
 		asset_data = data.select{|e| e.keys.include?("userName")}
 		return if asset_data.empty?
 		return asset_data.first["userName"]		
-	end		
+	end
+	def parse_visits(visits)
+		visits.map do |visit|
+			actions = parse_actions(visit)
+			next if actions.empty?
+			asset_id = percolate_asset_id(parse_actions(visit))
+			user = percolate_user(parse_actions(visit))
+			result = 
+			{
+				piwik_id: visit["idVisit"],
+				piwik_visitor: visit["visitorId"],
+				ip: visit["visitIp"],
+				country: visit["country"],
+				city: visit["city"],
+				flag: visit["countryFlag"],		
+			}
+			result[:actions] = actions unless (asset_id || user)
+			result[:asset_id] = asset_id if asset_id
+			result[:user] = user if user
+			result
+		end.compact		
+	end
+
+	def pick_piwik_data_for_asset_id(asset_data,asset_id)
+		return unless asset_data 
+		asset_data.select{|visit| visit.keys.include?(:asset_id) && visit[:asset_id].to_s == asset_id.to_s }.first
+	end
 
 end
+
+=begin
+this is a link to a specific visitor id
+https://analytics.colu.co/index.php?module=API&method=Live.getVisitorProfile&format=JSON&idSite=7&visitorId=a326f7ed4a73c0f1&token_auth=04ed96c9526091a248bc30f4dff36ed6	
+=end
 
