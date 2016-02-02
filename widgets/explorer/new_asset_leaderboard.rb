@@ -6,18 +6,18 @@ require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
 assets_stream = '00c86ecdc4'
-number_of_assets = 3
+number_of_assets = 8
 number_of_days = 1
 start_days_past = 0
 debug = false
 
-# raw_data = get_cc_tx_last_days(number_of_days-1,start_days_past,debug)
+raw_data = get_cc_tx_last_days(number_of_days-1,start_days_past,debug)
 
-# ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
+ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
 # p "ordered_asset_ids: #{ordered_asset_ids}"
 
 curdate = Time.at(Time.now.to_i)
-curdate = Time.parse('2016-02-01')
+# curdate = Time.parse('2016-01-25')
 number_of_piwik_results = 9999
 method = "Live.getLastVisitsDetails"
 raw = piwik_data_during_day(curdate, method: method, debug: false,limit: number_of_piwik_results)
@@ -30,7 +30,7 @@ parsed_piwik_visits = parse_visits(visits)
 
 # p "parsed_piwik_visits: #{parsed_piwik_visits}"
 
-ordered_asset_ids = [{:LFMyMCabNPP1hqcRHRy9o71PpMKqzAGyEKjfU=>6}, {:LHCaK3nnpmiHRHLAaSUtTXX3tyXt9DqTURsdr=>5}, {:U6b18ZCXESJVmnbEMp4DtR7X6Hce14bS8NQsE=>3}]
+# ordered_asset_ids = [{:LFMyMCabNPP1hqcRHRy9o71PpMKqzAGyEKjfU=>6}, {:LHCaK3nnpmiHRHLAaSUtTXX3tyXt9DqTURsdr=>5}, {:U6b18ZCXESJVmnbEMp4DtR7X6Hce14bS8NQsE=>3}]
 
 # ordered_asset_ids.each do |kvp|
 # 	asset_id = kvp.keys.first
@@ -42,7 +42,7 @@ ordered_asset_ids = [{:LFMyMCabNPP1hqcRHRy9o71PpMKqzAGyEKjfU=>6}, {:LHCaK3nnpmiH
 data = ordered_asset_ids.map do |data_point|
 	max_length = 25
 	asset_id = data_point.keys.first
-	short_asset_id = asset_id[0..20]+'...'
+	short_asset_id = asset_id[0..11]+'...'
 	metadata = get_asset_metadata(asset_id)
 	display_name = metadata ? metadata['assetName'].to_s : short_asset_id
 	display_name = display_name.empty? ? short_asset_id : display_name
@@ -54,6 +54,7 @@ data = ordered_asset_ids.map do |data_point|
 	piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
 	# p "piwik_data: #{piwik_data}"
 	result = piwik_data || {}
+	result[:asset_id] ||= asset_id
 	result[:frequency] = frequency
 	result[:display_name] = display_name
 	result[:issuer_name] = issuer_name

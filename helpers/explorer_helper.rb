@@ -141,43 +141,48 @@ module ExplorerHelper
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
-		result << %Q(<div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div>)
+		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div></p>)
+		result << %Q(
+			<p>
+				<div style="color:gray;padding-bottom:20px;text-align:center;">
+					<div style="width:200px;float:left">Asset</div>
+					<div style="float:left;"> #tx </div>
+					<div style="float:left;width:110px;">Country</div>
+					<div style="float:left;width:30px;">flag</div>
+					<div style="float:left;width:150px;">IP</div>
+					<div style="float:left;width:120px;">Issuer</div>
+				</div>
+			</p>
+		)
 		asset_data.each do |dp|
 			flag = dp[:flag] ? %Q(<img title="#{dp[:country]}" alt="#{dp[:country]}" width="16" height="11" src="https://analytics.colu.co/#{dp[:flag]}">) : ''
-			country = if dp[:country]
-				if dp[:city]
-					"#{dp[:country]} (#{dp[:city]})"
-				else
-					dp[:country]
-				end
-			else
-				''
-			end
+			city = dp[:city] ? dp[:city] : 'Unknown City'
 			title = %Q(#{dp[:display_name]} issued by #{dp[:issuer_name]} #{dp[:asset_desc]})
 			line = %Q(
 				<p>
-					<div style="line-height:35px; height:50px; font-size:24px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
-						<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:250px;">
+					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
+						<div style="font-size:24px;">
+							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:200px;" title="#{dp[:asset_desc]}">
 							#{dp[:display_name]}
-						</a>
-						<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:40px;">
-						#{dp[:frequency]}
+							</a>
 						</div>
-						<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:140px;">
-							#{country}
-						</div>				
-						<div style="float:left;margin-top:3px;padding-left:20px;width:20px;">						
-							#{flag}
+						<div style="font-size:18px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px">
+							#{dp[:frequency]}
+							</div>
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:100px;" title="#{city}">
+								#{dp[:country]}
+							</div>				
+							<div style="float:left;margin-top:6px;width:20px;">
+								#{flag}
+							</div>
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:120px;">
+								#{dp[:ip]}
+							</div>
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:20px;">
+								#{dp[:issuer_name]}
+							</div>
 						</div>
-						<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:130px;">
-							#{dp[:ip]}
-						</div>
-						<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:150px;">
-							#{dp[:issuer_name]}
-						</div>
-						<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:250px;">
-							#{dp[:asset_desc][0..19]}...
-						</div>						
 					</div>
 				</p>)
 			result << line

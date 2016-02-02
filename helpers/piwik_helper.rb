@@ -20,12 +20,16 @@ module PiwikHelper
 		call_piwik_api(piwik_url,debug: debug)
 	end
 
-	def piwik_data_during_week(date,opts={debug: false})
+	def piwik_data_during_period(opts={debug: false})
+		offset = opts[:offset].to_i
+		end_date = (Time.now).strftime("%Y-%m-%d")
+		start_date = (Time.now - offset.day).strftime("%Y-%m-%d")
+		
 		debug = opts[:debug]
 		segment = opts[:segment]
 		method = opts[:method]
 		limit = opts[:limit] || PIWIK_FILTER_LIMIT
-		single_day_setting = "&date=#{date.strftime("%Y-%m-%d")}&period=week"
+		single_day_setting = "&period=range&date=#{start_date},#{end_date}"
 		piwik_url = PIWIK_BASE
 		piwik_url += single_day_setting
 		piwik_url += "&segment=#{segment}" if segment
