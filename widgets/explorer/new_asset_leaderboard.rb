@@ -17,27 +17,11 @@ ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
 # p "ordered_asset_ids: #{ordered_asset_ids}"
 
 curdate = Time.at(Time.now.to_i)
-# curdate = Time.parse('2016-01-25')
 number_of_piwik_results = 9999
 method = "Live.getLastVisitsDetails"
 raw = piwik_data_during_day(curdate, method: method, debug: false,limit: number_of_piwik_results)
 visits = JSON.parse(raw)
 parsed_piwik_visits = parse_visits(visits)
-
-# asset_id = 'U6b18ZCXESJVmnbEMp4DtR7X6Hce14bS8NQsE'
-
-# p pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-
-# p "parsed_piwik_visits: #{parsed_piwik_visits}"
-
-# ordered_asset_ids = [{:LFMyMCabNPP1hqcRHRy9o71PpMKqzAGyEKjfU=>6}, {:LHCaK3nnpmiHRHLAaSUtTXX3tyXt9DqTURsdr=>5}, {:U6b18ZCXESJVmnbEMp4DtR7X6Hce14bS8NQsE=>3}]
-
-# ordered_asset_ids.each do |kvp|
-# 	asset_id = kvp.keys.first
-# 	p "asset_id: #{asset_id}"
-# 	p pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id.to_s)
-# end
-
 
 data = ordered_asset_ids.map do |data_point|
 	max_length = 25

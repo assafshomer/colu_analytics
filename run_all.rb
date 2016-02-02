@@ -1,6 +1,7 @@
 dirname = "widgets"
 
 active_widgets = %w(
+	new_asset_leaderboard
 	ios_timing
 	android_timing
 	last_24h	

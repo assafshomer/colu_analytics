@@ -5,7 +5,7 @@ include ExplorerHelper
 
 issuance_stream = 'wbCblg7t'
 transfer_stream = 'AIceGGMQ'
-assets_stream = 'aEu4sfdm'
+# assets_stream = 'aEu4sfdm'
 
 number_of_assets = 6
 number_of_days = 1
@@ -46,7 +46,7 @@ UPDATE.push_line(transfer_stream,parsed_transfer_data)
 # point = {"leaderboard": asset_data.first(5) }
 # UPDATE.push_line(assets_stream,point)
 
-ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
-html = prepare_asset_leaderboard(ordered_asset_ids)
-# UPDATE.clear(assets_stream)
-UPDATE.push_html assets_stream, html
+# ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
+# html = prepare_asset_leaderboard(ordered_asset_ids)
+# # UPDATE.clear(assets_stream)
+# UPDATE.push_html assets_stream, html
