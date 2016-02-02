@@ -8,6 +8,12 @@ module ViewsHelper
 		t = (finish - start).round
 		"%02d:%02d:%02d" % [t/3600%24, t/60%60, t%60]
 	end
-
+	def print_box(string)
+		line = starting = "***\t #{string}\t ***"
+		wrapper = "*"*(line.length+1)
+		puts wrapper
+		puts line
+		puts wrapper
+	end
 end
 
