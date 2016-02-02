@@ -146,7 +146,7 @@ module ExplorerHelper
 			<p>
 				<div style="color:gray;padding-bottom:20px;text-align:center;">
 					<div style="width:200px;float:left">Asset</div>
-					<div style="float:left;"> #tx </div>
+					<div style="float:left;width:30px;"> #tx </div>
 					<div style="float:left;width:110px;">Country</div>
 					<div style="float:left;width:30px;">flag</div>
 					<div style="float:left;width:150px;">IP</div>
@@ -167,7 +167,7 @@ module ExplorerHelper
 							</a>
 						</div>
 						<div style="font-size:18px;">
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:30px;">
 							#{dp[:frequency]}
 							</div>
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:100px;" title="#{city}">

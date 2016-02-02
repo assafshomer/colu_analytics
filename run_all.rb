@@ -18,16 +18,11 @@ active_widgets = %w(
 	piwik_countries_today
 )
 
-
 all_widgets = Dir["#{dirname}/**/*.rb"]
 
 widgets = active_widgets.map do |desired_widget|
 	all_widgets.select{|widget| widget =~ /#{desired_widget}/}
 end.flatten
-
-# all_widgets.each{|w| p w}
-# p "*"*20
-# widgets.each{|w| p w}
 
 widgets.each do |widget|
 	starting = "#{widget.split('/').last.split('.').first} starting"

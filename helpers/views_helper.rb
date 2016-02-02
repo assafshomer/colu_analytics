@@ -9,7 +9,7 @@ module ViewsHelper
 		"%02d:%02d:%02d" % [t/3600%24, t/60%60, t%60]
 	end
 	def print_box(string)
-		line = starting = "***\t #{string}\t ***"
+		line = starting = "***   #{string}   ***"
 		wrapper = "*"*(line.length+1)
 		puts wrapper
 		puts line
