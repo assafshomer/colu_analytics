@@ -6,7 +6,7 @@ require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
 assets_stream = '00c86ecdc4'
-number_of_assets = 8
+number_of_assets = 7
 number_of_days = 1
 start_days_past = 0
 debug = false

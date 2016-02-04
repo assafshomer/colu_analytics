@@ -138,7 +138,7 @@ module ExplorerHelper
 	end
 
 	def prepare_new_asset_leaderboard(asset_data)
-		w = {asset: 300, tx: 30, location: 120,flag:20, ip: 80, issuer: 120}
+		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 100}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
