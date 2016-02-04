@@ -179,8 +179,15 @@ module PiwikHelper
 
 	def pick_piwik_data_for_asset_id(asset_data,asset_id)
 		return unless asset_data 
-		asset_data.select{|visit| visit.keys.include?(:asset_id) && visit[:asset_id].to_s == asset_id.to_s }.first
+		asset_data.select{|visit| visit.keys.include?(:asset_id) && visit[:asset_id].to_s == asset_id.to_s }
 	end
+
+	def pick_piwik_data_by_key(asset_data,key_value_pair={})
+		return unless asset_data && !key_value_pair.empty?
+		k = key_value_pair.keys.first.to_sym
+		v = key_value_pair[k]
+		asset_data.select{|visit| visit.keys.include?(k) && visit[k].to_s == v.to_s }.first
+	end	
 
 	def piwik_link_to_user_profile(visitorId)
 		method = 'Live.getVisitorProfile'
