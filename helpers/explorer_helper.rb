@@ -138,7 +138,7 @@ module ExplorerHelper
 	end
 
 	def prepare_new_asset_leaderboard(asset_data)
-		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 120,piwik_link: 20}
+		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,piwik_link: 20}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
@@ -164,7 +164,7 @@ module ExplorerHelper
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
 						<div style="font-size:24px;">
-							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{' : ['+dp[:asset_desc]+']' if dp[:asset_desc]}">
+							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{dp[:asset_desc]}">
 							#{dp[:display_name]}
 							</a>
 						</div>
@@ -181,7 +181,7 @@ module ExplorerHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
 								#{dp[:ip]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:20px;width:#{w[:issuer]}px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:issuer]}px;">
 								#{dp[:issuer_name]}
 							</div>
 							<div style="float:left;margin-top:6px;width:#{w[:piwik_link]}px;">

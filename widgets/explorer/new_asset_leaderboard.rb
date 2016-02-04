@@ -39,7 +39,8 @@ begin
 			display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
 			issuer_name = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : nil
-			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}"	
+			desc_for_title =  asset_desc ? " : [#{asset_desc}]" : ''
+			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}"
 			frequency = data_point[asset_id]
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
 			# p "piwik_data: #{piwik_data}"
@@ -58,7 +59,7 @@ begin
 			result[:display_name] = display_name
 			result[:full_name] = full_name
 			result[:issuer_name] = issuer_name
-			result[:asset_desc] = asset_desc
+			result[:asset_desc] = desc_for_title
 
 			p "result #{result}"
 			result
