@@ -23,6 +23,28 @@ module ViewsHelper
 			country_full
 		end
 		c.length > 8 ? c[0..8]+'...' : c
-	end	
+	end
+	def create_multiline_title(array_of_hashes,list_of_keys)
+		summary = array_of_hashes.map do |h|
+			output = {}
+			list_of_keys.each do |k|
+				output[k] = h[k] if h.keys.include?(k)
+			end
+			output
+		end.uniq
+
+		c = '&#013;&#xA;'
+
+		title = ""
+		summary.each do |line|
+			line.each do |k,v|
+				title << "#{k.upcase}: [#{v}], "
+			end
+			title = title[0..-3]
+			title += c
+		end
+		return title
+	end
+
 end
 

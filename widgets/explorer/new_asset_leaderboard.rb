@@ -43,16 +43,17 @@ begin
 			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}"
 			frequency = data_point[asset_id]
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-			# p "piwik_data: #{piwik_data}"
-			result = piwik_data || {}
+			p "piwik_data: #{piwik_data}"
+			result = piwik_data.first || {}
+
+			city = result[:city].to_s
+			result[:city] = city.empty? ? 'Unknown' : city			
 			
 			country_full = result[:country].to_s
 			country = shorten_country(country_full)
 			result[:country] = country
 			result[:country_full] = country_full
-			
-			city = result[:city].to_s
-			result[:city] = city.empty? ? 'Unknown' : city
+			result[:country_title] = (piwik_data.count == 1) ? "Country: [#{country_full}], City: [#{result[:city]}]" : create_multiline_title(piwik_data,[:country,:ip])
 
 			result[:asset_id] ||= asset_id
 			result[:frequency] = frequency
@@ -64,7 +65,7 @@ begin
 			p "result #{result}"
 			result
 		end
-		# p "data: #{data}"
+		p "data: #{data}"
 
 		html = prepare_new_asset_leaderboard(data)
 

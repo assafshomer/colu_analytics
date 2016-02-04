@@ -186,7 +186,7 @@ module PiwikHelper
 		return unless asset_data && !key_value_pair.empty?
 		k = key_value_pair.keys.first.to_sym
 		v = key_value_pair[k]
-		asset_data.select{|visit| visit.keys.include?(k) && visit[k].to_s == v.to_s }.first
+		asset_data.select{|visit| visit.keys.include?(k) && visit[k].to_s == v.to_s }
 	end	
 
 	def piwik_link_to_user_profile(visitorId)

@@ -172,7 +172,7 @@ module ExplorerHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:#{w[:tx]}px;">
 							#{dp[:frequency]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:#{w[:location]}px;" title="Country: [#{dp[:country_full]}], City: [#{dp[:city]}]">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:#{w[:location]}px;" title="#{dp[:country_title]}">
 								#{dp[:country].to_s[0..8]}
 							</div>				
 							<div style="float:left;margin-top:6px;width:#{w[:flag]}px;">
