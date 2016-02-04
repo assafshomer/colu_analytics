@@ -15,5 +15,14 @@ module ViewsHelper
 		puts line
 		puts wrapper
 	end
+	def shorten_country(country_full)
+		c = case country_full
+		when 'United Kingdom'
+			'UK'
+		else
+			country_full
+		end
+		c.length > 8 ? c[0..8]+'...' : c
+	end	
 end
 

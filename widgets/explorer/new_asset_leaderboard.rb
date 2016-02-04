@@ -24,10 +24,11 @@ visits = JSON.parse(raw)
 parsed_piwik_visits = parse_visits(visits)
 
 data = ordered_asset_ids.map do |data_point|
-	max_length = 25
+	max_length = 16
 	asset_id = data_point.keys.first
 	short_asset_id = asset_id[0..11]+'...'
 	metadata = get_asset_metadata(asset_id)
+	full_name = metadata ? metadata['assetName'].to_s : asset_id
 	display_name = metadata ? metadata['assetName'].to_s : short_asset_id
 	display_name = display_name.empty? ? short_asset_id : display_name
 	display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
@@ -38,14 +39,23 @@ data = ordered_asset_ids.map do |data_point|
 	piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
 	# p "piwik_data: #{piwik_data}"
 	result = piwik_data || {}
+	
+	country_full = result[:country].to_s
+	country = shorten_country(country_full)
+	result[:country] = country
+	result[:country_full] = country_full
+
 	result[:asset_id] ||= asset_id
 	result[:frequency] = frequency
 	result[:display_name] = display_name
+	result[:full_name] = full_name
 	result[:issuer_name] = issuer_name
 	result[:asset_desc] = asset_desc
 	p "result #{result}"
 	result
 end
+
+
 
 # p "data: #{data}"
 
