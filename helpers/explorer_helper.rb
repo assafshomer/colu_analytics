@@ -138,6 +138,7 @@ module ExplorerHelper
 	end
 
 	def prepare_new_asset_leaderboard(asset_data)
+		w = {asset: 300, tx: 30, location: 120,flag:20, ip: 80, issuer: 120}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
@@ -145,41 +146,38 @@ module ExplorerHelper
 		result << %Q(
 			<p>
 				<div style="color:gray;padding-bottom:20px;text-align:center;">
-					<div style="width:250px;float:left">Asset</div>
-					<div style="float:left;width:30px;"> #tx </div>
-					<div style="float:left;width:110px;">Country</div>
-					<div style="float:left;width:30px;">flag</div>
-					<div style="float:left;width:100px;">IP</div>
-					<div style="float:left;width:120px;">Issuer</div>
+					<div style="width:#{w[:asset]}px;float:left">Asset</div>
+					<div style="float:left;width:#{w[:tx]}px;"> #tx </div>
+					<div style="float:left;width:#{w[:location]+w[:flag]}px;">Location</div>				
+					<div style="float:left;width:#{w[:ip]}px;">IP</div>
+					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
 				</div>
 			</p>
 		)
 		asset_data.each do |dp|
 			flag = dp[:flag] ? %Q(<img title="#{dp[:country]}" alt="#{dp[:country]}" width="16" height="11" src="https://analytics.colu.co/#{dp[:flag]}">) : ''
-			city = dp[:city] ? dp[:city] : 'Unknown City'
-			title = %Q(#{dp[:display_name]} issued by #{dp[:issuer_name]} #{dp[:asset_desc]})
 			line = %Q(
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
 						<div style="font-size:24px;">
-							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:250px;" title="#{dp[:full_name]} : (#{dp[:asset_desc]})">
+							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]} : (#{dp[:asset_desc]})">
 							#{dp[:display_name]}
 							</a>
 						</div>
 						<div style="font-size:18px;">
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:30px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:#{w[:tx]}px;">
 							#{dp[:frequency]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:100px;" title="Country: [#{dp[:country_full]}], City: [#{city}]">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:#{w[:location]}px;" title="Country: [#{dp[:country_full]}], City: [#{dp[:city]}]">
 								#{dp[:country].to_s[0..8]}
 							</div>				
-							<div style="float:left;margin-top:6px;width:20px;">
+							<div style="float:left;margin-top:6px;width:#{w[:flag]}px;">
 								#{flag}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:120px;font-size:10px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
 								#{dp[:ip]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:20px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:20px;width:#{w[:issuer]}">
 								#{dp[:issuer_name]}
 							</div>
 						</div>
