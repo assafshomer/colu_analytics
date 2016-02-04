@@ -138,7 +138,7 @@ module ExplorerHelper
 	end
 
 	def prepare_new_asset_leaderboard(asset_data)
-		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 100}
+		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 120,piwik_link: 20}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
@@ -148,19 +148,23 @@ module ExplorerHelper
 				<div style="color:gray;padding-bottom:20px;text-align:center;">
 					<div style="width:#{w[:asset]}px;float:left">Asset</div>
 					<div style="float:left;width:#{w[:tx]}px;"> #tx </div>
-					<div style="float:left;width:#{w[:location]+w[:flag]}px;">Location</div>				
+					<div style="float:left;width:#{w[:location]}px;">Location</div>				
+					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">flag</div>
 					<div style="float:left;width:#{w[:ip]}px;">IP</div>
 					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
+					<div style="float:left;width:#{w[:piwik_link]}px;"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
 				</div>
 			</p>
 		)
 		asset_data.each do |dp|
 			flag = dp[:flag] ? %Q(<img title="#{dp[:country]}" alt="#{dp[:country]}" width="16" height="11" src="https://analytics.colu.co/#{dp[:flag]}">) : ''
+			plink_url = piwik_link_to_user_profile(dp[:piwik_visitor])
+			plink = dp[:piwik_visitor] ? %Q(<a href="#{plink_url}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a>) : ''			
 			line = %Q(
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
 						<div style="font-size:24px;">
-							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]} : (#{dp[:asset_desc]})">
+							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{' : ['+dp[:asset_desc]+']' if dp[:asset_desc]}">
 							#{dp[:display_name]}
 							</a>
 						</div>
@@ -177,9 +181,12 @@ module ExplorerHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
 								#{dp[:ip]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:20px;width:#{w[:issuer]}">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:20px;width:#{w[:issuer]}px;">
 								#{dp[:issuer_name]}
 							</div>
+							<div style="float:left;margin-top:6px;width:#{w[:piwik_link]}px;">
+								#{plink}
+							</div>							
 						</div>
 					</div>
 				</p>)

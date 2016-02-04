@@ -7,7 +7,7 @@ active_widgets = %w(
 	new_asset_leaderboard
 	ios_timing
 	android_timing
-	last_24h	
+	issue_vs_send_since_midnight	
 	main_stats 
 	monthly_cc_tx
 	balance_stats

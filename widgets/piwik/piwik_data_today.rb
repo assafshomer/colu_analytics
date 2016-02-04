@@ -7,12 +7,12 @@ include PiwikHelper
 
 number_of_results = 9999
 method = "Live.getLastVisitsDetails"
-raw = piwik_data_during_period(method: method, debug: false,limit: number_of_results, offset: 5)
+raw = piwik_data_during_period(method: method, debug: false,limit: number_of_results, offset: 0)
 visits = JSON.parse(raw)
 
 asset_data = parse_visits(visits)
 
-p asset_data.count
+p asset_data
 # asset_data.each do |dp|
 # 	puts "\n"
 # 	p dp

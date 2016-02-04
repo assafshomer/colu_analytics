@@ -9,10 +9,21 @@ result = nil
 
 curdate = Time.at(Time.now.to_i)
 method = "UserCountry.getCountry"
-raw = piwik_data_during_day(curdate, method: method, debug: true)
-result = extract_country_data(raw)
 
-point = {"leaderboard": result}
+timeout = timeout
 
-UPDATE.clear(stream)
-UPDATE.push_line(stream,point)
+begin
+  Timeout::timeout(timeout) do
+
+		raw = piwik_data_during_day(curdate, method: method, debug: true)
+		result = extract_country_data(raw)
+
+		point = {"leaderboard": result}
+
+		UPDATE.clear(stream)
+		UPDATE.push_line(stream,point)
+		
+  end
+rescue Timeout::Error
+	p "Explorer call timed out after #{timeout} seconds"
+end	

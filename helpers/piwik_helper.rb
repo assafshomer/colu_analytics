@@ -20,23 +20,29 @@ module PiwikHelper
 		call_piwik_api(piwik_url,debug: debug)
 	end
 
-	def piwik_data_during_period(opts={debug: false})
+	def piwik_data_during_period(opts = {})
+		piwik_url = generate_piwik_api_url(opts)
+		call_piwik_api(piwik_url,debug: opts[:debug])
+	end
+
+	def generate_piwik_api_url(opts={})
 		offset = opts[:offset].to_i
 		end_date = (Time.now).strftime("%Y-%m-%d")
 		start_date = (Time.now - offset.day).strftime("%Y-%m-%d")
+		date_range = "&period=range&date=#{start_date},#{end_date}"
 		
-		debug = opts[:debug]
+		debug = opts[:debug] || false
 		segment = opts[:segment]
 		method = opts[:method]
-		limit = opts[:limit] || PIWIK_FILTER_LIMIT
-		single_day_setting = "&period=range&date=#{start_date},#{end_date}"
+		params = opts[:params]
+		limit = opts[:limit] || PIWIK_FILTER_LIMIT		
 		piwik_url = PIWIK_BASE
-		piwik_url += single_day_setting
+		piwik_url += date_range
+		piwik_url += params if params
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
 		piwik_url += "&filter_limit=#{limit}" if limit
-		call_piwik_api(piwik_url,debug: debug)
-	end
+	end	
 
 	def count_hits(piwik_response,date)
 		hits = piwik_response.map{|r| r['nb_hits']}.inject(:+)
@@ -176,10 +182,22 @@ module PiwikHelper
 		asset_data.select{|visit| visit.keys.include?(:asset_id) && visit[:asset_id].to_s == asset_id.to_s }.first
 	end
 
+	def piwik_link_to_user_profile(visitorId)
+		method = 'Live.getVisitorProfile'
+		generate_piwik_api_url(method: method,params: "&visitorId=#{visitorId}")
+	end	
+
 end
 
 =begin
 this is a link to a specific visitor id
 https://analytics.colu.co/index.php?module=API&method=Live.getVisitorProfile&format=JSON&idSite=7&visitorId=a326f7ed4a73c0f1&token_auth=04ed96c9526091a248bc30f4dff36ed6	
+
+https://analytics.colu.co/index.php?module=CoreHome&action=index&idSite=7&period=day&date=today&segment=visitorId%3D%3Da326f7ed4a73c0f1#?module=Live&action=indexVisitorLog&idSite=7&period=day&date=today&visitorId=123&segment=visitorId%3D%3Da326f7ed4a73c0f1
+
+https://analytics.colu.co/index.php?module=CoreHome&action=index&idSite=7&period=year&date=2016-02-04&segment=visitorId%3D%3Da326f7ed4a73c0f1#?module=Live&action=indexVisitorLog&idSite=7&segment=visitorId%3D%3Da326f7ed4a73c0f1&period=year&date=2016-02-04
+
+https://analytics.colu.co/index.php?module=CoreHome&action=index&idSite=7&period=year&date=2016-02-04&segment=visitorId%3D%3Da326f7ed4a73c0f1#?module=Live&action=indexVisitorLog&idSite=7&segment=visitorId%3D%3Da326f7ed4a73c0f1&period=year&date=2016-02-04
+
 =end
 
