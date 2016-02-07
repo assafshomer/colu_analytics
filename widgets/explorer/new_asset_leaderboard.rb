@@ -52,22 +52,22 @@ begin
 			
 			# Add piwik data for asset 
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
+			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik/)}}.uniq
 
-			if (piwik_data.count == 1)
-				piwik_dp = piwik_data.first
+			if (filtered_data.count == 1)
+				piwik_dp = filtered_data.first
 				country_full = piwik_dp[:country].to_s				
 				country = shorten_country(country_full)
 				city = piwik_dp[:city].to_s
 				city = city.empty? ? 'Unknown' : city
 				result[:geo] = country
 				result[:ip] = piwik_dp[:ip]
+				result[:flag] = piwik_dp[:flag]
 				result[:piwik_title] = "Country: [#{country_full}], City: [#{city}]"
-			else
-				result[:geo] = list_countries_alpha2(piwik_data)
-				result[:piwik_title] = create_multiline_title(piwik_data,[:country_full,:ip])
+			else				
+				result[:geo] = list_countries_alpha2(filtered_data)
+				result[:piwik_title] = create_multiline_title(filtered_data,[:country_full,:ip])
 			end
-
-			p "result #{result}"
 			result
 		end
 		p "data: #{data}"

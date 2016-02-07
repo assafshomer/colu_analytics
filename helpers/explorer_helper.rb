@@ -172,13 +172,13 @@ module ExplorerHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:#{w[:tx]}px;">
 							#{dp[:frequency]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:#{w[:location]}px;" title="#{dp[:piwik_title]}">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:#{w[:location]}px;" title="#{dp[:piwik_title]}">
 								#{dp[:geo].to_s[0..8]}
 							</div>				
 							<div style="float:left;margin-top:6px;width:#{w[:flag]}px;">
 								#{flag}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:center;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
 								#{dp[:ip]}
 							</div>
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:issuer]}px;">
