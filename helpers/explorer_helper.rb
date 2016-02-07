@@ -61,7 +61,7 @@ module ExplorerHelper
 	end
 
 	def total_number_of_cc_tx_by_days(limit=0,offset=0)
-		return 0 if offset < 0
+		return 0 if limit < 0
 		times = days_are_numbers(limit,offset)
 		# one bucket
 		bucket_miliseconds = 1000*3600*24*(limit+1)
