@@ -152,7 +152,7 @@ module ExplorerHelper
 					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">flag</div>
 					<div style="float:left;width:#{w[:ip]}px;">IP</div>
 					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
-					<div style="float:left;margin-left:5px;width:#{w[:piwik_link]}px;"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
+					<div style="float:left;margin-left:5px;width:#{w[:piwik_link]}px;"><img title="user profile in piwik" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
 				</div>
 			</p>
 		)
@@ -172,8 +172,8 @@ module ExplorerHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:#{w[:tx]}px;">
 							#{dp[:frequency]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:#{w[:location]}px;" title="#{dp[:country_title]}">
-								#{dp[:country].to_s[0..8]}
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;padding-right:10px;width:#{w[:location]}px;" title="#{dp[:piwik_title]}">
+								#{dp[:geo].to_s[0..8]}
 							</div>				
 							<div style="float:left;margin-top:6px;width:#{w[:flag]}px;">
 								#{flag}

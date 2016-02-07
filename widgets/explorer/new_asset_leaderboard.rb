@@ -42,25 +42,30 @@ begin
 			desc_for_title =  asset_desc ? " : [#{asset_desc}]" : ''
 			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}"
 			frequency = data_point[asset_id]
-			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-			p "piwik_data: #{piwik_data}"
-			result = piwik_data.first || {}
-
-			city = result[:city].to_s
-			result[:city] = city.empty? ? 'Unknown' : city			
-			
-			country_full = result[:country].to_s
-			country = shorten_country(country_full)
-			result[:country] = country
-			result[:country_full] = country_full
-			result[:country_title] = (piwik_data.count == 1) ? "Country: [#{country_full}], City: [#{result[:city]}]" : create_multiline_title(piwik_data,[:country,:ip])
-
+			result = {}
 			result[:asset_id] ||= asset_id
 			result[:frequency] = frequency
 			result[:display_name] = display_name
 			result[:full_name] = full_name
 			result[:issuer_name] = issuer_name
 			result[:asset_desc] = desc_for_title
+			
+			# Add piwik data for asset 
+			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
+
+			if (piwik_data.count == 1)
+				piwik_dp = piwik_data.first
+				country_full = piwik_dp[:country].to_s				
+				country = shorten_country(country_full)
+				city = piwik_dp[:city].to_s
+				city = city.empty? ? 'Unknown' : city
+				result[:geo] = country
+				result[:ip] = piwik_dp[:ip]
+				result[:piwik_title] = "Country: [#{country_full}], City: [#{city}]"
+			else
+				result[:geo] = list_countries_alpha2(piwik_data)
+				result[:piwik_title] = create_multiline_title(piwik_data,[:country_full,:ip])
+			end
 
 			p "result #{result}"
 			result

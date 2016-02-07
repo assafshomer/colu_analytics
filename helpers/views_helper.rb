@@ -1,6 +1,7 @@
 
-module ViewsHelper
 
+module ViewsHelper	
+	require 'countries/iso3166'
 	def time_diff_milli(start, finish=Time.now)
 		((finish - start) * 1000.0).round
 	end
@@ -23,6 +24,16 @@ module ViewsHelper
 			country_full
 		end
 		c.length > 8 ? c[0..8]+'...' : c
+	end
+	def list_countries_alpha2(piwik_data)
+		piwik_data.map do |dp|
+			iso3166_alpha2(dp[:country])
+		end.uniq.join(',')
+	end
+
+	def iso3166_alpha2(country)
+		c = ISO3166::Country.find_country_by_name(country) 
+		c.alpha2
 	end
 	def create_multiline_title(array_of_hashes,list_of_keys)
 		summary = array_of_hashes.map do |h|
