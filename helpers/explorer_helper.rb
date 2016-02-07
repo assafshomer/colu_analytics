@@ -61,6 +61,7 @@ module ExplorerHelper
 	end
 
 	def total_number_of_cc_tx_by_days(limit=0,offset=0)
+		return 0 if offset < 0
 		times = days_are_numbers(limit,offset)
 		# one bucket
 		bucket_miliseconds = 1000*3600*24*(limit+1)
@@ -72,9 +73,11 @@ module ExplorerHelper
 		init_time = Time.now
 		num_of_tx = total_number_of_cc_tx_by_days(limit,offset)
 		p "Total number of cc tx in this period: #{num_of_tx}"
+		num_tx_before = total_number_of_cc_tx_by_days(offset-1)
+		p "Total number of cc tx before this period: #{num_tx_before}"
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
-			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{s.first}"
+			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{num_tx_before+s.first}"
 			query = EXPLORER_API+ endpoint
 			init_time = Time.now
 			p "Calling Explorer API with [#{query}]" if debug

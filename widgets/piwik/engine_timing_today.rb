@@ -9,8 +9,12 @@ number_of_results_to_show = 20
 # method = "Live.getLastVisitsDetails"
 method = "Actions.getPageTitles"
 number_of_days_to_show = 1
-raw = piwik_data_during_period(method: method, debug: false,limit: number_of_results_to_show, offset: number_of_days_to_show-1)
-# p raw
+raw = piwik_data_during_period(
+	method: method, 
+	debug: false,
+	filter: number_of_results_to_show, 
+	num_days: number_of_days_to_show-1
+	)
 
 white_list = ["label","avg_time_generation","min_time_generation","max_time_generation"]
 

@@ -10,13 +10,13 @@ module PiwikHelper
 		debug = opts[:debug]
 		segment = opts[:segment]
 		method = opts[:method]
-		limit = opts[:limit] || PIWIK_FILTER_LIMIT
+		filter = opts[:filter] || PIWIK_FILTER_LIMIT
 		single_day_setting = "&date=#{date.strftime("%Y-%m-%d")}&period=day"
 		piwik_url = PIWIK_BASE
 		piwik_url += single_day_setting
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
-		piwik_url += "&filter_limit=#{limit}" if limit
+		piwik_url += "&filter_limit=#{filter}" if filter
 		call_piwik_api(piwik_url,debug: debug)
 	end
 
@@ -26,22 +26,24 @@ module PiwikHelper
 	end
 
 	def generate_piwik_api_url(opts={})
-		offset = opts[:offset].to_i
-		end_date = (Time.now).strftime("%Y-%m-%d")
-		start_date = (Time.now - offset.day).strftime("%Y-%m-%d")
+		num_days = opts[:num_days].to_i
+		days_offset = opts[:days_offset].to_i		
+		end_date = (Time.now - days_offset.day).strftime("%Y-%m-%d")
+		start_date = (Time.now - (days_offset+num_days).day).strftime("%Y-%m-%d")
 		date_range = "&period=range&date=#{start_date},#{end_date}"
 		
 		debug = opts[:debug] || false
 		segment = opts[:segment]
 		method = opts[:method]
 		params = opts[:params]
-		limit = opts[:limit] || PIWIK_FILTER_LIMIT		
+		filter = opts[:filter] || PIWIK_FILTER_LIMIT
+
 		piwik_url = PIWIK_BASE
 		piwik_url += date_range
 		piwik_url += params if params
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
-		piwik_url += "&filter_limit=#{limit}" if limit
+		piwik_url += "&filter_limit=#{filter}" if filter
 	end	
 
 	def count_hits(piwik_response,date)
@@ -168,7 +170,8 @@ module PiwikHelper
 				ip: visit["visitIp"],
 				country: visit["country"],
 				city: visit["city"],
-				flag: visit["countryFlag"],		
+				flag: visit["countryFlag"],
+				timestamp: visit["serverTimestamp"]
 			}
 			result[:actions] = actions unless (asset_id || user)
 			result[:asset_id] = asset_id if asset_id

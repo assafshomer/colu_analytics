@@ -24,7 +24,13 @@ begin
 		curdate = Time.at(Time.now.to_i)
 		number_of_piwik_results = 9999
 		method = "Live.getLastVisitsDetails"
-		visits = piwik_data_during_day(curdate, method: method, debug: false,limit: number_of_piwik_results)
+		visits = piwik_data_during_period(
+			method: method, 
+			debug: false,
+			filter: number_of_piwik_results,
+			num_days: number_of_days-1,
+			days_offset: start_days_past
+			)
 		visits = JSON.parse(visits) if (visits.class == String)
 		parsed_piwik_visits = parse_visits(visits)
 
@@ -52,8 +58,8 @@ begin
 			
 			# Add piwik data for asset 
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik/)}}.uniq
-
+			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
+			p "filtered_data: #{filtered_data}"
 			if (filtered_data.count == 1)
 				piwik_dp = filtered_data.first
 				country_full = piwik_dp[:country].to_s				
@@ -64,9 +70,10 @@ begin
 				result[:ip] = piwik_dp[:ip]
 				result[:flag] = piwik_dp[:flag]
 				result[:piwik_title] = "Country: [#{country_full}], City: [#{city}]"
-			else				
+			else
+				result[:city]
 				result[:geo] = list_countries_alpha2(filtered_data)
-				result[:piwik_title] = create_multiline_title(filtered_data,[:country_full,:ip])
+				result[:piwik_title] = create_multiline_title(filtered_data,[:country,:city,:ip])
 			end
 			result
 		end
