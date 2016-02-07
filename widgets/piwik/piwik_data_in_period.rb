@@ -8,8 +8,9 @@ include PiwikHelper
 number_of_results = 9999
 method = "Live.getLastVisitsDetails"
 number_of_days = 1
-raw = piwik_data_during_period(method: method, debug: false,limit: number_of_results, offset: number_of_days -1)
-visits = JSON.parse(raw)
+raw = piwik_data_during_period(method: method, debug: true,limit: number_of_results, offset: number_of_days -1)
+
+visits = raw.class == String ? JSON.parse(raw) : raw
 
 asset_data = parse_visits(visits)
 
@@ -21,7 +22,7 @@ asset_data = parse_visits(visits)
 
 # asset_visits = general_data.select{|visit| visit.keys.include?(:asset_id) && visit[:asset_id] == 'U6CvmvnoaGaW6A16LoGbtBYRHJXiJHHWX6j3e' }
 
-asset_id = 'LFu6pNp5FLHQu1RERkYEjPjxFZLD3zNJAbhYz'
+asset_id = 'U3XVV5FPVKbXDoHv5LHQo61k6htatrJ1TgVTS'
 
 p pick_piwik_data_for_asset_id(asset_data,asset_id)
 

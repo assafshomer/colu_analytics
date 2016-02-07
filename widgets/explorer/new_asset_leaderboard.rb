@@ -24,8 +24,8 @@ begin
 		curdate = Time.at(Time.now.to_i)
 		number_of_piwik_results = 9999
 		method = "Live.getLastVisitsDetails"
-		raw = piwik_data_during_day(curdate, method: method, debug: false,limit: number_of_piwik_results)
-		visits = JSON.parse(raw)
+		visits = piwik_data_during_day(curdate, method: method, debug: false,limit: number_of_piwik_results)
+		visits = JSON.parse(visits) if (visits.class == String)
 		parsed_piwik_visits = parse_visits(visits)
 
 		data = ordered_asset_ids.map do |data_point|
