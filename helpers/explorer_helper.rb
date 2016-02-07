@@ -141,7 +141,7 @@ module ExplorerHelper
 	end
 
 	def prepare_new_asset_leaderboard(asset_data)
-		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,piwik_link: 20}
+		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,piwik_link: 60}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
@@ -155,14 +155,19 @@ module ExplorerHelper
 					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">flag</div>
 					<div style="float:left;width:#{w[:ip]}px;">IP</div>
 					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
-					<div style="float:left;margin-left:5px;width:#{w[:piwik_link]}px;"><img title="user profile in piwik" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
+					<div style="float:left;margin-left:5px;text-align:left;width:#{w[:piwik_link]}px;"><img title="user profile in piwik" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
 				</div>
 			</p>
 		)
 		asset_data.each do |dp|
 			flag = dp[:flag] ? %Q(<img title="#{dp[:country]}" alt="#{dp[:country]}" width="16" height="11" src="https://analytics.colu.co/#{dp[:flag]}">) : ''
-			plink_url = piwik_link_to_user_profile(dp[:piwik_visitor])
-			plink = dp[:piwik_visitor] ? %Q(<a href="#{plink_url}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a>) : ''			
+			visitors = dp[:piwik_visitor]
+			plink = ''
+			visitors.first(3).each do |v|
+				plink += %Q(<div style="float:left;padding-right:1px;"><a href="#{piwik_link_to_user_profile(v)}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a></div>)
+			end
+			plink += '..' if visitors.count > 2
+			# plink = dp[:piwik_visitor] ? %Q(<a href="#{plink_url}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a>) : ''			
 			line = %Q(
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">

@@ -58,6 +58,7 @@ begin
 			
 			# Add piwik data for asset 
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
+			result[:piwik_visitor] = piwik_data.map{|pd| pd[:piwik_visitor]}
 			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
 			p "filtered_data: #{filtered_data}"
 			if (filtered_data.count == 1)
@@ -75,6 +76,7 @@ begin
 				result[:geo] = list_countries_alpha2(filtered_data)
 				result[:piwik_title] = create_multiline_title(filtered_data,[:country,:city,:ip])
 			end
+			p "result: #{result}"
 			result
 		end
 		p "data: #{data}"
