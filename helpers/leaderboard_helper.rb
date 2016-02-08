@@ -169,6 +169,7 @@ module LeaderboardHelper
 					country_full = piwik_dp[:country].to_s				
 					country = shorten_country(country_full)
 					result[:geo] = country
+					result[:flag] = piwik_dp[:flag]
 				else
 					result[:geo] = list_countries_alpha2(combined_filtered_data)
 				end		
