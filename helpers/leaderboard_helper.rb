@@ -65,7 +65,7 @@ module LeaderboardHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:center;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
 								#{dp[:ip]}
 							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:issuer]}px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:issuer]}px;"  title="#{dp[:issuer_title]}">
 								#{dp[:issuer_name]}
 							</div>
 							<div style="float:left;margin-top:6px;width:#{w[:piwik_link]}px;">
@@ -119,7 +119,8 @@ module LeaderboardHelper
 			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
 			display_name = display_name.empty? ? short_asset_id : display_name
 			display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
-			issuer_name = metadata ? metadata['issuer'] : ''
+			issuer_name = metadata ? metadata['issuer'][0..11] : ''
+			issuer_title = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : nil
 			desc_for_title =  asset_desc ? " : [#{asset_desc}]" : ''
 			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}"
@@ -130,6 +131,7 @@ module LeaderboardHelper
 			result[:display_name] = display_name
 			result[:full_name] = full_name
 			result[:issuer_name] = issuer_name
+			result[:issuer_title] = issuer_title
 			result[:asset_desc] = desc_for_title
 			
 			# Add piwik data for asset
