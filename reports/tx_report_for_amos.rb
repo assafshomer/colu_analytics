@@ -6,7 +6,7 @@ number_of_months = 3
 
 result = []
 number_of_months.times do |month|
-	raw_data = number_of_cc_tx_in_month(month)
+	raw_data = number_of_cc_tx_in_month(offset: month)
 	nice_data = raw_data.map do |x|
 		{from: Time.at(x["from"]/1000), till: Time.at(x["untill"]/1000), tx: x["txsSum"]}
 	end	

@@ -48,7 +48,7 @@ module LeaderboardHelper
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
 						<div style="font-size:24px;">
-							<a href="#{explorer_link_to_asset(dp[:asset_id],network)}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{dp[:asset_desc]}">
+							<a href="#{explorer_link_to_asset(dp[:asset_id],network)}" target="_blank" style="color:#{color(network)}; right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{dp[:asset_desc]}">
 							#{dp[:display_name]}
 							</a>
 						</div>

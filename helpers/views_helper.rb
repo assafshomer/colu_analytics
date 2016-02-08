@@ -57,5 +57,17 @@ module ViewsHelper
 		return title
 	end
 
+	def color(network)
+		case network
+		when :mainnet
+			"rgb(0, 189, 255)"
+		when :testnet
+			"rgb(0, 255, 136)"
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet color instead"
+			"rgb(0, 189, 255)"
+		end
+	end
+
 end
 

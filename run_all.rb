@@ -28,7 +28,7 @@ widgets.each do |widget|
 	starting = "#{widget.split('/').last.split('.').first} starting"
 	ending = "#{widget.split('/').last.split('.').first} done"
 	print_box starting
-	load widget
+	# load widget
 	print_box ending
 end
 

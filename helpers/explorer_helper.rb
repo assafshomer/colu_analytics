@@ -5,7 +5,10 @@ module ExplorerHelper
 	include DateHelper	
 	require 'launchy'
 
-	def number_of_cc_tx_in_month(month_offset=0)
+	def number_of_cc_tx_in_month(opts={})
+		month_offset = opts[:offset]
+		debug = opts[:debug]
+		network = opts[:network]
 		# total number of cctx in a calendar month. Without offset its the current month. offset of 1, previous month, as so on.
 		now_date = Date.parse(Time.now.to_s)
 		date = (now_date << month_offset)	
@@ -19,7 +22,7 @@ module ExplorerHelper
 		start_time = this_month_time.to_i * 1000
 		bucket_ms = end_time - start_time
 		
-		query(start_time,end_time,bucket_ms)
+		query(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_in_last_hours(hours=24)
@@ -30,7 +33,7 @@ module ExplorerHelper
 		group_by_number_of_hours = 1
 		bucket_ms = ms_in_hour * group_by_number_of_hours
 		
-		query(start_time,end_time,bucket_ms)
+		query(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_by_hour(hours = 0)
@@ -48,7 +51,7 @@ module ExplorerHelper
 		end_time = end_hour_time.to_i * 1000
 		start_time = start_hour_time.to_i * 1000
 		bucket_ms = 1000*3600
-		query(start_time,end_time,bucket_ms)
+		query(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_by_dates(start_day,end_day=nil)
@@ -57,7 +60,7 @@ module ExplorerHelper
 		# p Time.at(times[:till]*1000)
 		# 24h buckets
 		bucket_miliseconds = 1000*3600*24
-		query(times[:from],times[:till],bucket_miliseconds)
+		query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 	end
 
 	def total_number_of_cc_tx_by_days(opts={})
