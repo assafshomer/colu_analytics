@@ -8,6 +8,7 @@ active_widgets = %w(
 	ios_timing
 	android_timing
 	issue_vs_send_since_midnight	
+	issue_vs_send_since_midnight_testnet
 	main_stats 
 	monthly_cc_tx
 	balance_stats
