@@ -7,7 +7,7 @@ mainnet_asset_stream = '00c86ecdc4'
 testnet_asset_stream = '717574cf8b'
 
 mainnet = true
-testnet = false
+testnet = true
 
 number_of_assets = 12
 number_of_days = 1
