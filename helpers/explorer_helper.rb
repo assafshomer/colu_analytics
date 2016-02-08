@@ -54,7 +54,11 @@ module ExplorerHelper
 		query(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
-	def number_of_cc_tx_by_dates(start_day,end_day=nil)
+	def number_of_cc_tx_by_dates(opts={})
+		debug = opts[:debug]
+		network = opts[:network]
+		start_day = opts[:start_day]
+		end_day = opts[:end_day]
 		times = dates_are_numbers(start_day,end_day)
 		# p Time.at(times[:from]*1000)
 		# p Time.at(times[:till]*1000)

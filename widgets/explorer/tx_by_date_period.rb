@@ -4,7 +4,7 @@ include ExplorerHelper
 
 stream = '00323f702a'
 
-data = number_of_cc_tx_by_dates('12/01/2016')
+data = number_of_cc_tx_by_dates(start_day: '12/01/2016')
 
 parsed_data = data.map do |x|	
 	hash = {"number" => x["txsSum"], "timestamp" => x["from"]/1000}

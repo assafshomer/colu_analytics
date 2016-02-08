@@ -8,7 +8,7 @@ describe "HeadersHelper" do
 	describe 'number_of_cc_tx_by_dates' do
 		let(:expected) { [{"from"=>1452376800000, "untill"=>1452463200000, "txsSum"=>477}, {"from"=>1452463200000, "untill"=>1452549600000, "txsSum"=>216}, {"from"=>1452549600000, "untill"=>1452636000000, "txsSum"=>268}, {"from"=>1452636000000, "untill"=>1452722400000, "txsSum"=>98}, {"from"=>1452722400000, "untill"=>1452808800000, "txsSum"=>109}] }
 	  it 'should return the integer time representations' do
-			number_of_cc_tx_by_dates('10/01/2016','14/01/2016').should == expected
+			number_of_cc_tx_by_dates(start_day: '10/01/2016',end_day: '14/01/2016').should == expected
 	  end
 	end	
 	describe 'total_number_of_cc_tx_by_days' do
