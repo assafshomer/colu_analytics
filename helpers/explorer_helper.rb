@@ -99,7 +99,7 @@ module ExplorerHelper
 				type: tx['ccdata'].first['type'],
 				asset_ids: tx['vout'].map{|x| x['assets']}.flatten.map{|e| e["assetId"] if e}.compact.uniq
 				}}
-			File.write("#{__dir__}/../data/#{endpoint}.json",batch.to_json) if debug
+			# File.write("#{__dir__}/../data/#{endpoint}.json",batch.to_json) if debug
 			result << batch
 		end
 		result.flatten

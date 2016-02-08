@@ -4,7 +4,7 @@ include ViewsHelper
 dirname = "widgets"
 
 active_widgets = %w(	
-	new_asset_leaderboard
+	asset_leaderboard
 	ios_timing
 	android_timing
 	issue_vs_send_since_midnight	
