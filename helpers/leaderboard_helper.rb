@@ -163,8 +163,15 @@ module LeaderboardHelper
 				result[:flag] = piwik_dp[:flag]
 				result[:piwik_title] = "Country: [#{country_full}], City: [#{city}]"
 			else
-				result[:city]
-				result[:geo] = list_countries_alpha2(combined_filtered_data)
+				countries = combined_filtered_data.map{|x| x[:country]}.uniq
+				if countries.count == 1
+					piwik_dp = combined_filtered_data.first
+					country_full = piwik_dp[:country].to_s				
+					country = shorten_country(country_full)
+					result[:geo] = country
+				else
+					result[:geo] = list_countries_alpha2(combined_filtered_data)
+				end		
 				result[:piwik_title] = create_multiline_title(combined_filtered_data,[:country,:city,:ip])
 			end
 			p "result: #{result}" if debug
