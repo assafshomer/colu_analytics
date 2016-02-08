@@ -135,12 +135,25 @@ module LeaderboardHelper
 			# Add piwik data for asset
 			p "parsed_piwik_visits: #{parsed_piwik_visits}"
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-			p "piwiki data for asset id #{asset_id}: #{piwik_data}"
 			result[:piwik_visitor] = piwik_data.map{|pd| pd[:piwik_visitor]}
 			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
-			p "filtered_data: #{filtered_data}"
-			if (filtered_data.count == 1)
-				piwik_dp = filtered_data.first
+			list = [:ip, :country, :city, :asset_id]
+			combined_filtered_data = []
+			tmp = filtered_data
+			tmp.each do |x|
+				succint = x.select{|k,v| list.include?(k)}
+				combined_filtered_data = filtered_data.map do |fd|
+					if fd.select{|k,v| list.include?(k)} == succint
+						fd.merge(x)
+					else
+						fd
+					end
+				end.uniq
+			end			
+			# .inject{|m,x| m.merge(x)}
+			p "combined_filtered_data: #{combined_filtered_data}"
+			if (combined_filtered_data.count == 1)
+				piwik_dp = combined_filtered_data.first
 				country_full = piwik_dp[:country].to_s				
 				country = shorten_country(country_full)
 				city = piwik_dp[:city].to_s
@@ -151,8 +164,8 @@ module LeaderboardHelper
 				result[:piwik_title] = "Country: [#{country_full}], City: [#{city}]"
 			else
 				result[:city]
-				result[:geo] = list_countries_alpha2(filtered_data)
-				result[:piwik_title] = create_multiline_title(filtered_data,[:country,:city,:ip])
+				result[:geo] = list_countries_alpha2(combined_filtered_data)
+				result[:piwik_title] = create_multiline_title(combined_filtered_data,[:country,:city,:ip])
 			end
 			p "result: #{result}" if debug
 			result

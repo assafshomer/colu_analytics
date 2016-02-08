@@ -27,6 +27,7 @@ module ViewsHelper
 	end
 	def list_countries_alpha2(piwik_data)
 		piwik_data.map do |dp|
+			p "dp: #{dp}"
 			iso3166_alpha2(dp[:country])
 		end.uniq.join(',')
 	end
