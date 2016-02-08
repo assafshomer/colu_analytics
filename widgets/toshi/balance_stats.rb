@@ -29,7 +29,18 @@ stream = 'Nb4mF19w' # leaderboard
 # ]
 # UPDATE.push_table stream, header_row, table_rows
 
-point = {"leaderboard": [{"name": "Mainnet", "value": mainnet_balance_pretty}, {"name": "Testnet", "value": testnet_balance_pretty}]}
+# point = {"leaderboard": [{"name": "Mainnet", "value": mainnet_balance_pretty}, {"name": "Testnet", "value": testnet_balance_pretty}]}
 
-UPDATE.clear(stream)
-UPDATE.push_line(stream,point)
+# UPDATE.clear(stream)
+# UPDATE.push_line(stream,point)
+
+
+mainnet_stream = 'rByg08Tv'
+
+UPDATE.clear(mainnet_stream)
+UPDATE.push_line(mainnet_stream,mainnet_balance_pretty)
+
+testnet_stream = 'eefc149161'
+
+UPDATE.clear(testnet_stream)
+UPDATE.push_line(testnet_stream,testnet_balance_pretty)
