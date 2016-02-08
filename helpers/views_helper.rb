@@ -11,7 +11,7 @@ module ViewsHelper
 	end
 	def print_box(string)
 		line = starting = "***   #{string}   ***"
-		wrapper = "*"*(line.length+1)
+		wrapper = "\n"+"*"*([line.length+1,25].min)+"\n"
 		puts wrapper
 		puts line
 		puts wrapper

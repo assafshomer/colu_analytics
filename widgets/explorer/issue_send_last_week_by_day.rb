@@ -8,7 +8,7 @@ transfer_stream = 'uZTTTg9B'
 
 number_of_days = 7
 
-raw_data = get_cc_tx_last_days(number_of_days-1)
+raw_data = get_cc_tx_last_days(limit: number_of_days-1)
 
 p issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
 p transfer_raw_data = raw_data.select{|d| d[:type] == 'transfer'}

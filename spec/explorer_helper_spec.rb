@@ -13,7 +13,7 @@ describe "HeadersHelper" do
 	end	
 	describe 'total_number_of_cc_tx_by_days' do
 		it 'return correct nuber' do
-			total_number_of_cc_tx_by_days(1).should be_a(Integer)
+			total_number_of_cc_tx_by_days(limit: 1).should be_a(Integer)
 		end
 	end
 
@@ -31,21 +31,21 @@ describe "HeadersHelper" do
 			dates.count.should == 1
 		end
 		it 'limit 1 should include tx from two days' do
-			dates = get_cc_tx_last_days(1).map do |data|
+			dates = get_cc_tx_last_days(limit: 1).map do |data|
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end.uniq
 			p dates			
 			dates.count.should == 2
 		end
 		it 'limit 2 should include tx from 3 days' do
-			dates = get_cc_tx_last_days(2).map do |data|
+			dates = get_cc_tx_last_days(limit: 2).map do |data|
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end
 			p dates
 			dates.uniq.count.should == 3
 		end
 		it 'limit 6 should include tx from 7 days' do
-			dates = get_cc_tx_last_days(6).map do |data|
+			dates = get_cc_tx_last_days(limit: 6).map do |data|
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end
 			p dates
@@ -71,7 +71,7 @@ describe "HeadersHelper" do
 	  end
 	  describe 'html' do
 	  	it 'prepare the correct HTML' do
-	  		prepare_asset_leaderboard(ordered_asset_ids).should_not be_nil
+	  		prepare_simple_asset_leaderboard(ordered_asset_ids).should_not be_nil
 	  	end
 	  end
 	end

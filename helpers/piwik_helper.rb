@@ -4,15 +4,18 @@ module PiwikHelper
 
 	PIWIK_FILTER_LIMIT = 9999
 
-	PIWIK_BASE = "https://analytics.colu.co/?module=API&idSite=7&format=json&token_auth=#{APP_CONFIG['piwik_auth_token']}"
+	PIWIK_BASE = "https://analytics.colu.co/?module=API&format=json&token_auth=#{APP_CONFIG['piwik_auth_token']}"
 
 	def piwik_data_during_day(date,opts={debug: false})
-		debug = opts[:debug]
+		debug = opts[:debug] || false
+		network = opts[:network] || :mainnet
+		idSite = get_id_site_from_network(network)	
 		segment = opts[:segment]
 		method = opts[:method]
 		filter = opts[:filter] || PIWIK_FILTER_LIMIT
 		single_day_setting = "&date=#{date.strftime("%Y-%m-%d")}&period=day"
 		piwik_url = PIWIK_BASE
+		piwik_url += "&idSite=#{idSite}"
 		piwik_url += single_day_setting
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
@@ -22,7 +25,9 @@ module PiwikHelper
 
 	def piwik_data_during_period(opts = {})
 		piwik_url = generate_piwik_api_url(opts)
-		call_piwik_api(piwik_url,debug: opts[:debug])
+		debug = opts[:deubg]
+		network = opts[:network]
+		call_piwik_api(piwik_url,debug: debug,network: network)
 	end
 
 	def generate_piwik_api_url(opts={})
@@ -31,20 +36,34 @@ module PiwikHelper
 		end_date = (Time.now - days_offset.day).strftime("%Y-%m-%d")
 		start_date = (Time.now - (days_offset+num_days).day).strftime("%Y-%m-%d")
 		date_range = "&period=range&date=#{start_date},#{end_date}"
-		
 		debug = opts[:debug] || false
+		network = opts[:network] || :mainnet
+		idSite = get_id_site_from_network(network)
 		segment = opts[:segment]
 		method = opts[:method]
 		params = opts[:params]
 		filter = opts[:filter] || PIWIK_FILTER_LIMIT
 
 		piwik_url = PIWIK_BASE
+		piwik_url += "&idSite=#{idSite}"
 		piwik_url += date_range
 		piwik_url += params if params
 		piwik_url += "&segment=#{segment}" if segment
 		piwik_url += "&method=#{method}" if method
 		piwik_url += "&filter_limit=#{filter}" if filter
 	end	
+
+	def get_id_site_from_network(network)
+		case network
+		when :mainnet
+			7
+		when :testnet
+			6
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet settings instead"
+			7
+		end		
+	end
 
 	def count_hits(piwik_response,date)
 		hits = piwik_response.map{|r| r['nb_hits']}.inject(:+)
@@ -59,8 +78,11 @@ module PiwikHelper
 		end
 	end
 
-	def piwik_countries_during_day(date,segment,opts={debug: false})
-		piwik_url = PIWIK_BASE + "&date=#{date.strftime("%Y-%m-%d")}&period=day&segment=#{segment}"
+	def piwik_countries_during_day(date,segment,opts={})
+		debug = opts[:debug] || false
+		network = opts[:network] || :mainnet
+		idSite = get_id_site_from_network(network)
+		piwik_url = PIWIK_BASE + "&idSite=#{idSite}&date=#{date.strftime("%Y-%m-%d")}&period=day&segment=#{segment}"
 		response = HTTParty.get(piwik_url).parsed_response
 		hits = response.map{|r| r['nb_hits']}.inject(:+)
 		date_midnight = Time.parse(date.strftime("%Y-%m-%d")).to_i
@@ -69,13 +91,13 @@ module PiwikHelper
 	end
 
 	def call_piwik_api(url,opts={})
-		debug = opts[:debug] || false
+		debug = opts[:debug] || true
 		init_time = Time.now
 		p "Calling Piwik API with [#{url}]" if debug
 		data = HTTParty.get(url)
 		p "Piwik API replied [#{time_diff(init_time)}]" if debug
 		response = data.parsed_response
-		p "Piwik response: #{response}" if debug
+		# p "Piwik response: #{response}" if debug
 		return response
 	end
 
@@ -104,7 +126,7 @@ module PiwikHelper
 			)
 		action_details = visit["actionDetails"]
 		interesting_actions = action_details.reject do |action_detail|
-			action_detail["type"] != "action" || 
+			# action_detail["type"] != "action" || 
 			black_list.include?(action_detail["pageTitle"])
 		end
 		data = interesting_actions.map do |action|
@@ -113,11 +135,12 @@ module PiwikHelper
 		nice_data = data.map do |x|
 			tmp = x["url"].gsub('?','&').split('&')
 			tmp.shift
-			tmp << "call=#{x['pageTitle']}"
+			tmp << "call=#{x['pageTitle']}" if x['pageTitle']
 			tmp.reject{|e| e =~ /numConfirmations/}
 		end.uniq
 		result = nice_data.map do |call|
 			call.map do |detail|
+				# p "detail: #{detail}"
 				[detail.split('=')].to_h
 			end
 		end.flatten.uniq		
@@ -125,9 +148,9 @@ module PiwikHelper
 	end
 
 	def percolate_asset_id_from_array(parsed_actions)
-		puts "\parsed_actions #{parsed_actions}\n"
+		puts "\n parsed_actions #{parsed_actions}\n"
 		relevant_data = parsed_actions.reject{|d| d[:actions].nil? || d[:actions].empty?}
-		puts "\nrelevant_data #{relevant_data}\n"
+		puts "\n relevant_data #{relevant_data}\n"
 		asset_data = relevant_data.select do |visit|
 			visit[:actions].map do |action|
 				action.keys.include?("assetId")
@@ -145,11 +168,11 @@ module PiwikHelper
 		end		
 	end
 
-	def percolate_asset_id(data)		
+	def percolate_asset_ids(data)		
 		return if data.empty?		
 		asset_data = data.select{|e| e.keys.include?("assetId")}
 		return if asset_data.empty?
-		return asset_data.first["assetId"]		
+		return asset_data.map{|ad| ad["assetId"]}.uniq
 	end
 	def percolate_user(data)		
 		return if data.empty?		
@@ -158,26 +181,32 @@ module PiwikHelper
 		return asset_data.first["userName"]		
 	end
 	def parse_visits(visits)
-		visits.map do |visit|
+		visits.each_with_index.map do |visit,n|
 			actions = parse_actions(visit)
-			next if actions.empty?
-			asset_id = percolate_asset_id(parse_actions(visit))
-			user = percolate_user(parse_actions(visit))
-			result = 
-			{
-				piwik_id: visit["idVisit"],
-				piwik_visitor: visit["visitorId"],
-				ip: visit["visitIp"],
-				country: visit["country"],
-				city: visit["city"],
-				flag: visit["countryFlag"],
-				timestamp: visit["serverTimestamp"]
-			}
-			result[:actions] = actions unless (asset_id || user)
-			result[:asset_id] = asset_id if asset_id
-			result[:user] = user if user
+			next if actions.empty? 
+			asset_ids = percolate_asset_ids(actions)
+			next unless asset_ids
+			user = percolate_user(actions)
+			result = []
+			asset_ids.each do |asset_id|
+				result_for_asset_id = 
+				{
+					piwik_id: visit["idVisit"],
+					piwik_visitor: visit["visitorId"],
+					ip: visit["visitIp"],
+					country: visit["country"],
+					city: visit["city"],
+					flag: visit["countryFlag"],
+					timestamp: visit["serverTimestamp"]
+				}
+				result_for_asset_id[:actions] = actions unless (asset_id || user)
+				result_for_asset_id[:asset_id] = asset_id if asset_id
+				result_for_asset_id[:user] = user if user
+				# p "result: #{result}"
+				result << result_for_asset_id				
+			end
 			result
-		end.compact		
+		end.compact.flatten.uniq.compact
 	end
 
 	def pick_piwik_data_for_asset_id(asset_data,asset_id)
@@ -192,9 +221,10 @@ module PiwikHelper
 		asset_data.select{|visit| visit.keys.include?(k) && visit[k].to_s == v.to_s }
 	end	
 
-	def piwik_link_to_user_profile(visitorId)
+	def piwik_link_to_user_profile(visitorId,opts={})
+		network = opts[:network] || :mainnet
 		method = 'Live.getVisitorProfile'
-		generate_piwik_api_url(method: method,params: "&visitorId=#{visitorId}")
+		generate_piwik_api_url(method: method,params: "&visitorId=#{visitorId}", network: network)
 	end	
 
 end

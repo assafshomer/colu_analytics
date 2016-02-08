@@ -60,25 +60,33 @@ module ExplorerHelper
 		query(times[:from],times[:till],bucket_miliseconds)
 	end
 
-	def total_number_of_cc_tx_by_days(limit=0,offset=0)
+	def total_number_of_cc_tx_by_days(opts={})
+		limit = opts[:limit] || 0
+		offset = opts[:offset] || 0
+		network = opts[:network] || :mainnet
+		debug = opts[:debug] || false
 		return 0 if limit < 0
 		times = days_are_numbers(limit,offset)
 		# one bucket
 		bucket_miliseconds = 1000*3600*24*(limit+1)
-		result = query(times[:from],times[:till],bucket_miliseconds)
+		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end
 
-	def get_cc_tx_last_days(limit=0,offset=0,debug=false)
+	def get_cc_tx_last_days(opts={})
+		limit = opts[:limit] || 0
+		offset = opts[:offset] || 0		
+		debug = opts[:debug] || true
+		network = opts[:network] || :mainnet			
 		init_time = Time.now
-		num_of_tx = total_number_of_cc_tx_by_days(limit,offset)
-		p "Total number of cc tx in this period: #{num_of_tx}"
-		num_tx_before = total_number_of_cc_tx_by_days(offset-1)
-		p "Total number of cc tx before this period: #{num_tx_before}"
+		num_of_tx = total_number_of_cc_tx_by_days(limit: limit, offset: offset, debug: debug, network: network)
+		p "Total number of #{network.upcase} cc tx in this period: #{num_of_tx}"
+		num_tx_before = total_number_of_cc_tx_by_days(limit: offset-1, debug: debug, network: network)
+		p "Total number of #{network.upcase} cc tx before this period: #{num_tx_before}"
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
 			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{num_tx_before+s.first}"
-			query = EXPLORER_API+ endpoint
+			query = explorer_api(network)+ endpoint
 			init_time = Time.now
 			p "Calling Explorer API with [#{query}]" if debug
 			data = HTTParty.get(query)
@@ -97,144 +105,91 @@ module ExplorerHelper
 		result.flatten
 	end
 
-	def query(start_time,end_time,bucket_ms,debug=true)
+	def query(start_time,end_time,bucket_ms,opts={})
+		debug = opts[:debug] || true
+		network = opts[:network] || :mainnet	
 		init_time = Time.now
-		query = EXPLORER_API+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
+		query = explorer_api(network)+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
 		p "Calling Explorer API with [#{query}]" if debug
 		data = HTTParty.get(query)
 		p "Explorer API replied [#{time_diff(init_time)}]" if debug
 		raw_data =  data.parsed_response		
-	end
+	end	
 
-	def order_asset_ids(raw_data)
-		assetids = raw_data.map{|e| e.reject{|k,v| k!=:asset_ids}}.map{|e| e[:asset_ids]}.flatten
-		counted_asset_ids = assetids.group_by{|a| a}.map{|k,v| {"#{k}": v.count}}
-		counted_asset_ids.sort_by{|e| e[e.keys.first]}.reverse		
-	end
-
-	def prepare_asset_leaderboard(ordered_asset_ids)
-		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
-		html_end = '</body></html>'
-		max_length = 25
-		result = html_start
-		result << %Q(<div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 23px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div>)
-		ordered_asset_ids.each do |data_point|
-			asset_id = data_point.keys.first
-			short_asset_id = asset_id[0..20]+'...'
-			metadata = get_asset_metadata(asset_id)			
-			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
-			display_name = display_name.empty? ? short_asset_id : display_name
-			display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
-			issuer_name = metadata ? metadata['issuer'] : ''
-			asset_desc = metadata ? metadata['description'] : ''
-			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}"
-			frequency = data_point[asset_id]
-			title = %Q(#{display_name} issued by #{issuer_name} #{asset_desc})
-			line = %Q(<p><div style="line-height:35px; height:50px; font-size:28px;border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;"><a href="http://coloredcoins.org/explorer/asset/#{asset_id}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;">#{display_name}</a> <div style="color:rgb(204, 204, 204);float:right;text-align:right;margin-top:6px;">#{frequency}</div></div></p>)
-			result << line
-		end
-		result << html_end
-		# path = "#{__dir__}/../data/asset_leaderboard.html"
-		# File.write(path,result)
-		# Launchy.open(path)
-	end
-
-	def prepare_new_asset_leaderboard(asset_data)
-		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,piwik_link: 60}
-		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
-		html_end = '</body></html>'		
-		result = html_start
-		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight <div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div></p>)
-		result << %Q(
-			<p>
-				<div style="color:gray;padding-bottom:20px;text-align:center;">
-					<div style="width:#{w[:asset]}px;float:left">Asset</div>
-					<div style="float:left;width:#{w[:tx]}px;"> #tx </div>
-					<div style="float:left;width:#{w[:location]}px;">Location</div>				
-					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">flag</div>
-					<div style="float:left;width:#{w[:ip]}px;">IP</div>
-					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
-					<div style="float:left;margin-left:5px;text-align:left;width:#{w[:piwik_link]}px;"><img title="user profile in piwik" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
-				</div>
-			</p>
-		)
-		asset_data.each do |dp|
-			flag = dp[:flag] ? %Q(<img title="#{dp[:country]}" alt="#{dp[:country]}" width="16" height="11" src="https://analytics.colu.co/#{dp[:flag]}">) : ''
-			visitors = dp[:piwik_visitor]
-			plink = ''
-			visitors.first(3).each do |v|
-				plink += %Q(<div style="float:left;padding-right:1px;"><a href="#{piwik_link_to_user_profile(v)}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a></div>)
-			end
-			plink += '..' if visitors.count > 2
-			# plink = dp[:piwik_visitor] ? %Q(<a href="#{plink_url}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a>) : ''			
-			line = %Q(
-				<p>
-					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
-						<div style="font-size:24px;">
-							<a href="http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}" target="_blank" style="color:rgb(0, 189, 255); right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{dp[:asset_desc]}">
-							#{dp[:display_name]}
-							</a>
-						</div>
-						<div style="font-size:18px;">
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;font-size:24px;width:#{w[:tx]}px;">
-							#{dp[:frequency]}
-							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;padding-left:10px;width:#{w[:location]}px;" title="#{dp[:piwik_title]}">
-								#{dp[:geo].to_s[0..8]}
-							</div>				
-							<div style="float:left;margin-top:6px;width:#{w[:flag]}px;">
-								#{flag}
-							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:center;margin-top:6px;padding-left:10px;width:#{w[:ip]}px;font-size:10px;">
-								#{dp[:ip]}
-							</div>
-							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:issuer]}px;">
-								#{dp[:issuer_name]}
-							</div>
-							<div style="float:left;margin-top:6px;width:#{w[:piwik_link]}px;">
-								#{plink}
-							</div>							
-						</div>
-					</div>
-				</p>)
-			result << line
-		end
-		result << html_end
-		# path = "#{__dir__}/../data/asset_leaderboard.html"
-		# File.write(path,result)
-		# Launchy.open(path)
-	end
-
-	def get_asset_metadata(asset_id)
-		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}")['issuances'].first
+	def get_asset_metadata(asset_id,opts={})
+		debug = opts[:debug] || true
+		network = opts[:network] || :mainnet			
+		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}",debug: debug, network: network)['issuances'].first
+		return unless issuances
 		txid = issuances['txid']
 		vout = issuances['vout'].select do |vout|
 			!vout['assets'].empty? 
 			# vout['assets'].first['assetId'] == asset_id
 		end.first
 		index = vout['n']
-		asset_metadata = query_cc_api("assetmetadata/#{asset_id}/#{txid}%3A#{index}")
+		asset_metadata = query_cc_api("assetmetadata/#{asset_id}/#{txid}%3A#{index}",network: network, debug: debug)
 		metadata = asset_metadata['metadataOfIssuence']['data'] if asset_metadata['metadataOfIssuence'] && asset_metadata['metadataOfIssuence']['data'] 
 		return metadata
 	end
 
-	def query_explorer_api(endpoint, debug=true)
+	def query_explorer_api(endpoint, opts={})
+		debug = opts[:debug] || true
+		network = opts[:network] || :mainnet
 		init_time = Time.now
-		query = EXPLORER_API+ endpoint		
+		query = explorer_api(network.to_sym) + endpoint		
 		p "Calling Explorer API with [#{query}]" if debug
 		data = HTTParty.get(query)
 		p "Explorer API replied [#{time_diff(init_time)}]" if debug
 		data.parsed_response			
 	end
 
-	def query_cc_api(endpoint, debug=true)
+	def query_cc_api(endpoint, opts={})
+		debug = opts[:debug] || true
+		network = opts[:network] || :mainnet		
 		init_time = Time.now
-		query = CC_API+ endpoint		
+		query = cc_api(network) + endpoint		
 		p "Calling CC API with [#{query}]" if debug
 		data = HTTParty.get(query)
 		p "CC API replied [#{time_diff(init_time)}]" if debug
 		data.parsed_response			
+	end
+
+	def explorer_api(network)
+		case network.to_sym
+		when :mainnet
+			APP_CONFIG['mainnet_explorer_api_url']
+		when :testnet
+			APP_CONFIG['testnet_explorer_api_url']
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_explorer_api_url']} instead"
+			APP_CONFIG['mainnet_explorer_api_url']
+		end
+	end
+
+	def cc_api(network)
+		case network.to_sym
+		when :mainnet
+			APP_CONFIG['mainnet_cc_api_url']
+		when :testnet
+			APP_CONFIG['testnet_cc_api_url']
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_cc_api_url']} instead"
+			APP_CONFIG['mainnet_cc_api_url']
+		end
+	end
+
+	def explorer_link_to_asset(asset_id,network)
+		case network
+		when :mainnet
+			"http://coloredcoins.org/explorer/asset/#{asset_id}"
+		when :testnet
+			"http://coloredcoins.org/explorer/testnet/asset/#{asset_id}"
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet instead"
+			"http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}"
+		end
+		
 	end
 
 end

@@ -2,6 +2,9 @@ require __dir__+'/../../setup'
 
 require __dir__+'/../../helpers/explorer_helper'
 include ExplorerHelper
+require __dir__+'/../../helpers/leaderboard_helper'
+include LeaderboardHelper
+
 
 issuance_stream = 'wbCblg7t'
 transfer_stream = 'AIceGGMQ'
@@ -11,7 +14,8 @@ number_of_assets = 6
 number_of_days = 1
 start_days_past = 0
 debug = false
-raw_data = get_cc_tx_last_days(number_of_days-1,start_days_past,debug)
+network = :mainnnet
+raw_data = get_cc_tx_last_days(limit: number_of_days-1,offset: start_days_past,debug: debug,network: network)
 # File.write("#{__dir__}/../../data/#{File.basename(__FILE__,".*")}",raw_data)
 File.write("#{__dir__}/../../data/raw_tx_data",raw_data) if debug
 
@@ -47,6 +51,6 @@ UPDATE.push_line(transfer_stream,parsed_transfer_data)
 # UPDATE.push_line(assets_stream,point)
 
 # ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
-# html = prepare_asset_leaderboard(ordered_asset_ids)
+# html = prepare_simple_asset_leaderboard(ordered_asset_ids)
 # # UPDATE.clear(assets_stream)
 # UPDATE.push_html assets_stream, html
