@@ -11,7 +11,7 @@ p data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq.inject{|
 
 list = [:ip, :country, :city, :asset_id]
 r = []
-tmp = filtered_data
+tmp = filtered_data.dup
 tmp.each do |x|
 	succint = x.select{|k,v| list.include?(k)}
 	r= filtered_data.map do |fd|

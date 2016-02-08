@@ -133,13 +133,13 @@ module LeaderboardHelper
 			result[:asset_desc] = desc_for_title
 			
 			# Add piwik data for asset
-			p "parsed_piwik_visits: #{parsed_piwik_visits}"
+			# p "parsed_piwik_visits: #{parsed_piwik_visits}"
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
 			result[:piwik_visitor] = piwik_data.map{|pd| pd[:piwik_visitor]}
 			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
 			list = [:ip, :country, :city, :asset_id]
 			combined_filtered_data = []
-			tmp = filtered_data
+			tmp = filtered_data.dup
 			tmp.each do |x|
 				succint = x.select{|k,v| list.include?(k)}
 				combined_filtered_data = filtered_data.map do |fd|
