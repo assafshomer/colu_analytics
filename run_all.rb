@@ -21,7 +21,7 @@ active_widgets = %w(
 all_widgets = Dir["#{dirname}/**/*.rb"]
 
 widgets = active_widgets.map do |desired_widget|
-	all_widgets.select{|widget| widget =~ /\A#{desired_widget}/}
+	all_widgets.select{|widget| widget =~ /#{desired_widget}\.rb/}
 end.flatten
 
 widgets.each do |widget|
