@@ -17,7 +17,7 @@ debug = false
 network = :mainnnet
 raw_data = get_cc_tx_last_days(limit: number_of_days-1,offset: start_days_past,debug: debug,network: network)
 # File.write("#{__dir__}/../../data/#{File.basename(__FILE__,".*")}",raw_data)
-File.write("#{__dir__}/../../data/raw_tx_data",raw_data) if debug
+# File.write("#{__dir__}/../../data/raw_tx_data",raw_data) if debug
 
 issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
 transfer_raw_data = raw_data.select{|d| d[:type] == 'transfer'}

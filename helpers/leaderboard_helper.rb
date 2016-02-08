@@ -106,7 +106,7 @@ module LeaderboardHelper
 			days_offset: start_days_past,
 			network: network
 			)
-		File.write("#{__dir__}/../txt/foo.txt",visits.to_json)
+		# File.write("#{__dir__}/../txt/foo.txt",visits.to_json)
 		visits = JSON.parse(visits) if (visits.class == String)
 		parsed_piwik_visits = parse_visits(visits)
 
