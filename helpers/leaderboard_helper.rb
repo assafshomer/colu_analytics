@@ -113,13 +113,13 @@ module LeaderboardHelper
 		data = ordered_asset_ids.map do |data_point|
 			max_length = 20
 			asset_id = data_point.keys.first
-			short_asset_id = asset_id[0..15]+'...'
+			short_asset_id = abbreviate(asset_id,15)
 			metadata = get_asset_metadata(asset_id,network: network,debug: debug)
 			full_name = metadata ? metadata['assetName'].to_s : asset_id
 			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
 			display_name = display_name.empty? ? short_asset_id : display_name
-			display_name = display_name.length > max_length ? display_name[0..max_length]+'...' : display_name
-			issuer_name = metadata ? metadata['issuer'][0..11] : ''
+			display_name = abbreviate(display_name,max_length)
+			issuer_name = metadata ? abbreviate(metadata['issuer'],11) : ''
 			issuer_title = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : nil
 			desc_for_title =  asset_desc ? " : [#{asset_desc}]" : ''

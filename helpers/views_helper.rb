@@ -16,6 +16,13 @@ module ViewsHelper
 		puts line
 		puts wrapper
 	end
+	def abbreviate(string,length)
+		if string.length < length
+			return string
+		else
+			return string[0..length-3]+'..'
+		end
+	end
 	def shorten_country(country_full)
 		c = case country_full
 		when 'United Kingdom'
@@ -23,7 +30,7 @@ module ViewsHelper
 		else
 			country_full
 		end
-		c.length > 8 ? c[0..8]+'...' : c
+		abbreviate(c,8)
 	end
 	def list_countries_alpha2(piwik_data)
 		piwik_data.map do |dp|
