@@ -83,21 +83,21 @@ module ExplorerHelper
 	def get_cc_tx_last_days(opts={})
 		limit = opts[:limit] || 0
 		offset = opts[:offset] || 0		
-		debug = opts[:debug] || true
+		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet			
 		init_time = Time.now
 		num_of_tx = total_number_of_cc_tx_by_days(limit: limit, offset: offset, debug: debug, network: network)
-		p "Total number of #{network.upcase} cc tx in this period: #{num_of_tx}"
+		p "Total number of #{network.upcase} cc tx in this period: #{num_of_tx}" if debug
 		num_tx_before = total_number_of_cc_tx_by_days(limit: offset-1, debug: debug, network: network)
-		p "Total number of #{network.upcase} cc tx before this period: #{num_tx_before}"
+		p "Total number of #{network.upcase} cc tx before this period: #{num_tx_before}" if debug
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
 			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{num_tx_before+s.first}"
 			query = explorer_api(network)+ endpoint
 			init_time = Time.now
-			p "Calling Explorer API with [#{query}]" if debug
+			p "Calling Explorer API with [#{query}]" 
 			data = HTTParty.get(query)
-			p "Explorer API replied [#{time_diff(init_time)}]" if debug
+			p "Explorer API replied [#{time_diff(init_time)}]" 
 			raw_data = data.parsed_response
 			batch = raw_data.map{|tx| {
 				# txid: tx['txid'],
@@ -113,14 +113,14 @@ module ExplorerHelper
 	end
 
 	def query(start_time,end_time,bucket_ms,opts={})
-		debug = opts[:debug] || true
+		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet	
 		init_time = Time.now
 		query = explorer_api(network)+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
-		p "Calling Explorer API with [#{query}]" if debug
+		p "Calling Explorer API with [#{query}]" 
 		data = HTTParty.get(query)
-		p "Explorer API replied [#{time_diff(init_time)}]" if debug
+		p "Explorer API replied [#{time_diff(init_time)}]"
 		raw_data =  data.parsed_response		
 	end	
 
@@ -141,24 +141,24 @@ module ExplorerHelper
 	end
 
 	def query_explorer_api(endpoint, opts={})
-		debug = opts[:debug] || true
+		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet
 		init_time = Time.now
 		query = explorer_api(network.to_sym) + endpoint		
-		p "Calling Explorer API with [#{query}]" if debug
+		p "Calling Explorer API with [#{query}]"
 		data = HTTParty.get(query)
-		p "Explorer API replied [#{time_diff(init_time)}]" if debug
+		p "Explorer API replied [#{time_diff(init_time)}]"
 		data.parsed_response			
 	end
 
 	def query_cc_api(endpoint, opts={})
-		debug = opts[:debug] || true
+		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet		
 		init_time = Time.now
 		query = cc_api(network) + endpoint		
-		p "Calling CC API with [#{query}]" if debug
+		p "Calling CC API with [#{query}]"
 		data = HTTParty.get(query)
-		p "CC API replied [#{time_diff(init_time)}]" if debug
+		p "CC API replied [#{time_diff(init_time)}]"
 		data.parsed_response			
 	end
 

@@ -20,7 +20,7 @@ begin
 
 		point = {"leaderboard": result}
 
-		UPDATE.clear(stream)
+		# UPDATE.clear(stream)
 		UPDATE.push_line(stream,point)
 		
   end

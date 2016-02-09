@@ -37,10 +37,10 @@ stream = 'Nb4mF19w' # leaderboard
 
 mainnet_stream = 'rByg08Tv'
 
-UPDATE.clear(mainnet_stream)
+# UPDATE.clear(mainnet_stream)
 UPDATE.push_line(mainnet_stream,mainnet_balance_pretty)
 
 testnet_stream = 'eefc149161'
 
-UPDATE.clear(testnet_stream)
+# UPDATE.clear(testnet_stream)
 UPDATE.push_line(testnet_stream,testnet_balance_pretty)

@@ -34,21 +34,18 @@ describe "HeadersHelper" do
 			dates = get_cc_tx_last_days(limit: 1).map do |data|
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end.uniq
-			p dates			
 			dates.count.should == 2
 		end
 		it 'limit 2 should include tx from 3 days' do
 			dates = get_cc_tx_last_days(limit: 2).map do |data|
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end
-			p dates
 			dates.uniq.count.should == 3
 		end
 		it 'limit 6 should include tx from 7 days' do
 			dates = get_cc_tx_last_days(limit: 6).map do |data|
 				Time.at(data[:time]/1000).strftime("%d/%m/%Y")
 			end
-			p dates
 			dates.uniq.count.should == 7
 		end		
 		# it 'limit 1 should include tx from two days' do

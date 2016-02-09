@@ -64,7 +64,7 @@ table_rows = oss.map{|os| rows[os]}
 p header_row
 p table_rows
 
-UPDATE.clear(stream)
+# UPDATE.clear(stream)
 UPDATE.push_table stream, header_row, table_rows
 
 

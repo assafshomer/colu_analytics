@@ -38,7 +38,7 @@ point = {"matrix": data_to_display}
 
 # p data_to_display
 
-UPDATE.clear(stream)
+# UPDATE.clear(stream)
 UPDATE.push_line(stream,point)
 
 

@@ -123,7 +123,7 @@ module LeaderboardHelper
 			issuer_title = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : nil
 			desc_for_title =  asset_desc ? " : [#{asset_desc}]" : ''
-			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}"
+			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}" if debug
 			frequency = data_point[asset_id]
 			result = {}
 			result[:asset_id] ||= asset_id
@@ -153,7 +153,6 @@ module LeaderboardHelper
 				end.uniq
 			end			
 			# .inject{|m,x| m.merge(x)}
-			p "combined_filtered_data: #{combined_filtered_data}"
 			if (combined_filtered_data.count == 1)
 				piwik_dp = combined_filtered_data.first
 				country_full = piwik_dp[:country].to_s				

@@ -32,7 +32,7 @@ begin
 
 			point =  {"chart": result.flatten.reverse }
 
-			UPDATE.clear(mainnet_stream)
+			# UPDATE.clear(mainnet_stream)
 			UPDATE.push_line(mainnet_stream,point)	  		
   	end
 
@@ -54,7 +54,7 @@ begin
 
 			point =  {"chart": result.flatten.reverse }
 
-			UPDATE.clear(testnet_stream)
+			# UPDATE.clear(testnet_stream)
 			UPDATE.push_line(testnet_stream,point)	  		
   	end  	
   end

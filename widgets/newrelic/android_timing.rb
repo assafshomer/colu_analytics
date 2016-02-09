@@ -64,5 +64,5 @@ table_rows = rows_titles.map{|rt| rows[rt].flatten}
 # p header_row
 # p table_rows
 
-UPDATE.clear(stream)
+# UPDATE.clear(stream)
 UPDATE.push_table stream, header_row, table_rows

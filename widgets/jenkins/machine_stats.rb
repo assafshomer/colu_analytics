@@ -31,7 +31,7 @@ stream = 'JLZKlvnA'
 
 if pretty_mainnet_status || pretty_testnet_status
 	
-	UPDATE.clear(stream)
+	# UPDATE.clear(stream)
 
 	header_row = ["Network", "Status"]
 	table_rows = [
