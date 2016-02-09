@@ -9,7 +9,7 @@ testnet_asset_stream = '717574cf8b'
 mainnet = true
 testnet = true
 
-number_of_assets = 1
+number_of_assets = 12
 number_of_days = 1
 start_days_past = 0
 debug = false
