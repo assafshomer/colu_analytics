@@ -48,7 +48,7 @@ module LeaderboardHelper
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
 						<div style="font-size:24px;">
-							<a href="#{explorer_link_to_asset(dp[:asset_id],network)}" target="_blank" style="color:#{color(network)}; right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:full_name]}#{dp[:asset_desc]}">
+							<a href="#{explorer_link_to_asset(dp[:asset_id],network)}" target="_blank" style="color:#{color(network)}; right:20.65px; text-decoration:none;float:left;margin-top:6px;width:#{w[:asset]}px;" title="#{dp[:asset_title]}">
 							#{dp[:display_name]}
 							</a>
 						</div>
@@ -102,7 +102,7 @@ module LeaderboardHelper
 			method: method, 
 			debug: false,
 			filter: number_of_piwik_results,
-			num_days: number_of_days-1,
+			num_days: number_of_days,
 			days_offset: start_days_past,
 			network: network
 			)
@@ -115,15 +115,16 @@ module LeaderboardHelper
 			asset_id = data_point.keys.first
 			short_asset_id = abbreviate(asset_id,15)
 			metadata = get_asset_metadata(asset_id,network: network,debug: debug)
-			full_name = metadata ? metadata['assetName'].to_s : asset_id
+			full_name = metadata ? metadata['assetName'].to_s : ''
 			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
 			display_name = display_name.empty? ? short_asset_id : display_name
 			display_name = abbreviate(display_name,max_length)
 			issuer_name = metadata ? abbreviate(metadata['issuer'],11) : ''
 			issuer_title = metadata ? metadata['issuer'] : ''
 			asset_desc = metadata ? metadata['description'] : nil
-			desc_for_title =  asset_desc ? " : [#{asset_desc}]" : ''
+			desc_for_title =  asset_desc ? "#{asset_desc}" : ''
 			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}" if debug
+			asset_title = [{name: full_name},{id: asset_id},{description: desc_for_title}]
 			frequency = data_point[asset_id]
 			result = {}
 			result[:asset_id] ||= asset_id
@@ -132,7 +133,7 @@ module LeaderboardHelper
 			result[:full_name] = full_name
 			result[:issuer_name] = issuer_name
 			result[:issuer_title] = issuer_title
-			result[:asset_desc] = desc_for_title
+			result[:asset_title] = create_multiline_title(asset_title,[:name, :description, :id])
 			
 			# Add piwik data for asset
 			# p "parsed_piwik_visits: #{parsed_piwik_visits}"
@@ -152,7 +153,7 @@ module LeaderboardHelper
 					end
 				end.uniq
 			end			
-			# .inject{|m,x| m.merge(x)}
+			p "combined_filtered_data: #{combined_filtered_data}"
 			if (combined_filtered_data.count == 1)
 				piwik_dp = combined_filtered_data.first
 				country_full = piwik_dp[:country].to_s				

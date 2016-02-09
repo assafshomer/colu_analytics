@@ -9,6 +9,12 @@ describe "ViewsHelper" do
 		describe 'multi countries title' do
 		  it 'should list country, ip with newline' do
 		  	create_multiline_title(data,[:country,:ip]).should == "COUNTRY: [Ukraine], IP: [178.219.248.246]&#013;&#xA;COUNTRY: [Sweden], IP: [178.73.192.202]&#013;&#xA;COUNTRY: [Israel], IP: [178.219.248.246]&#013;&#xA;"
+		  end
+		  it 'should create multi lines for multi hashes' do
+		  	create_multiline_title([{foo: 1}, {bar: 2}],[:foo,:bar]).should == "FOO: [1]&#013;&#xA;BAR: [2]&#013;&#xA;"
+		  end
+		  it 'should create one line for one hash' do
+		  	create_multiline_title([{foo: 1,bar: 2}],[:foo,:buzz]).should == "FOO: [1]&#013;&#xA;"
 		  end		  
 		end
 		describe 'list of countries' do
