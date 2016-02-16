@@ -3,6 +3,9 @@ require __dir__+'/../setup.rb'
 
 require __dir__+'/../helpers/explorer_helper.rb'
 include ExplorerHelper
+require __dir__+'/../helpers/leaderboard_helper.rb'
+include LeaderboardHelper
+
 
 describe "HeadersHelper" do
 	describe 'number_of_cc_tx_by_dates' do
@@ -52,7 +55,38 @@ describe "HeadersHelper" do
 		# 	get_cc_tx_last_days(1).group_by{|x| Time.at(x[:time]/1000).strftime("%d/%m/%Y")}.count.should == 2
 		# end		
 	end
-
+	describe 'get_cc_tx_last_hours' do
+		let(:hmmask) { "%d/%m/%Y %H:%M" }
+		let(:hmask) { "%d/%m/%Y %H" }
+		let(:dmask) { "%d/%m/%Y" }
+		it 'should return a json' do
+			get_cc_tx_last_hours.should be_a(Array)
+		end	
+		it 'first element should have keys' do			
+			get_cc_tx_last_hours.first.keys.sort.should == [:asset_ids,:time,:type]
+		end
+		it 'default should only include tx in last 24 hour' do
+			data = get_cc_tx_last_hours(debug: true)
+			dates = data.map do |data|
+				Time.at(data[:time]/1000).strftime(dmask)
+			end.uniq
+			hours = data.map do |data|
+				Time.at(data[:time]/1000).strftime(hmask)
+			end.uniq
+			dates.count.should == 2
+			hours.count.should <= 25
+		end
+		it 'limit 48 should include tx from two days' do
+			dates = get_cc_tx_last_hours(limit: 48, debug: true).map do |data|
+				Time.at(data[:time]/1000).strftime(dmask)
+			end.uniq
+			p dates
+			dates.count.should == 3
+		end
+		# it 'limit 1 should include tx from two days' do
+		# 	get_cc_tx_last_days(1).group_by{|x| Time.at(x[:time]/1000).strftime("%d/%m/%Y")}.count.should == 2
+		# end		
+	end
 	describe 'ordered asset ids' do
 	  let(:raw_data) { [
 	  	{:time=>1453587759477, :type=>"issuance", :asset_ids=>["a","b","z"]},
@@ -66,11 +100,11 @@ describe "HeadersHelper" do
 	  it 'should order asset ids' do
 	  	ordered_asset_ids.should == [{:a=>4}, {:b=>3}, {:z=>2}, {:c=>1}]
 	  end
-	  describe 'html' do
-	  	it 'prepare the correct HTML' do
-	  		prepare_simple_asset_leaderboard(ordered_asset_ids).should_not be_nil
-	  	end
-	  end
+	  # describe 'html' do
+	  # 	it 'prepare the correct HTML' do
+	  # 		prepare_simple_asset_leaderboard(ordered_asset_ids).should_not be_nil
+	  # 	end
+	  # end
 	end
 	describe 'get_asset_name' do
 		describe 'an asset with a name' do

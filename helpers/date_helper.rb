@@ -27,6 +27,14 @@ module DateHelper
 		return {from: start_time, till: end_time}		
 	end
 
+	def hours_are_numbers(opts={})
+		num_hours = opts[:limit] || 24
+		start_num_hours_ago = opts[:offset] || 0
+		start_time = Time.now - (start_num_hours_ago + num_hours).hours
+		end_time = Time.now - start_num_hours_ago.hours
+		return {from: start_time.to_i*1000, till: end_time.to_i*1000}
+	end
+
 	def group_by_day(array_of_hashes_with_time_key)
 		array_of_hashes_with_time_key.group_by do |element|
 			Time.at(element[:time]/1000).strftime("%d/%m/%Y")

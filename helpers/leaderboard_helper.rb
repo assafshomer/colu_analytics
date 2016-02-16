@@ -106,6 +106,7 @@ module LeaderboardHelper
 			days_offset: start_days_past,
 			network: network
 			)
+		# Note that I'm using num_of_days and not num_of_days-1 because this gives more piwik data about recent assets, so basically for piwik polling one more days into the past
 		# File.write("#{__dir__}/../txt/foo.txt",visits.to_json)
 		visits = JSON.parse(visits) if (visits.class == String)
 		parsed_piwik_visits = parse_visits(visits)

@@ -46,6 +46,30 @@ describe "DateHelper" do
 	  	group_by_hour(ha).should == {"01/01/2016 10:00"=>[{:time=>1451635500000, :foo=>1}], "01/01/2016 11:00"=>[{:time=>1451639160000, :foo=>2}, {:time=>1451642160000, :foo=>3}], "01/01/2015 10:00"=>[{:time=>1420099500000, :foo=>1}]}
 	  end	  
 	end
+	describe 'hours_are_numbers' do
+		let(:mask) { "%d/%m/%Y %H:%M" }
+		it 'by default should span last 24h' do
+			x = hours_are_numbers
+			(x[:till] - x[:from]).should == 1000*3600*24
+			Time.at(x[:till]/1000).strftime(mask).should == Time.now.strftime(mask)
+			Time.at(x[:from]/1000).strftime(mask).should == (Time.now - 1.day).strftime(mask)
+		end
+		it 'with limit should span limit days in past untill tonight full days' do
+			x = hours_are_numbers({limit: 1})
+			(x[:till] - x[:from]).should == 1000*3600
+			Time.at(x[:till]/1000).strftime(mask).should == Time.now.strftime(mask)
+			Time.at(x[:from]/1000).strftime(mask).should == (Time.now - 1.hour).strftime(mask)
+		end
+		it 'with limit and offset should span limit days in past untill midnight of offset days in the past' do
+			x = hours_are_numbers({limit: 2,offset: 3})
+			(x[:till] - x[:from]).should == 1000*3600*2
+			Time.at(x[:till]/1000).strftime(mask).should == (Time.now - 3.hour).strftime(mask)
+			Time.at(x[:from]/1000).strftime(mask).should == (Time.now - 5.hour).strftime(mask)
+		end
+		# it 'should match days are numbers' do
+		# 	hours_are_numbers.should == days_are_numbers
+		# end
+	end
 	# in web console
 	# new Date(1452722400000)
 	# Thu Jan 14 2016 00:00:00 GMT+0200 (IST)
