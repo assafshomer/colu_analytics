@@ -35,6 +35,7 @@ module PiwikHelper
 		days_offset = opts[:days_offset].to_i		
 		end_date = (Time.now - days_offset.day).strftime("%Y-%m-%d")
 		start_date = (Time.now - (days_offset+num_days).day).strftime("%Y-%m-%d")
+		# p "Fetching Piwik data between #{start_date} and #{end_date}"
 		date_range = "&period=range&date=#{start_date},#{end_date}"
 		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet

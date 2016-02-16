@@ -75,7 +75,7 @@ module ExplorerHelper
 		return 0 if limit < 0
 		times = days_are_numbers(limit,offset)
 		# one bucket
-		bucket_miliseconds = 1000*3600*24*(limit+1)
+		bucket_miliseconds = 1000*3600*24*(limit+1)*1000
 		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end
@@ -87,7 +87,8 @@ module ExplorerHelper
 		return 0 if limit < 0
 		times = hours_are_numbers({limit: limit,offset: offset})
 		# one bucket
-		bucket_miliseconds = times[:till] - times[:from]
+		bucket_miliseconds = (times[:till] - times[:from])*1000
+		p "Querying for number of assets between #{Time.at(times[:from]/1000)} and #{Time.at(times[:till]/1000)} "
 		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end

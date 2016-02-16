@@ -10,6 +10,7 @@ module LeaderboardHelper
 
 	def order_asset_ids(raw_data)
 		assetids = raw_data.map{|e| e.reject{|k,v| k!=:asset_ids}}.map{|e| e[:asset_ids]}.flatten
+		p "assetids: #{assetids}"
 		counted_asset_ids = assetids.group_by{|a| a}.map{|k,v| {"#{k}": v.count}}
 		counted_asset_ids.sort_by{|e| e[e.keys.first]}.reverse		
 	end
@@ -21,7 +22,7 @@ module LeaderboardHelper
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
-		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading Assets since midnight - #{network.to_s.upcase}<div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div></p>)
+		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading #{network.to_s.upcase} Assets in the last 24h<div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div></p>)
 		result << %Q(
 			<p>
 				<div style="color:gray;padding-bottom:20px;text-align:center;">
@@ -91,9 +92,11 @@ module LeaderboardHelper
 		start_days_past = opts[:start_days_past] || 0
 
 		raw_data = get_cc_tx_last_days(limit: number_of_days-1,offset: start_days_past,debug: debug, network: network)
-
+		# p "#"*60
+		# p raw_data
+		# p "#"*60
 		ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
-		# p "ordered_asset_ids: #{ordered_asset_ids}"
+		p "ordered_asset_ids: #{ordered_asset_ids}"
 
 		curdate = Time.at(Time.now.to_i)
 		number_of_piwik_results = 9999
@@ -184,7 +187,110 @@ module LeaderboardHelper
 		p "data: #{data}" if debug
 		data
 	end
+	def collect_asset_leaderboard_data_by_hour(opts={})
+		debug = opts[:debug] || false
+		network = opts[:network] || :mainnet
 
+		number_of_assets = opts[:number_of_assets] || 1
+		number_of_hours = opts[:number_of_hours] || 1
+		start_hours_past = opts[:start_hours_past] || 0
+
+		raw_data = get_cc_tx_last_hours(limit: number_of_hours,offset: start_hours_past,debug: debug, network: network)
+		# p "#"*60
+		# p raw_data
+		# p "#"*60
+		ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
+		p "ordered_asset_ids: #{ordered_asset_ids}"
+
+		curdate = Time.at(Time.now.to_i)
+		number_of_piwik_results = 9999
+		method = "Live.getLastVisitsDetails"
+		visits = piwik_data_during_period(
+			method: method, 
+			debug: false,
+			filter: number_of_piwik_results,
+			num_days: 1+(number_of_hours/24).round,
+			days_offset: (start_hours_past/24).round,
+			network: network
+			)
+		# Note that I'm using num_of_days and not num_of_days-1 because this gives more piwik data about recent assets, so basically for piwik polling one more days into the past
+		# File.write("#{__dir__}/../txt/foo.txt",visits.to_json)
+		visits = JSON.parse(visits) if (visits.class == String)
+		parsed_piwik_visits = parse_visits(visits)
+
+		data = ordered_asset_ids.map do |data_point|
+			max_length = 20
+			asset_id = data_point.keys.first
+			short_asset_id = abbreviate(asset_id,15)
+			metadata = get_asset_metadata(asset_id,network: network,debug: debug)
+			full_name = metadata ? metadata['assetName'].to_s : ''
+			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
+			display_name = display_name.empty? ? short_asset_id : display_name
+			display_name = abbreviate(display_name,max_length)
+			issuer_name = metadata ? abbreviate(metadata['issuer'],11) : ''
+			issuer_title = metadata ? metadata['issuer'] : ''
+			asset_desc = metadata ? metadata['description'] : nil
+			desc_for_title =  asset_desc ? "#{asset_desc}" : ''
+			p "name: #{display_name}, issuer: #{issuer_name}, desc: #{asset_desc}, asset_id: #{asset_id}" if debug
+			asset_title = [{name: full_name},{id: asset_id},{description: desc_for_title}]
+			frequency = data_point[asset_id]
+			result = {}
+			result[:asset_id] ||= asset_id
+			result[:frequency] = frequency
+			result[:display_name] = display_name
+			result[:full_name] = full_name
+			result[:issuer_name] = issuer_name
+			result[:issuer_title] = issuer_title
+			result[:asset_title] = create_multiline_title(asset_title,[:name, :description, :id])
+			
+			# Add piwik data for asset
+			# p "parsed_piwik_visits: #{parsed_piwik_visits}"
+			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
+			result[:piwik_visitor] = piwik_data.map{|pd| pd[:piwik_visitor]}
+			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
+			list = [:ip, :country, :city, :asset_id]
+			combined_filtered_data = []
+			tmp = filtered_data.dup
+			tmp.each do |x|
+				succint = x.select{|k,v| list.include?(k)}
+				combined_filtered_data = filtered_data.map do |fd|
+					if fd.select{|k,v| list.include?(k)} == succint
+						fd.merge(x)
+					else
+						fd
+					end
+				end.uniq
+			end			
+			p "combined_filtered_data: #{combined_filtered_data}"
+			if (combined_filtered_data.count == 1)
+				piwik_dp = combined_filtered_data.first
+				country_full = piwik_dp[:country].to_s				
+				country = shorten_country(country_full)
+				city = piwik_dp[:city].to_s
+				city = city.empty? ? 'Unknown' : city
+				result[:geo] = country
+				result[:ip] = piwik_dp[:ip]
+				result[:flag] = piwik_dp[:flag]
+				result[:piwik_title] = "Country: [#{country_full}], City: [#{city}]"
+			else
+				countries = combined_filtered_data.map{|x| x[:country]}.uniq
+				if countries.count == 1
+					piwik_dp = combined_filtered_data.first
+					country_full = piwik_dp[:country].to_s				
+					country = shorten_country(country_full)
+					result[:geo] = country
+					result[:flag] = piwik_dp[:flag]
+				else
+					result[:geo] = list_countries_alpha2(combined_filtered_data)
+				end		
+				result[:piwik_title] = create_multiline_title(combined_filtered_data,[:country,:city,:ip])
+			end
+			p "result: #{result}" if debug
+			result
+		end
+		p "data: #{data}" if debug
+		data
+	end
 	# def prepare_simple_asset_leaderboard(ordered_asset_ids)
 	# 	html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 	# 	html_end = '</body></html>'

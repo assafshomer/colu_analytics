@@ -5,15 +5,14 @@ include LeaderboardHelper
 
 mainnet_asset_stream = '00c86ecdc4'
 testnet_asset_stream = '717574cf8b'
-# dev_stream = '4dfd13f60a'
 
 mainnet = true
 testnet = true
 
 number_of_assets = 12
-number_of_hours = 24
-start_hours_past = 0
-debug = false
+number_of_days = 1
+start_days_past = 0
+debug = true
 
 timeout = 120
 
@@ -22,36 +21,34 @@ begin
 
   	if mainnet
   		stream = mainnet_asset_stream
-			mainnet_data = collect_asset_leaderboard_data_by_hour(
+			mainnet_data = collect_asset_leaderboard_data(
 				number_of_assets: number_of_assets,
-				number_of_hours: number_of_hours,
-				start_hours_past: start_hours_past,
+				number_of_days: number_of_days,
+				start_days_past: start_days_past,
 				debug: debug,
 				network: :mainnet
 				)
-			html = prepare_asset_leaderboard(mainnet_data,
+			mainnet_html = prepare_asset_leaderboard(mainnet_data,
 				debug: debug, 
 				network: :mainnet
 				)
 			UPDATE.clear(stream) if debug
-			UPDATE.push_html stream, html
+			UPDATE.push_html stream, mainnet_html
   	end
 
   	if testnet
-  		stream = testnet_asset_stream
 			testnet_data = collect_asset_leaderboard_data(
 				number_of_assets: number_of_assets,
-				number_of_hours: number_of_hours,
-				start_hours_past: start_hours_past,
+				number_of_days: number_of_days,
+				start_days_past: start_days_past,
 				debug: debug,
 				network: :testnet
 				)
-			html = prepare_asset_leaderboard(testnet_data,
+			testnet_html = prepare_asset_leaderboard(testnet_data,
 				debug: debug, 
 				network: :testnet
 				)
-			UPDATE.clear(stream) if debug
-			UPDATE.push_html stream, html
+			UPDATE.push_html testnet_asset_stream, testnet_html  		
   	end
 
   end
