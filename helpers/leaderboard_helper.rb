@@ -32,7 +32,7 @@ module LeaderboardHelper
 					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">flag</div>
 					<div style="float:left;width:#{w[:ip]}px;">IP</div>
 					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
-					<div style="float:left;margin-left:5px;text-align:left;width:#{w[:piwik_link]}px;"><img title="user profile in piwik" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
+					<div style="float:left;margin-left:5px;text-align:left;width:#{w[:piwik_link]}px;"><img title="Piwik User Profile" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
 				</div>
 			</p>
 		)
