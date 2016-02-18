@@ -127,6 +127,7 @@ module PiwikHelper
 			timeSpentPretty 
 			pageTitle
 			)
+		return unless visit.is_a?(Hash) && visit["actionDetails"]
 		action_details = visit["actionDetails"]
 		interesting_actions = action_details.reject do |action_detail|
 			# action_detail["type"] != "action" || 
@@ -186,7 +187,7 @@ module PiwikHelper
 	def parse_visits(visits)
 		visits.each_with_index.map do |visit,n|
 			actions = parse_actions(visit)
-			next if actions.empty? 
+			next if actions.blank? 
 			asset_ids = percolate_asset_ids(actions)
 			next unless asset_ids
 			user = percolate_user(actions)

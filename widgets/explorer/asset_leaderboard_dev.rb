@@ -5,12 +5,12 @@ include LeaderboardHelper
 
 dev_stream = 'OHcgwTAF'
 
-number_of_assets = 12
+number_of_assets = 2
 number_of_hours = 24
 start_hours_past = 0
 debug = true
 
-timeout = 120
+timeout = 200
 
 begin
   Timeout::timeout(timeout) do

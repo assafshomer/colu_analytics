@@ -18,21 +18,35 @@ module LeaderboardHelper
 	def prepare_asset_leaderboard(asset_data, opts={})
 		debug = opts[:debug] || true
 		network = opts[:network] || :mainnet	
-		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,piwik_link: 60}
+		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,user: 125,piwik_link: 60}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
 		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading #{network.to_s.upcase} Assets in the last 24h<div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div></p>)
 		result << %Q(
 			<p>
-				<div style="color:gray;padding-bottom:20px;text-align:center;">
-					<div style="width:#{w[:asset]}px;float:left">Asset</div>
-					<div style="float:left;width:#{w[:tx]}px;"> #tx </div>
-					<div style="float:left;width:#{w[:location]}px;">Location</div>				
-					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">flag</div>
-					<div style="float:left;width:#{w[:ip]}px;">IP</div>
-					<div style="float:left;width:#{w[:issuer]}px;">Issuer</div>
-					<div style="float:left;margin-left:5px;text-align:left;width:#{w[:piwik_link]}px;"><img title="Piwik User Profile" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
+				<div style="color:gray;padding-bottom:20px;text-align:left;">
+					<div style="width:#{w[:asset]}px;float:left;text-align:center;">
+						Asset
+					</div>
+					<div style="float:left;width:#{w[:tx]}px;">
+					 #tx 
+					</div>
+					<div style="float:left;width:#{w[:location]}px;">Location
+					</div>				
+					<div style="float:left;width:#{w[:flag]}px;margin-left:10px;margin-right:10px;">
+						flag
+					</div>
+					<div style="float:left;width:#{w[:ip]}px;">
+						IP
+					</div>
+					<div style="float:left;width:#{w[:issuer]}px;">
+						Issuer
+					</div>
+					<div style="float:left;width:#{w[:user]}px;">
+						User
+					</div>					
+					<div style="float:right;margin-left:5px;text-align:left;width:#{w[:piwik_link]}px;"><img title="Piwik User Profile" alt="user profile in piwik" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></div>
 				</div>
 			</p>
 		)
@@ -69,7 +83,10 @@ module LeaderboardHelper
 							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:issuer]}px;"  title="#{dp[:issuer_title]}">
 								#{dp[:issuer_name]}
 							</div>
-							<div style="float:left;margin-top:6px;width:#{w[:piwik_link]}px;">
+							<div style="color:rgb(204, 204, 204);float:left;text-align:left;margin-top:6px;width:#{w[:user]}px;font-size:80%;"  title="#{dp[:user_title]}">
+								#{dp[:user_name]}
+							</div>							
+							<div style="float:right;margin-top:6px;width:#{w[:piwik_link]}px;">
 								#{plink}
 							</div>							
 						</div>
@@ -249,13 +266,24 @@ module LeaderboardHelper
 			# print_box(piwik_data,'piwik_data')
 			vids = piwik_data.map{|pd| pd[:piwik_visitor]}.uniq
 			result[:piwik_visitors] = vids
-			
+			result[:user_name] = ''
 			user_data = get_user_data(vids.first)
+			print_box(user_data,'user_data')
 			if user_data
-				user_data['issuer_name'] = issuer_name
+				name_for_display = 	if !user_data["user_full_name"].blank?
+					user_data["user_full_name"]
+				elsif !user_data["user_name"].blank?
+					user_data["user_name"]
+				elsif !user_data["user_email"].blank?
+					user_data["user_email"]
+				else
+					'N/A'
+				end
+				print_box(name_for_display,'name_for_display')
+				result[:user_name] = abbreviate(name_for_display,20)
 				h = user_data.map{|k,v| {"#{k}": v}}
 				title = create_multiline_title(h,user_data.keys.map{|k| k.to_sym})
-				result[:issuer_title] = title
+				result[:user_title] = title
 			end		
 			
 			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq

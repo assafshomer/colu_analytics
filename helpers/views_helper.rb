@@ -13,7 +13,7 @@ module ViewsHelper
 		wrapper = "\n"+"#"*60+"\n"
 		puts wrapper
 		puts title.upcase
-		puts string
+		p string
 		puts wrapper
 	end
 	def abbreviate(string,length)
