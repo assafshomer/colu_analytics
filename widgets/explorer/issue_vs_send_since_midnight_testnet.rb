@@ -36,11 +36,11 @@ parsed_transfer_data = transfer_data.map do |k,v|
 end
 
 p parsed_issuance_data if debug
-# UPDATE.clear(issuance_stream)
+UPDATE.clear(issuance_stream)
 UPDATE.push_line(issuance_stream,parsed_issuance_data)
 
 p parsed_transfer_data if debug
-# UPDATE.clear(transfer_stream)
+UPDATE.clear(transfer_stream)
 UPDATE.push_line(transfer_stream,parsed_transfer_data)
 
 
