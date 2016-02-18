@@ -38,13 +38,13 @@ module LeaderboardHelper
 		)
 		asset_data.each do |dp|
 			flag = dp[:flag] ? %Q(<img title="#{dp[:country]}" alt="#{dp[:country]}" width="16" height="11" src="https://analytics.colu.co/#{dp[:flag]}">) : ''
-			visitors = dp[:piwik_visitor]
+			visitors = dp[:piwik_visitors]
 			plink = ''
 			visitors.first(3).each do |v|
 				plink += %Q(<div style="float:left;padding-right:1px;"><a href="#{piwik_link_to_user_profile(v,network: network)}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a></div>)
 			end
 			plink += '..' if visitors.count > 2
-			# plink = dp[:piwik_visitor] ? %Q(<a href="#{plink_url}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a>) : ''			
+			# plink = dp[:piwik_visitors] ? %Q(<a href="#{plink_url}" target="_blank"><img title="user profile" alt="user profile" width="15" height="15" src="https://www.bayleafdigital.com/wp-content/uploads/2015/07/piwik-icon.png"></a>) : ''			
 			line = %Q(
 				<p>
 					<div style="line-height:35px; height:50px; border-top-style: solid;clear: both;border-top-width: 1px;border-top-color:#4d4d4d;">
@@ -142,7 +142,7 @@ module LeaderboardHelper
 			# Add piwik data for asset
 			# p "parsed_piwik_visits: #{parsed_piwik_visits}"
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-			result[:piwik_visitor] = piwik_data.map{|pd| pd[:piwik_visitor]}
+			result[:piwik_visitors] = piwik_data.map{|pd| pd[:piwik_visitors]}
 			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
 			list = [:ip, :country, :city, :asset_id]
 			combined_filtered_data = []
@@ -246,7 +246,18 @@ module LeaderboardHelper
 			# Add piwik data for asset
 			# p "parsed_piwik_visits: #{parsed_piwik_visits}"
 			piwik_data = pick_piwik_data_for_asset_id(parsed_piwik_visits,asset_id)
-			result[:piwik_visitor] = piwik_data.map{|pd| pd[:piwik_visitor]}
+			# print_box(piwik_data,'piwik_data')
+			vids = piwik_data.map{|pd| pd[:piwik_visitor]}.uniq
+			result[:piwik_visitors] = vids
+			
+			user_data = get_user_data(vids.first)
+			if user_data
+				user_data['issuer_name'] = issuer_name
+				h = user_data.map{|k,v| {"#{k}": v}}
+				title = create_multiline_title(h,user_data.keys.map{|k| k.to_sym})
+				result[:issuer_title] = title
+			end		
+			
 			filtered_data = piwik_data.map{|dp| dp.select{|k,v| !k.to_s.match(/piwik|timestamp/)}}.uniq
 			list = [:ip, :country, :city, :asset_id]
 			combined_filtered_data = []

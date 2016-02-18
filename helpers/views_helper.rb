@@ -9,11 +9,11 @@ module ViewsHelper
 		t = (finish - start).round
 		"%02d:%02d:%02d" % [t/3600%24, t/60%60, t%60]
 	end
-	def print_box(string)
-		line = starting = "***   #{string}   ***"
-		wrapper = "\n"+"*"*([line.length+1,25].min)+"\n"
+	def print_box(string,title)		
+		wrapper = "\n"+"#"*60+"\n"
 		puts wrapper
-		puts line
+		puts title.upcase
+		puts string
 		puts wrapper
 	end
 	def abbreviate(string,length)
@@ -42,7 +42,7 @@ module ViewsHelper
 		c = ISO3166::Country.find_country_by_name(country) 
 		c.alpha2
 	end
-	def create_multiline_title(array_of_hashes,list_of_keys)
+	def create_multiline_title(array_of_hashes,list_of_keys)		
 		summary = array_of_hashes.map do |h|
 			output = {}
 			list_of_keys.each do |k|
@@ -76,5 +76,14 @@ module ViewsHelper
 		end
 	end
 
-end
+	def write_pair(p,b=binding)
+	  eval("
+	    local_variables.each do |v| 
+	      if eval(v.to_s + \".object_id\") == " + p.object_id.to_s + "
+	        puts v.to_s + ': ' + \"" + p.to_s + "\"
+	      end
+	    end
+	  " , b)
+	end	
 
+end

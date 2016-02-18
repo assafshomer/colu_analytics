@@ -1,7 +1,9 @@
 module PiwikHelper
 	require __dir__+'/views_helper'
 	include ViewsHelper
-
+	require __dir__+'/api_helper'
+	include ApiHelper
+	
 	PIWIK_FILTER_LIMIT = 9999
 
 	PIWIK_BASE = "https://analytics.colu.co/?module=API&format=json&token_auth=#{APP_CONFIG['piwik_auth_token']}"
@@ -226,11 +228,43 @@ module PiwikHelper
 		network = opts[:network] || :mainnet
 		method = 'Live.getVisitorProfile'
 		generate_piwik_api_url(method: method,params: "&visitorId=#{visitorId}", network: network)
-	end	
+	end
+
+	def get_user_data(visitor_id)
+		return unless visitor_id
+		method = "Live.getVisitorProfile"		
+		url = generate_piwik_api_url(
+			method: method, 
+			debug: false,
+			filter: 10,
+			num_days: 2,
+			days_offset: 0,
+			network: :mainnet,
+			params: "&visitorId=#{visitor_id}"
+			)
+			action_details = call_piwik_api(url)['lastVisits'].map do |visit|
+				visit['actionDetails'] if visit['actionDetails']
+			end.flatten
+			return if action_details.blank?
+			# print_box(action_details,'actionDetails')
+			get_user = action_details.select do |a| 
+				a['pageTitle']=="user_managment.get_user"
+			end
+			return if get_user.blank?
+			# print_box(get_user,'get_user')
+			user_link = get_user.map{|ud| ud['url']}.uniq
+			return if user_link.blank?
+			# print_box(user_link,'user_link')
+			data = query_api(user_link.first)
+			return data.select{|k,v| k =~ /^user/ && k !~ /key|seed|asset/ }
+	end
 
 end
 
 =begin
+
+{"user_phone"=>"", "user_company"=>"CARDIWEB", "user_email"=>"awalter@cardiweb.com", "user_name"=>"awalter@cardiweb.com", "user_full_name"=>"", "user_extended_key"=>"xpub6CGKKDJuUSojK87egjA3BDs2p89Zj4sFu2r5b2QLHaHpgnQGoRPhcPVudYwgPTUnfMGiL6V38PE3rKFvDGJvcmpAdzQsaPxQUhh7aePGrTU", "user_encrypted_seed"=>"6PYKX7eWEGYpVU41tWeM494gaJ3kFvaz54poo5CCKkHQW1FaehoNiETgtR", "user_asset_templates"=>[]}
+
 this is a link to a specific visitor id
 https://analytics.colu.co/index.php?module=API&method=Live.getVisitorProfile&format=JSON&idSite=7&visitorId=a326f7ed4a73c0f1&token_auth=04ed96c9526091a248bc30f4dff36ed6	
 

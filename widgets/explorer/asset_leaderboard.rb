@@ -5,7 +5,6 @@ include LeaderboardHelper
 
 mainnet_asset_stream = '00c86ecdc4'
 testnet_asset_stream = '717574cf8b'
-# dev_stream = '4dfd13f60a'
 
 mainnet = true
 testnet = true
