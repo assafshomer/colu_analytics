@@ -16,5 +16,5 @@ number_of_days.times do |n|
 	result << count_hits(raw,curdate)
 end
 
-# UPDATE.clear(stream)
+UPDATE.clear(stream)
 UPDATE.push_line(stream,result)
