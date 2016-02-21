@@ -6,6 +6,7 @@ module ExplorerHelper
 	require 'launchy'
 
 	def explorer_api(network)
+		p "explorer api called with #{network}"
 		case network.to_sym
 		when :mainnet
 			APP_CONFIG['mainnet_explorer_api_url']
