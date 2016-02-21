@@ -5,6 +5,18 @@ module ExplorerHelper
 	include DateHelper	
 	require 'launchy'
 
+	def explorer_api(network)
+		case network.to_sym
+		when :mainnet
+			APP_CONFIG['mainnet_explorer_api_url']
+		when :testnet
+			APP_CONFIG['testnet_explorer_api_url']
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_explorer_api_url']} instead"
+			APP_CONFIG['mainnet_explorer_api_url']
+		end
+	end
+
 	def number_of_cc_tx_in_month(opts={})
 		month_offset = opts[:offset]
 		debug = opts[:debug]
@@ -205,17 +217,7 @@ module ExplorerHelper
 		data.parsed_response			
 	end
 
-	def explorer_api(network)
-		case network.to_sym
-		when :mainnet
-			APP_CONFIG['mainnet_explorer_api_url']
-		when :testnet
-			APP_CONFIG['testnet_explorer_api_url']
-		else
-			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_explorer_api_url']} instead"
-			APP_CONFIG['mainnet_explorer_api_url']
-		end
-	end
+
 
 	def cc_api(network)
 		case network.to_sym
