@@ -6,7 +6,6 @@ module ExplorerHelper
 	require 'launchy'
 
 	def explorer_api(network)
-		p "explorer api called with #{network}"
 		case network.to_sym
 		when :mainnet
 			APP_CONFIG['mainnet_explorer_api_url']
@@ -171,7 +170,6 @@ module ExplorerHelper
 		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet	
 		init_time = Time.now
-		print_box(network,'network')
 		query = explorer_api(network)+"gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
 		p "Calling Explorer API with [#{query}]" 
@@ -184,6 +182,7 @@ module ExplorerHelper
 		debug = opts[:debug] || true
 		network = opts[:network] || :mainnet			
 		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}",debug: debug, network: network)['issuances'].first
+		print_box(issuances,'issuances')
 		return unless issuances
 		txid = issuances['txid']
 		vout = issuances['vout'].select do |vout|

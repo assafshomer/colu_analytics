@@ -132,7 +132,7 @@ module LeaderboardHelper
 			max_length = 20
 			asset_id = data_point.keys.first
 			short_asset_id = abbreviate(asset_id,15)
-			metadata = get_asset_metadata(asset_id,network: network,debug: debug)
+			metadata = get_asset_metadata(asset_id,{network: network,debug: debug})
 			full_name = metadata ? metadata['assetName'].to_s : ''
 			display_name = metadata ? metadata['assetName'].to_s : short_asset_id
 			display_name = display_name.empty? ? short_asset_id : display_name
