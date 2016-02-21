@@ -11,7 +11,7 @@ module PiwikHelper
 	def piwik_data_during_day(date,opts={debug: false})
 		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet
-		idSite = get_id_site_from_network(network)	
+		idSite = opts[:id_site] || get_id_site_from_network(network)
 		segment = opts[:segment]
 		method = opts[:method]
 		filter = opts[:filter] || PIWIK_FILTER_LIMIT

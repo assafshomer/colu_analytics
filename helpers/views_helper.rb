@@ -11,10 +11,10 @@ module ViewsHelper
 	end
 	def print_box(string,title=nil)		
 		wrapper = "\n"+"#"*60+"\n"
-		puts wrapper
+		p wrapper
 		puts title.upcase if title
 		p string
-		puts wrapper
+		p wrapper
 	end
 	def abbreviate(string,length)
 		if string.length < length

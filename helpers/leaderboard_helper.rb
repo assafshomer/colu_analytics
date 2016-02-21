@@ -10,7 +10,6 @@ module LeaderboardHelper
 
 	def order_asset_ids(raw_data)
 		assetids = raw_data.map{|e| e.reject{|k,v| k!=:asset_ids}}.map{|e| e[:asset_ids]}.flatten
-		p "assetids: #{assetids}"
 		counted_asset_ids = assetids.group_by{|a| a}.map{|k,v| {"#{k}": v.count}}
 		counted_asset_ids.sort_by{|e| e[e.keys.first]}.reverse		
 	end
@@ -113,8 +112,6 @@ module LeaderboardHelper
 		# p raw_data
 		# p "#"*60
 		ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
-		p "ordered_asset_ids: #{ordered_asset_ids}"
-
 		curdate = Time.at(Time.now.to_i)
 		number_of_piwik_results = 9999
 		method = "Live.getLastVisitsDetails"
@@ -174,7 +171,6 @@ module LeaderboardHelper
 					end
 				end.uniq
 			end			
-			p "combined_filtered_data: #{combined_filtered_data}"
 			if (combined_filtered_data.count == 1)
 				piwik_dp = combined_filtered_data.first
 				country_full = piwik_dp[:country].to_s				
@@ -217,8 +213,6 @@ module LeaderboardHelper
 		# p raw_data
 		# p "#"*60
 		ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
-		p "ordered_asset_ids: #{ordered_asset_ids}"
-
 		curdate = Time.at(Time.now.to_i)
 		number_of_piwik_results = 9999
 		method = "Live.getLastVisitsDetails"
@@ -268,7 +262,6 @@ module LeaderboardHelper
 			result[:piwik_visitors] = vids
 			result[:user_name] = ''
 			user_data = get_user_data(vids.first)
-			print_box(user_data,'user_data')
 			if user_data
 				name_for_display = 	if !user_data["user_full_name"].blank?
 					user_data["user_full_name"]
@@ -279,7 +272,6 @@ module LeaderboardHelper
 				else
 					'N/A'
 				end
-				print_box(name_for_display,'name_for_display')
 				result[:user_name] = abbreviate(name_for_display,20)
 				h = user_data.map{|k,v| {"#{k}": v}}
 				title = create_multiline_title(h,user_data.keys.map{|k| k.to_sym})
@@ -300,7 +292,6 @@ module LeaderboardHelper
 					end
 				end.uniq
 			end			
-			p "combined_filtered_data: #{combined_filtered_data}"
 			if (combined_filtered_data.count == 1)
 				piwik_dp = combined_filtered_data.first
 				country_full = piwik_dp[:country].to_s				
