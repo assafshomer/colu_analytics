@@ -17,7 +17,7 @@ module LeaderboardHelper
 	def prepare_asset_leaderboard(asset_data, opts={})
 		debug = opts[:debug] || true
 		network = opts[:network] || :mainnet	
-		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 125,user: 125,piwik_link: 60}
+		w = {asset: 300, tx: 30, location: 100,flag:20, ip: 80, issuer: 100,user: 100,piwik_link: 60}
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
