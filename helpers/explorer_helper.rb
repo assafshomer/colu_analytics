@@ -158,7 +158,7 @@ module ExplorerHelper
 		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet	
 		init_time = Time.now
-		query = explorer_api(network)+ "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
+		query = explorer_api(network)+"gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
 		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
 		p "Calling Explorer API with [#{query}]" 
 		data = HTTParty.get(query)
