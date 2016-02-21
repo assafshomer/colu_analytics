@@ -3,8 +3,8 @@ require __dir__+'/../../helpers/jenkins_helper'
 include JenkinsHelper
 include ViewsHelper
 # puts JENKINS.job.list("^Test")
-mainnet_request = last_build_url('Test-GetData-MainNet')
-testnet_request = last_build_url('Test-GetData-TestNet')
+mainnet_request = last_build_url('Ping-Explorer-Mainnet')
+testnet_request = last_build_url('Ping-Explorer-TestNet')
 
 p "Getting Mainnet Machine Status from Jenkins"
 init_time = Time.now
@@ -23,4 +23,3 @@ testnet_stream = '84122883e1'
 
 UPDATE.push_number mainnet_stream, status_to_i(mainnet_status)
 UPDATE.push_number testnet_stream, status_to_i(testnet_status)
-
