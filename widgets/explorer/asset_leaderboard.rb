@@ -9,7 +9,7 @@ testnet_asset_stream = '717574cf8b'
 mainnet = true
 testnet = true
 
-number_of_assets = 12
+number_of_assets = 11
 number_of_hours = 24
 start_hours_past = 0
 debug = false

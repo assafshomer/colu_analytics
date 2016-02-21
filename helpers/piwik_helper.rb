@@ -144,8 +144,9 @@ module PiwikHelper
 		end.uniq
 		result = nice_data.map do |call|
 			call.map do |detail|
-				# p "detail: #{detail}"
-				[detail.split('=')].to_h
+				# p "detail: #{detail}" if debug
+				split = detail.split('=')
+				(split.count==2) ? [split].to_h : [split << ''].to_h
 			end
 		end.flatten.uniq		
 		return result
