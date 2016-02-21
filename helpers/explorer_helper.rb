@@ -181,8 +181,7 @@ module ExplorerHelper
 	def get_asset_metadata(asset_id,opts={})
 		debug = opts[:debug] || true
 		network = opts[:network] || :mainnet			
-		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}",debug: debug, network: network)['issuances'].first
-		print_box(issuances,'issuances')
+		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}",debug: debug, network: network)['issuances'].first		
 		return unless issuances
 		txid = issuances['txid']
 		vout = issuances['vout'].select do |vout|
@@ -191,6 +190,8 @@ module ExplorerHelper
 		end.first
 		index = vout['n']
 		asset_metadata = query_cc_api("assetmetadata/#{asset_id}/#{txid}%3A#{index}",network: network, debug: debug)
+		print_box(asset_metadata,'asset_metadata')
+		return unless asset_metadata
 		metadata = asset_metadata['metadataOfIssuence']['data'] if asset_metadata['metadataOfIssuence'] && asset_metadata['metadataOfIssuence']['data'] 
 		return metadata
 	end
