@@ -98,7 +98,7 @@ module PiwikHelper
 		init_time = Time.now
 		p "Calling Piwik API with [#{url}]" if debug
 		data = HTTParty.get(url)
-		p "Piwik API replied [#{time_diff(init_time)}]" if debug
+		p "Piwik API replied within [#{time_diff(init_time)}]" if debug
 		response = data.parsed_response
 		# p "Piwik response: #{response}" if debug
 		return response

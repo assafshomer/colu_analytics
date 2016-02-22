@@ -10,6 +10,8 @@ num_days = 7
 
 timeout = 60
 [:mainnet, :testnet].each do |network|
+	# next if network == :mainnet
+	print_box("Processing #{network}")	
 	begin
 	  Timeout::timeout(timeout) do
 			stream = eval("#{network}_stream")

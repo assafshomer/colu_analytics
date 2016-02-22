@@ -139,7 +139,7 @@ module ExplorerHelper
 			init_time = Time.now
 			p "Calling Explorer API with [#{query}]" 
 			data = HTTParty.get(query)
-			p "Explorer API replied [#{time_diff(init_time)}]" 
+			p "Explorer API replied within [#{time_diff(init_time)}]" 
 			raw_data = data.parsed_response
 			batch = raw_data.map{|tx| {
 				# txid: tx['txid'],
@@ -171,7 +171,7 @@ module ExplorerHelper
 			init_time = Time.now
 			p "Calling Explorer API with [#{query}]" 
 			data = HTTParty.get(query)
-			p "Explorer API replied [#{time_diff(init_time)}]" 
+			p "Explorer API replied within [#{time_diff(init_time)}]" 
 			raw_data = data.parsed_response
 			batch = raw_data.map{|tx| {
 				# txid: tx['txid'],
@@ -194,7 +194,7 @@ module ExplorerHelper
 		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
 		p "Calling Explorer API with [#{query}]" 
 		data = HTTParty.get(query)
-		p "Explorer API replied [#{time_diff(init_time)}]"
+		p "Explorer API replied within [#{time_diff(init_time)}]"
 		raw_data =  data.parsed_response		
 	end	
 
@@ -222,7 +222,7 @@ module ExplorerHelper
 		query = explorer_api(network.to_sym) + endpoint		
 		p "Calling Explorer API with [#{query}]"
 		data = HTTParty.get(query)
-		p "Explorer API replied [#{time_diff(init_time)}]"
+		p "Explorer API replied within [#{time_diff(init_time)}]"
 		data.parsed_response			
 	end
 
@@ -233,7 +233,7 @@ module ExplorerHelper
 		query = cc_api(network) + endpoint		
 		p "Calling CC API with [#{query}]"
 		data = HTTParty.get(query)
-		p "CC API replied [#{time_diff(init_time)}]"
+		p "CC API replied within [#{time_diff(init_time)}]"
 		data.parsed_response			
 	end
 

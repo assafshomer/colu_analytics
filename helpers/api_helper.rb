@@ -12,7 +12,7 @@ module ApiHelper
 		query = url
 		p "Calling API with [#{query}]"
 		data = HTTParty.get(query)
-		p "API replied [#{time_diff(init_time)}]"
+		p "API replied within [#{time_diff(init_time)}]"
 		data.parsed_response			
 	end
 

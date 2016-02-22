@@ -30,7 +30,7 @@ module NewrelicHelper
 		init_time = Time.now
 		p "Calling Newrelic API with [#{url}]" if debug
 		data = HTTParty.get(url,headers: NEWRELIC_HEADER)
-		p "Newrelic API replied [#{time_diff(init_time)}]" if debug
+		p "Newrelic API replied within [#{time_diff(init_time)}]" if debug
 		response = data.parsed_response
 		p "Newrelic response: #{response}" if debug
 		return response
