@@ -72,11 +72,13 @@ module ExplorerHelper
 		start_day = opts[:start_day]
 		end_day = opts[:end_day]
 		times = dates_are_numbers(start_day,end_day)
-		# p Time.at(times[:from]*1000)
-		# p Time.at(times[:till]*1000)
+		p Time.at(times[:from]/1000)
+		p Time.at(times[:till]/1000)
 		# 24h buckets
+		# offset = 1000*3600*2
+		offset = 0
 		bucket_miliseconds = 1000*3600*24
-		query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
+		query(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
 	end
 
 	def total_number_of_cc_tx_by_days(opts={})
