@@ -13,6 +13,7 @@ active_widgets = %w(
 	main_stats
 	monthly_cc_tx	
 	tx_last_week
+	piwik_ccd_last_week
 	piwik_transmit_last_week
 	piwik_mobile_send_last_week
 	piwik_countries_today

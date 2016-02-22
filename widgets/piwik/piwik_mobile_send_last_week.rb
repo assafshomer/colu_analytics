@@ -3,7 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
-stream = 'OsclSZCJ'
+stream = 'nB1a42B9'
 number_of_days = 7
 
 result = []
