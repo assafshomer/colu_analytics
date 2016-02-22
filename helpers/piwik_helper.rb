@@ -244,7 +244,9 @@ module PiwikHelper
 			network: :mainnet,
 			params: "&visitorId=#{visitor_id}"
 			)
-			action_details = call_piwik_api(url)['lastVisits'].map do |visit|
+			piwik_response = call_piwik_api(url)
+			return if piwik_response.blank?
+			action_details = piwik_response['lastVisits'].map do |visit|
 				visit['actionDetails'] if visit['actionDetails']
 			end.flatten
 			return if action_details.blank?
