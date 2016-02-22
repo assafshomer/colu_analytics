@@ -48,8 +48,12 @@ module DateHelper
 	def hour_offset_to_israel
 		Time.now.in_time_zone('Jerusalem').strftime("%z").to_i/100 - Time.now.strftime("%z").to_i/100
 	end
-	def timestamp
-		Time.now.in_time_zone('Jerusalem').strftime("%H:%M")
+	def timestamp(opts={})
+		if opts[:full]
+			Time.now.in_time_zone('Jerusalem').strftime("%Y/%m/%d %H:%M")
+		else
+			Time.now.in_time_zone('Jerusalem').strftime("%H:%M")
+		end		
 	end
 	def datestamp(days_ago = 0)
 		(Time.now.in_time_zone('Jerusalem')+days_ago.to_i.days).strftime("%Y-%m-%d")

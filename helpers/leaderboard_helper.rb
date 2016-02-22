@@ -21,7 +21,7 @@ module LeaderboardHelper
 		html_start = '<!DOCTYPE html><html><head><title></title></head><body>'
 		html_end = '</body></html>'		
 		result = html_start
-		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading #{network.to_s.upcase} Assets in the last 24h<div style="float:right;font-size:14px;">(updated: #{timestamp})</div></h1></div></p>)
+		result << %Q(<p><div class="widgetTitle lt-widget-title" style="left: 20.65px; font-size: 26px; line-height: 59px;color:rgb(204, 204, 204);"><h1>Leading #{network.to_s.upcase} Assets in the last 24h<div style="float:right;font-size:14px;">(updated: #{timestamp(full: true)})</div></h1></div></p>)
 		result << %Q(
 			<p>
 				<div style="color:gray;padding-bottom:20px;text-align:left;">
