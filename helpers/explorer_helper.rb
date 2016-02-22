@@ -72,8 +72,8 @@ module ExplorerHelper
 		start_day = opts[:start_day]
 		end_day = opts[:end_day]
 		times = dates_are_numbers(start_day,end_day)
-		p Time.at(times[:from]/1000)
-		p Time.at(times[:till]/1000)
+		# p Time.at(times[:from]/1000)
+		# p Time.at(times[:till]/1000)
 		# 24h buckets
 		# offset = 1000*3600*2
 		offset = 0
