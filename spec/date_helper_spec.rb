@@ -30,7 +30,13 @@ describe "DateHelper" do
 			(x[:till] - x[:from]).should == 1000*3600*24*2
 			Time.at(x[:from]/1000).strftime("%d/%m/%Y").should == (Time.now - 3600*24*2).strftime("%d/%m/%Y")
 			Time.at(x[:till]/1000).strftime("%d/%m/%Y").should == (Time.now).strftime("%d/%m/%Y")
-		end		
+		end
+		describe 'matching with dates are numbers' do
+		  let(:week_ago) { Time.at(Time.now.to_i - 3600*24*7).strftime("%d/%m/%Y") }
+		  it 'should match' do
+		  	dates_are_numbers(week_ago,nil).should == days_are_numbers(7)
+		  end
+		end
 	end
 	describe 'group_by_day' do
 	  let(:ha) { [
