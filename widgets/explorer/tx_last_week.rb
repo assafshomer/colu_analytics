@@ -18,6 +18,7 @@ begin
 			network = :mainnet
 			stream = mainnet_stream
 			data = number_of_cc_tx_by_dates(start_day: week_ago, network: network)
+			print_box(data,'cc tx data')
 			parsed_data = data.map do |x|	
 				hash = {"number" => x["txsSum"], "timestamp" => x["from"]/1000}
 				JSON.parse(hash.to_json)
