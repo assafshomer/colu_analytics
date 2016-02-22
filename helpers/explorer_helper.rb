@@ -81,6 +81,20 @@ module ExplorerHelper
 		query(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
 	end
 
+	def number_of_cc_tx_by_days(opts={})
+		debug = opts[:debug]
+		network = opts[:network]
+		num_days = opts[:num_days]
+		times = days_are_numbers(num_days)
+		# p Time.at(times[:from]/1000)
+		# p Time.at(times[:till]/1000)
+		# 24h buckets
+		# offset = 1000*3600*2
+		offset = 0
+		bucket_miliseconds = 1000*3600*24
+		query(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
+	end
+
 	def total_number_of_cc_tx_by_days(opts={})
 		limit = opts[:limit] || 0
 		offset = opts[:offset] || 0
@@ -93,6 +107,7 @@ module ExplorerHelper
 		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end
+
 	def total_number_of_cc_tx_by_hours(opts={})
 		limit = opts[:limit] || 0
 		offset = opts[:offset] || 0
@@ -106,6 +121,7 @@ module ExplorerHelper
 		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end
+
 	def get_cc_tx_last_days(opts={})
 		limit = opts[:limit] || 0
 		offset = opts[:offset] || 0		
@@ -137,6 +153,7 @@ module ExplorerHelper
 		end
 		result.flatten
 	end
+
 	def get_cc_tx_last_hours(opts={})
 		limit = opts[:limit] || 24
 		offset = opts[:offset] || 0		
@@ -168,6 +185,7 @@ module ExplorerHelper
 		end
 		result.flatten
 	end
+
 	def query(start_time,end_time,bucket_ms,opts={})
 		debug = opts[:debug] || false
 		network = opts[:network] || :mainnet	
@@ -219,8 +237,6 @@ module ExplorerHelper
 		data.parsed_response			
 	end
 
-
-
 	def cc_api(network)
 		case network.to_sym
 		when :mainnet
@@ -242,8 +258,7 @@ module ExplorerHelper
 		else
 			puts "[#{network}] is not a recognized bitcoin network, using mainnet instead"
 			"http://coloredcoins.org/explorer/asset/#{dp[:asset_id]}"
-		end
-		
+		end		
 	end
 
 end
