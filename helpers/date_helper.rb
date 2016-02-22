@@ -22,8 +22,8 @@ module DateHelper
 		raw_start_time = Time.parse(start_day) - 3600*hour_offset_to_israel
 		end_time = raw_end_time.to_i * 1000
 		start_time = raw_start_time.to_i * 1000
-		p Time.at(start_time/1000)
-		p Time.at(end_time/1000)		
+		# p Time.at(start_time/1000)
+		# p Time.at(end_time/1000)		
 		return {from: start_time, till: end_time}		
 	end
 
