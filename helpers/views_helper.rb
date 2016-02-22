@@ -17,6 +17,7 @@ module ViewsHelper
 		puts wrapper
 	end
 	def abbreviate(string,length)
+		string = string.to_s
 		if string.length < length
 			return string
 		else
