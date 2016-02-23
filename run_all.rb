@@ -4,26 +4,34 @@ include ViewsHelper
 dirname = "widgets"
 
 active_widgets = %w(
+		##JENKINS##
 	machine_stoplights
+		##TOSHI##
 	balance_stats
+		##NEWRELIC##
 	ios_timing
 	android_timing
-	issue_vs_send_since_midnight
-	issue_vs_send_since_midnight_testnet
+		##EXPLORER##
 	main_stats
-	monthly_cc_tx	
+	monthly_cc_tx
+	issue_vs_send_since_midnight
+	issue_vs_send_since_midnight_testnet	
 	tx_last_week
+		##PIWIK##
 	piwik_ccd_last_week
-	piwik_transmit_last_week
-	piwik_mobile_send_last_week
 	piwik_countries_today
+	piwik_mobile_send_last_week	
+	piwik_transmit_last_week
+		##EXPLORER_and_PIWIK##
 	asset_leaderboard
 )
 
 all_widgets = Dir["#{dirname}/**/*.rb"]
 
+active_widgets.select!{|w| w !~ /\#{2}\w*\#{2}/}
+
 widgets = active_widgets.map do |desired_widget|
-	all_widgets.select{|widget| widget =~ /#{desired_widget}\.rb/}
+	all_widgets.select{|widget| widget =~ /#{desired_widget}\.rb/i}
 end.flatten
 
 widgets.each do |widget|
@@ -33,19 +41,3 @@ widgets.each do |widget|
 	load widget
 	print_box ending
 end
-
-
-=begin
-	new_asset_leaderboard
-	ios_timing
-	android_timing
-	last_24h	
-	main_stats 
-	monthly_cc_tx
-	balance_stats
-	machine_stoplights
-	tx_last_week
-	piwik_transmit_last_week
-	piwik_mobile_send_last_week
-	piwik_countries_today
-=end
