@@ -13,7 +13,7 @@ streams = {mainnet: {issuance: 'wbCblg7t', transfer: 'AIceGGMQ'}, testnet: {issu
 number_of_assets = 6
 number_of_hours = 24
 start_days_past = 0
-debug = true
+debug = false
 timeout = {mainnet: 30, testnet: 60}
 
 [:mainnet, :testnet].each do |network|

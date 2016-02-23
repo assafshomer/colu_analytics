@@ -2,24 +2,28 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/jenkins_helper'
 include JenkinsHelper
 include ViewsHelper
+require 'active_support/inflector'
 # puts JENKINS.job.list("^Test")
-mainnet_request = last_build_url('Ping-Explorer-Mainnet')
-testnet_request = last_build_url('Ping-Explorer-TestNet')
 
-p "Getting Mainnet Machine Status from Jenkins"
-init_time = Time.now
-p mainnet_reply = JENKINS.api_get_request(mainnet_request)
-p mainnet_status = mainnet_reply['result']
-p "JENKINS API replied within [#{time_diff(init_time)}]"
+streams = {mainnet: '16wEAwnS', testnet: '84122883e1'}
+timeout = {mainnet: 10, testnet: 10}
 
-p "Getting Testnet Machine Status from Jenkins"
-init_time = Time.now
-p testnet_reply = JENKINS.api_get_request(testnet_request)
-p testnet_status = testnet_reply['result']
-p "JENKINS API replied within [#{time_diff(init_time)}]"
-
-mainnet_stream = '16wEAwnS'
-testnet_stream = '84122883e1'
-
-UPDATE.push_number mainnet_stream, status_to_i(mainnet_status)
-UPDATE.push_number testnet_stream, status_to_i(testnet_status)
+[:mainnet, :testnet].each do |network|
+	# next if network == :mainnet
+	print_box("Processing #{network}")
+	begin
+	  Timeout::timeout(timeout[network]) do	
+	  	request = last_build_url("Ping-Explorer-#{network.to_s.camelize}")
+			p "Getting #{network} Machine Status from Jenkins"
+			init_time = Time.now
+			p reply = JENKINS.api_get_request(request)
+			p status = reply['result']
+			p "JENKINS API replied within [#{time_diff(init_time)}]"
+			stream = streams[network]
+			UPDATE.clear(stream)
+			UPDATE.push_number(stream,status_to_i(status))	
+	  end
+	rescue Timeout::Error
+		p "#{network} Jenkins call timed out after #{timeout[network]} seconds"
+	end		
+end
