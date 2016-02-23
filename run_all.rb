@@ -13,9 +13,9 @@ active_widgets = %w(
 	android_timing
 		##EXPLORER##
 	main_stats
-	monthly_cc_tx
-	tx_last_week
-	issue_vs_send_since_midnight
+	cc_tx_by_month_bar
+	cc_tx_last_week
+	issue_vs_send
 		##PIWIK##
 	piwik_ccd_last_week
 	piwik_countries_today

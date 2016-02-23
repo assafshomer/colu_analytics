@@ -11,7 +11,7 @@ streams = {mainnet: {issuance: 'wbCblg7t', transfer: 'AIceGGMQ'}, testnet: {issu
 # assets_stream = 'aEu4sfdm'
 
 number_of_assets = 6
-number_of_days = 1
+number_of_hours = 24
 start_days_past = 0
 debug = true
 timeout = {mainnet: 30, testnet: 60}
@@ -21,7 +21,7 @@ timeout = {mainnet: 30, testnet: 60}
 	print_box("Processing #{network}")
 	begin
 	  Timeout::timeout(timeout[network]) do			
-			raw_data = get_cc_tx_last_days(limit: number_of_days-1,offset: start_days_past,debug: debug,network: network)
+			raw_data = get_cc_tx_last_hours(limit: number_of_hours,offset: start_days_past*24,debug: debug,network: network)
 			ordered_asset_ids = order_asset_ids(raw_data)
 			[:issuance, :transfer].each do |txtype|
 				print_box("Processing #{txtype}")
