@@ -6,51 +6,38 @@ require __dir__+'/../../helpers/leaderboard_helper'
 include LeaderboardHelper
 
 
-issuance_stream = 'wbCblg7t'
-transfer_stream = 'AIceGGMQ'
+streams = {mainnet: {issuance: 'wbCblg7t', transfer: 'AIceGGMQ'}, testnet: {issuance: '82934b53b9', transfer: '932cbb34fe'}}
+
 # assets_stream = 'aEu4sfdm'
 
 number_of_assets = 6
 number_of_days = 1
 start_days_past = 0
-debug = false
-network = :mainnet
-raw_data = get_cc_tx_last_days(limit: number_of_days-1,offset: start_days_past,debug: debug,network: network)
-# File.write("#{__dir__}/../../data/#{File.basename(__FILE__,".*")}",raw_data)
-# File.write("#{__dir__}/../../data/raw_tx_data",raw_data) if debug
+debug = true
+timeout = {mainnet: 30, testnet: 60}
 
-issuance_raw_data = raw_data.select{|d| d[:type] == 'issuance'}
-transfer_raw_data = raw_data.select{|d| d[:type] == 'transfer'}
-ordered_asset_ids = order_asset_ids(raw_data)
-
-issuance_data = group_by_hour(issuance_raw_data)
-transfer_data = group_by_hour(transfer_raw_data)
-
-parsed_issuance_data = issuance_data.map do |k,v|	
-	hash = {"number" => v.count, "timestamp" => Time.parse(k).to_i}
-	JSON.parse(hash.to_json)
+[:mainnet, :testnet].each do |network|
+	# next if network == :mainnet
+	print_box("Processing #{network}")
+	begin
+	  Timeout::timeout(timeout[network]) do			
+			raw_data = get_cc_tx_last_days(limit: number_of_days-1,offset: start_days_past,debug: debug,network: network)
+			ordered_asset_ids = order_asset_ids(raw_data)
+			[:issuance, :transfer].each do |txtype|
+				print_box("Processing #{txtype}")
+				raw_txtype_data = raw_data.select{|d| d[:type] == txtype.to_s}
+				txtype_data = group_by_hour(raw_txtype_data)
+				parsed_txtype_data = txtype_data.map do |k,v|	
+					hash = {"number" => v.count, "timestamp" => Time.parse(k).to_i}
+					JSON.parse(hash.to_json)
+				end
+				p parsed_txtype_data if debug
+				stream = streams[network][txtype]
+				UPDATE.clear(stream)
+				UPDATE.push_line(stream,parsed_txtype_data)	
+			end		
+	  end
+	rescue Timeout::Error
+		p "#{network} Explorer call timed out after #{timeout} seconds"
+	end		
 end
-parsed_transfer_data = transfer_data.map do |k,v|	
-	hash = {"number" => v.count, "timestamp" => Time.parse(k).to_i}
-	JSON.parse(hash.to_json)
-end
-
-p parsed_issuance_data if debug
-UPDATE.clear(issuance_stream)
-UPDATE.push_line(issuance_stream,parsed_issuance_data)
-
-p parsed_transfer_data if debug
-UPDATE.clear(transfer_stream)
-UPDATE.push_line(transfer_stream,parsed_transfer_data)
-
-
-# asset_data = ordered_asset_ids.map do |e| 
-# 	{name: e.keys.first, value: e[e.keys.first]}
-# end
-# point = {"leaderboard": asset_data.first(5) }
-# UPDATE.push_line(assets_stream,point)
-
-# ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
-# html = prepare_simple_asset_leaderboard(ordered_asset_ids)
-# # UPDATE.clear(assets_stream)
-# UPDATE.push_html assets_stream, html

@@ -14,9 +14,8 @@ active_widgets = %w(
 		##EXPLORER##
 	main_stats
 	monthly_cc_tx
-	issue_vs_send_since_midnight
-	issue_vs_send_since_midnight_testnet	
 	tx_last_week
+	issue_vs_send_since_midnight
 		##PIWIK##
 	piwik_ccd_last_week
 	piwik_countries_today
