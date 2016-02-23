@@ -1,4 +1,4 @@
-require '../setup'
+require '../../setup'
 
 stream = 'hGiAS5D6'
 

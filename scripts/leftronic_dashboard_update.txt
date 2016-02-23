@@ -1,0 +1,52 @@
+Discard old builds
+Strategy: Log Rotation
+
+# Slack Notification
+Notifiy Failure
+Notify back to normal
+
+
+# Source Code Management
+Git 
+repo url https://github.com/assafshomer/colu_analytics
+
+# Build Triggers
+Build periodically	
+Schedule H/6 * * * *
+
+# Build Environment
+Inject environment variables to the build process
+Properties Content
+leftronic_key='value from config.yml'
+mainnet_explorer_api_url='value from config.yml'
+testnet_explorer_api_url='value from config.yml'
+mainnet_cc_api_url='value from config.yml'
+testnet_cc_api_url='value from config.yml'
+piwik_auth_token='value from config.yml'
+mainnet_prod_address='value from config.yml'
+testnet_prod_address='value from config.yml'
+jenkins_ip='value from config.yml'
+jenkins_username='value from config.yml'
+jenkins_password='value from config.yml'
+newrelic_api_key='value from config.yml'
+newrelic_android_app_id='value from config.yml'
+newrelic_ios_app_id='value from config.yml'
+
+# RVM
+Run the build in a RVM-managed environment
+Implementation	2.2.0
+
+# Execute Shell
+echo "Bundling"
+gem install bundler
+bundle install
+echo "Updating dashboard"
+ruby ./run_all.rb
+
+# Post-build Actions
+TwilioNotifier
+To: 
+Message: %PROJECT% %STATUS%
+Only send message on failure or recovery?
+Include the Build URL in the message?
+Send Text (SMS) message?

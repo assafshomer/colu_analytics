@@ -1,5 +1,5 @@
-require __dir__+'/../setup'
-require __dir__+'/../helpers/newrelic_helper'
+require __dir__+'/../../setup'
+require __dir__+'/../../helpers/newrelic_helper'
 include NewrelicHelper
 include ViewsHelper
 
