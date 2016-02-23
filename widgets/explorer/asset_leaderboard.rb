@@ -3,9 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/leaderboard_helper'
 include LeaderboardHelper
 
-mainnet_asset_stream = '00c86ecdc4'
-testnet_asset_stream = '717574cf8b'
-
+streams = {mainnet: '00c86ecdc4', testnet: '717574cf8b'}
 number_of_assets = 12
 number_of_hours = 24
 start_hours_past = 0
@@ -18,8 +16,6 @@ timeout = {mainnet: 120, testnet: 180}
 	print_box("Processing #{network}")
 	begin
 	  Timeout::timeout(timeout[network]) do
-
-		stream = eval("#{network}_asset_stream")
 		data = collect_asset_leaderboard_data_by_hour(
 			number_of_assets: number_of_assets,
 			number_of_hours: number_of_hours,
@@ -31,6 +27,7 @@ timeout = {mainnet: 120, testnet: 180}
 			debug: debug, 
 			network: network
 			)
+		stream = streams[network]
 		UPDATE.clear(stream) if debug
 		UPDATE.push_html stream, html
   end
