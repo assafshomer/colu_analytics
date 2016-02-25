@@ -16,5 +16,66 @@ module ApiHelper
 		data.parsed_response			
 	end
 
+	def query_explorer_api(endpoint, opts={})
+		network = opts[:network] || :mainnet
+		url = explorer_api(network.to_sym) + endpoint		
+		query_api(url,opts)
+	end
+
+	def query_cc_api(endpoint, opts={})
+		network = opts[:network] || :mainnet		
+		url = cc_api(network) + endpoint		
+		query_api(url,opts)
+	end
+
+	def query_engine_api(endpoint, opts={})
+		network = opts[:network] || :mainnet
+		endpoint+="?token=#{APP_CONFIG['mainnet_engine_admin_token']}"
+		url = engine_api(network) + endpoint		
+		query_api(url,opts)
+	end
+
+	def query_jenkins_api(request,opts={})
+		init_time = Time.now
+		reply = JENKINS.api_get_request(request)		
+		p "JENKINS API replied within [#{time_diff(init_time)}]"
+		reply
+	end
+
+	def explorer_api(network)
+		case network.to_sym
+		when :mainnet
+			APP_CONFIG['mainnet_explorer_api_url']
+		when :testnet
+			APP_CONFIG['testnet_explorer_api_url']
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_explorer_api_url']} instead"
+			APP_CONFIG['mainnet_explorer_api_url']
+		end
+	end
+
+	def engine_api(network)
+		case network.to_sym
+		when :mainnet
+			APP_CONFIG['mainnet_engine_api_url']
+		when :testnet
+			APP_CONFIG['testnet_engine_api_url']
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_explorer_api_url']} instead"
+			APP_CONFIG['mainnet_explorer_api_url']
+		end
+	end
+
+	def cc_api(network)
+		case network.to_sym
+		when :mainnet
+			APP_CONFIG['mainnet_cc_api_url']
+		when :testnet
+			APP_CONFIG['testnet_cc_api_url']
+		else
+			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_cc_api_url']} instead"
+			APP_CONFIG['mainnet_cc_api_url']
+		end
+	end
 end
 

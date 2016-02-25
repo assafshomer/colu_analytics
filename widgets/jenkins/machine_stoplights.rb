@@ -2,11 +2,13 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/jenkins_helper'
 include JenkinsHelper
 include ViewsHelper
+require __dir__+'/../../helpers/api_helper'
+include ApiHelper	
 require 'active_support/inflector'
 # puts JENKINS.job.list("^Test")
 
 streams = {mainnet: '16wEAwnS', testnet: '84122883e1'}
-timeout = {mainnet: 10, testnet: 10}
+timeout = {mainnet: 30, testnet: 30}
 
 [:mainnet, :testnet].each do |network|
 	# next if network == :mainnet
@@ -15,10 +17,7 @@ timeout = {mainnet: 10, testnet: 10}
 	  Timeout::timeout(timeout[network]) do	
 	  	request = last_build_url("Ping-Explorer-#{network.to_s.camelize}")
 			p "Getting #{network} Machine Status from Jenkins"
-			init_time = Time.now
-			p reply = JENKINS.api_get_request(request)
-			p status = reply['result']
-			p "JENKINS API replied within [#{time_diff(init_time)}]"
+			p status = query_jenkins_api(request)['result']
 			stream = streams[network]
 			UPDATE.clear(stream)
 			UPDATE.push_number(stream,status_to_i(status))	

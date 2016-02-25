@@ -2,20 +2,9 @@ module ExplorerHelper
 	require __dir__+'/views_helper'
 	include ViewsHelper
 	require __dir__+'/date_helper'
-	include DateHelper	
-	require 'launchy'
-
-	def explorer_api(network)
-		case network.to_sym
-		when :mainnet
-			APP_CONFIG['mainnet_explorer_api_url']
-		when :testnet
-			APP_CONFIG['testnet_explorer_api_url']
-		else
-			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_explorer_api_url']} instead"
-			APP_CONFIG['mainnet_explorer_api_url']
-		end
-	end
+	include DateHelper
+	require __dir__+'/api_helper'
+	include ApiHelper	
 
 	def number_of_cc_tx_in_month(opts={})
 		month_offset = opts[:offset]
@@ -34,7 +23,7 @@ module ExplorerHelper
 		start_time = this_month_time.to_i * 1000
 		bucket_ms = end_time - start_time
 		
-		query(start_time,end_time,bucket_ms,debug: debug, network: network)
+		query_txs_in_interval(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_in_last_hours(hours=24)
@@ -45,7 +34,7 @@ module ExplorerHelper
 		group_by_number_of_hours = 1
 		bucket_ms = ms_in_hour * group_by_number_of_hours
 		
-		query(start_time,end_time,bucket_ms,debug: debug, network: network)
+		query_txs_in_interval(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_by_hour(hours = 0)
@@ -63,7 +52,7 @@ module ExplorerHelper
 		end_time = end_hour_time.to_i * 1000
 		start_time = start_hour_time.to_i * 1000
 		bucket_ms = 1000*3600
-		query(start_time,end_time,bucket_ms,debug: debug, network: network)
+		query_txs_in_interval(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_by_dates(opts={})
@@ -78,7 +67,7 @@ module ExplorerHelper
 		# offset = 1000*3600*2
 		offset = 0
 		bucket_miliseconds = 1000*3600*24
-		query(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
+		query_txs_in_interval(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
 	end
 
 	def number_of_cc_tx_by_days(opts={})
@@ -92,7 +81,7 @@ module ExplorerHelper
 		# offset = 1000*3600*2
 		offset = 0
 		bucket_miliseconds = 1000*3600*24
-		query(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
+		query_txs_in_interval(times[:from]-offset,times[:till]-offset,bucket_miliseconds,debug: debug, network: network)
 	end
 
 	def total_number_of_cc_tx_by_days(opts={})
@@ -104,7 +93,7 @@ module ExplorerHelper
 		times = days_are_numbers(limit,offset)
 		# one bucket
 		bucket_miliseconds = 1000*3600*24*(limit+1)*1000
-		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
+		result = query_txs_in_interval(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end
 
@@ -118,7 +107,7 @@ module ExplorerHelper
 		# one bucket
 		bucket_miliseconds = (times[:till] - times[:from])*1000
 		p "Querying for number of assets between #{Time.at(times[:from]/1000)} and #{Time.at(times[:till]/1000)} "
-		result = query(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
+		result = query_txs_in_interval(times[:from],times[:till],bucket_miliseconds,debug: debug, network: network)
 		return result.first['txsSum']
 	end
 
@@ -135,12 +124,7 @@ module ExplorerHelper
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
 			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{num_tx_before+s.first}"
-			query = explorer_api(network)+ endpoint
-			init_time = Time.now
-			p "Calling Explorer API with [#{query}]" 
-			data = HTTParty.get(query)
-			p "Explorer API replied within [#{time_diff(init_time)}]" 
-			raw_data = data.parsed_response
+			raw_data = query_explorer_api(endpoint,opts)
 			batch = raw_data.map{|tx| {
 				# txid: tx['txid'],
 				time: tx['blocktime'],
@@ -167,12 +151,7 @@ module ExplorerHelper
 		result = []
 		num_of_tx.times.each_slice(100).each_with_index do |s,i|
 			endpoint = "getcctransactions?limit=#{s.last-s.first}&skip=#{num_tx_before+s.first}"
-			query = explorer_api(network)+ endpoint
-			init_time = Time.now
-			p "Calling Explorer API with [#{query}]" 
-			data = HTTParty.get(query)
-			p "Explorer API replied within [#{time_diff(init_time)}]" 
-			raw_data = data.parsed_response
+			raw_data = query_explorer_api(endpoint,opts)
 			batch = raw_data.map{|tx| {
 				# txid: tx['txid'],
 				time: tx['blocktime'],
@@ -185,18 +164,6 @@ module ExplorerHelper
 		end
 		result.flatten
 	end
-
-	def query(start_time,end_time,bucket_ms,opts={})
-		debug = opts[:debug] || false
-		network = opts[:network] || :mainnet	
-		init_time = Time.now
-		query = explorer_api(network)+"gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"		
-		p "start_time: #{start_time} [#{Time.at(start_time/1000)}], end_time: #{end_time} [#{Time.at(end_time/1000)}]" if debug
-		p "Calling Explorer API with [#{query}]" 
-		data = HTTParty.get(query)
-		p "Explorer API replied within [#{time_diff(init_time)}]"
-		raw_data =  data.parsed_response		
-	end	
 
 	def get_asset_metadata(asset_id,opts={})
 		debug = opts[:debug] || true
@@ -215,39 +182,10 @@ module ExplorerHelper
 		return metadata
 	end
 
-	def query_explorer_api(endpoint, opts={})
-		debug = opts[:debug] || false
-		network = opts[:network] || :mainnet
-		init_time = Time.now
-		query = explorer_api(network.to_sym) + endpoint		
-		p "Calling Explorer API with [#{query}]"
-		data = HTTParty.get(query)
-		p "Explorer API replied within [#{time_diff(init_time)}]"
-		data.parsed_response			
-	end
-
-	def query_cc_api(endpoint, opts={})
-		debug = opts[:debug] || false
-		network = opts[:network] || :mainnet		
-		init_time = Time.now
-		query = cc_api(network) + endpoint		
-		p "Calling CC API with [#{query}]"
-		data = HTTParty.get(query)
-		p "CC API replied within [#{time_diff(init_time)}]"
-		data.parsed_response			
-	end
-
-	def cc_api(network)
-		case network.to_sym
-		when :mainnet
-			APP_CONFIG['mainnet_cc_api_url']
-		when :testnet
-			APP_CONFIG['testnet_cc_api_url']
-		else
-			puts "[#{network}] is not a recognized bitcoin network, using mainnet #{APP_CONFIG['mainnet_cc_api_url']} instead"
-			APP_CONFIG['mainnet_cc_api_url']
-		end
-	end
+	def query_txs_in_interval(start_time,end_time,bucket_ms,opts={})
+		endpoint = "gettransactionsbyintervals?start=#{start_time}&end=#{end_time}&interval=#{bucket_ms}"
+		query_explorer_api(endpoint, opts)
+	end	
 
 	def explorer_link_to_asset(asset_id,network)
 		case network
