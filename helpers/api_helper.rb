@@ -30,7 +30,9 @@ module ApiHelper
 
 	def query_engine_api(endpoint, opts={})
 		network = opts[:network] || :mainnet
+		params = opts[:params]
 		endpoint+="?token=#{APP_CONFIG['mainnet_engine_admin_token']}"
+		endpoint+=params if params
 		url = engine_api(network) + endpoint		
 		query_api(url,opts)
 	end

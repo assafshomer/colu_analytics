@@ -72,7 +72,7 @@ module PiwikHelper
 		hits = piwik_response.map{|r| r['nb_hits']}.inject(:+)
 		date_midnight = Time.parse(date.strftime("%Y-%m-%d")).to_i
 		hash = {"number" => hits, "timestamp" => date_midnight}	
-		JSON.parse(hash.to_json)			
+		JSON.parse(hash.to_json)
 	end
 
 	def extract_country_data(piwik_response)
