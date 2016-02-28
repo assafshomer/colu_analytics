@@ -21,8 +21,8 @@ module ExplorerHelper
 		next_month_time = Time.parse("1/#{next_month_number}/#{next_month_year}")
 		end_time = next_month_time.to_i * 1000
 		start_time = this_month_time.to_i * 1000
-		bucket_ms = end_time - start_time
-		
+		print_box("Start:#{start_time},end:#{end_time}",'timing')
+		bucket_ms = (end_time - start_time)*100
 		query_txs_in_interval(start_time,end_time,bucket_ms,debug: debug, network: network)
 	end
 

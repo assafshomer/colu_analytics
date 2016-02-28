@@ -7,6 +7,7 @@ streams = {mainnet: 'ZrHESsg0', testnet: '20d74d0960'}
 
 number_of_months = 8
 timeout = 90
+# debug = true
 
 [:mainnet, :testnet].each do |network|
 	# next if network == :mainnet

@@ -9,7 +9,7 @@ timeout = {mainnet: 120, testnet: 180}
 number_of_days = 7
 
 [:mainnet, :testnet].each do |network|
-	# next if network == :mainnet
+	# next unless network == :mainnet
 	print_box("Processing #{network}")
 	begin
 	  Timeout::timeout(timeout[network]) do
