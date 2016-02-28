@@ -5,7 +5,7 @@ include EngineHelper
 
 streams = {mainnet: '759f20c696',testnet: 'foo'}
 timeout = {mainnet: 30, testnet: 30}
-debug = true
+debug = false
 
 [:mainnet, :testnet].each do |network|
 	next if network != :mainnet
