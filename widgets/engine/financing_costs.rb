@@ -22,6 +22,6 @@ debug = true
 			end
 		end
 	rescue Timeout::Error
-		p "#{network} Engine call timed out after #{imeout[network]} seconds"
+		p "#{network} Engine call timed out after #{timeout[network]} seconds"
 	end		
 end
