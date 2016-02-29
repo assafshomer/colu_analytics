@@ -3,25 +3,25 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/engine_helper'
 include EngineHelper
 
-streams = {mainnet: '759f20c696',testnet: 'foo'}
+streams={mainnet:{total: '759f20c696',average: 'snLpM8qC'}}
 timeout = {mainnet: 30, testnet: 30}
 number_of_days = 9
-debug = false
+debug = true
 
-[:mainnet, :testnet].each do |network|
-	next if network != :mainnet
+[:mainnet, :testnet,:dev].each do |network|
+	next unless network == :mainnet
 	print_box "Processing #{network}"
-	result = []
 	begin
 	  Timeout::timeout(timeout[network]) do
-			result = bar_finance_stats(number_of_days)
-			print_box(result,'result') if debug
-			stream = streams[network]
-			UPDATE.clear(stream)
-			UPDATE.push_line(stream,result)
+			result = finance_stats_bar(number_of_days)
+			[:total, :average].each do |ta|
+				print_box result[ta], "processing #{ta}"
+				stream = streams[network][ta]
+				UPDATE.clear(stream)
+				UPDATE.push_line(stream,result[ta])				
+			end
 		end
 	rescue Timeout::Error
 		p "#{network} Engine call timed out after #{imeout[network]} seconds"
-	end
-		
+	end		
 end

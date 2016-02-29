@@ -20,23 +20,9 @@ module EngineHelper
 		{total: total, average: average}
 	end
 
-	def multibar_finance_stats()
-		titles = ['Time','Total','Average']
-		result = [titles]		
-		period = 'day'
-		data = query_engine_api('get_engine_stats',params: "&interval=#{period}")
-		relevant = data.each do |dp|
-			date = dp["_id"]
-			h,d,m,y = date["hour"].to_s,date["day"],date["month"],date["year"]
-			time = Time.parse("#{d}/#{m}/#{y} #{h}").to_i
-			tot = (dp["total_fee"]+dp["total_value"]).round
-			avg = (dp["average_fee"]+dp["average_value"]).round
-			result << [time,mbtc(tot),mbtc(avg)]			
-		end
-		{matrix: result}
-	end
-	def bar_finance_stats(number_of_days)
-		result = []		
+	def finance_stats_bar(number_of_days)
+		total = []
+		average = []	
 		period = 'day'
 		data = query_engine_api('get_engine_stats',params: "&interval=#{period}")
 		relevant = data.each do |dp|
@@ -45,11 +31,12 @@ module EngineHelper
 			timestamp = Time.parse("#{d}/#{m}/#{y} #{h}")
 			time = timestamp.strftime("#{Time.at(timestamp).day.ordinalize}")
 			tot = (dp["total_fee"]+dp["total_value"]).round
-			result << {name: time, value: mbtc(tot), color: 'green',timestamp: timestamp }			
+			avg = (dp["average_fee"]+dp["average_value"]).round
+			total << {name: time, value: mbtc(tot), color: 'green',timestamp: timestamp }
+			average << prepare_point(mbtc(avg.to_f).round(2),timestamp.to_i)
 		end
-		chart = result.sort_by{|e| e[:timestamp]}.last(number_of_days)
-		print_box chart
-		{chart: chart}
+		bar_chart = total.sort_by{|e| e[:timestamp]}.last(number_of_days)
+		{total: {chart: bar_chart}, average: average}
 	end
 	def prepare_point(number,timestamp)
 		h={"number" => number, "timestamp" => timestamp}
