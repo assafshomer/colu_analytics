@@ -5,6 +5,7 @@ include EngineHelper
 
 streams = {mainnet: '759f20c696',testnet: 'foo'}
 timeout = {mainnet: 30, testnet: 30}
+number_of_days = 9
 debug = false
 
 [:mainnet, :testnet].each do |network|
@@ -13,7 +14,7 @@ debug = false
 	result = []
 	begin
 	  Timeout::timeout(timeout[network]) do
-			result = bar_finance_stats
+			result = bar_finance_stats(number_of_days)
 			print_box(result,'result') if debug
 			stream = streams[network]
 			UPDATE.clear(stream)

@@ -35,7 +35,7 @@ module EngineHelper
 		end
 		{matrix: result}
 	end
-	def bar_finance_stats()
+	def bar_finance_stats(number_of_days)
 		result = []		
 		period = 'day'
 		data = query_engine_api('get_engine_stats',params: "&interval=#{period}")
@@ -47,7 +47,9 @@ module EngineHelper
 			tot = (dp["total_fee"]+dp["total_value"]).round
 			result << {name: time, value: mbtc(tot), color: 'green',timestamp: timestamp }			
 		end
-		{chart: result.sort_by{|e| e[:timestamp]}.last(10)}
+		chart = result.sort_by{|e| e[:timestamp]}.last(number_of_days)
+		print_box chart
+		{chart: chart}
 	end
 	def prepare_point(number,timestamp)
 		h={"number" => number, "timestamp" => timestamp}
