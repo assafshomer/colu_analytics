@@ -9,11 +9,11 @@ module ViewsHelper
 		t = (finish - start).round
 		"%02d:%02d:%02d" % [t/3600%24, t/60%60, t%60]
 	end
-	def print_box(string,title=nil)		
-		wrapper = "\n"+"#"*60+"\n"
+	def print_box(string,title=nil)
+		wrapper = "#"*60+"\n"
 		puts wrapper
-		puts title.upcase if title
-		puts string
+		puts "\t"*4+title.upcase if title
+		p string
 		puts wrapper
 	end
 	def abbreviate(string,length)
