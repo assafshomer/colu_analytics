@@ -35,9 +35,7 @@ widgets = active_widgets.map do |desired_widget|
 end.flatten
 
 widgets.each do |widget|
-	starting = "#{widget.split('/').last.split('.').first} starting"
-	ending = "#{widget.split('/').last.split('.').first} done"
-	print_box starting
+	print_box "#{filename(widget)} starting"
 	load widget
-	print_box ending
+	print_box "#{filename(widget)} done"
 end

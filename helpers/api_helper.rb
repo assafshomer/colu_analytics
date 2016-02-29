@@ -79,5 +79,13 @@ module ApiHelper
 			APP_CONFIG['mainnet_cc_api_url']
 		end
 	end
+	def toshi_api(network)	
+		case network.to_sym
+		when :mainnet
+			return 'https://bitcoin.toshi.io/api/v0/'
+		else
+			return 'https://testnet3.toshi.io/api/v0/'
+		end	
+	end	
 end
 

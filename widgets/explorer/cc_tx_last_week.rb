@@ -22,6 +22,6 @@ timeout = 60
 			UPDATE.push_line(stream,parsed_data)  		
 	  end
 	rescue Timeout::Error
-		p "#{network} Explorer call timed out after #{timeout} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
 	end		
 end

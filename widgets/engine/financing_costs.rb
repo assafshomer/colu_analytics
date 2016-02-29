@@ -9,17 +9,18 @@ debug = false
 
 [:mainnet, :testnet].each do |network|
 	next if network != :mainnet
-	print_box("Processing #{network}")
+	print_box "Processing #{network}"
 	result = []
 	begin
 	  Timeout::timeout(timeout[network]) do
 			result = bar_finance_stats
 			print_box(result,'result') if debug
+			stream = streams[network]
+			UPDATE.clear(stream)
+			UPDATE.push_line(stream,result)
 		end
 	rescue Timeout::Error
 		p "#{network} Engine call timed out after #{imeout[network]} seconds"
 	end
-	stream = streams[network]
-	UPDATE.clear(stream)
-	UPDATE.push_line(stream,result)			
+		
 end

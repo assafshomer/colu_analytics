@@ -200,5 +200,17 @@ module ExplorerHelper
 		end		
 	end
 
+	def generate_stats_table(data)
+		total_assets = data['numOfAssets'] if data
+		total_tx = data['numOfCCTransactions'] if data
+		total_holders = data['numOfHolders'] if data
+
+		point = {"leaderboard": [
+			{"name": "Assets", "value": total_assets.to_i},
+			{"name": "Tx", "value": total_tx.to_i},
+			{"name": "Holders", "value": total_holders.to_i}
+			]}	
+	end	
+
 end
 

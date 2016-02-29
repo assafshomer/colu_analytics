@@ -1,46 +1,21 @@
 require __dir__+'/../../setup'
 
-def toshi_api(network)	
-	case network.to_sym
-	when :mainnet
-		return 'https://bitcoin.toshi.io/api/v0/'
-	else
-		return 'https://testnet3.toshi.io/api/v0/'
-	end	
+streams = {mainnet: 'rByg08Tv', testnet: 'eefc149161'}
+timeout = 30
+
+[:mainnet, :testnet].each do |network|
+	# next if network == :mainnet
+	print_box "Processing #{network}"	
+	begin
+	  Timeout::timeout(timeout) do
+	  	url = toshi_api(network)+'addresses/'+APP_CONFIG["#{network}_prod_address"]
+			balance = HTTParty.get(url).parsed_response['balance']
+			balance_pretty = (balance.to_f/100000000).round(3)
+			stream = streams[network]
+			UPDATE.clear(stream)
+			UPDATE.push_line(stream,balance_pretty)  		
+	  end
+	rescue Timeout::Error
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
+	end		
 end
-
-mainnet_address_url = toshi_api(:mainnet)+'addresses/'+APP_CONFIG['mainnet_prod_address']
-testnet_address_url = toshi_api(:testnet)+'addresses/'+APP_CONFIG['testnet_prod_address']
-
-
-mainnet_balance = HTTParty.get(mainnet_address_url).parsed_response['balance']
-testnet_balance = HTTParty.get(testnet_address_url).parsed_response['balance']
-
-mainnet_balance_pretty = (mainnet_balance.to_f/100000000).round(3)
-testnet_balance_pretty = (testnet_balance.to_f/100000000).round(3)
-
-# stream = '1UlCOuWs' #  table
-stream = 'Nb4mF19w' # leaderboard
-
-# # Finance Balances
-# header_row = ["Mainnet", mainnet_balance_pretty]
-# table_rows = [
-#   ["Testnet", testnet_balance_pretty]
-# ]
-# UPDATE.push_table stream, header_row, table_rows
-
-# point = {"leaderboard": [{"name": "Mainnet", "value": mainnet_balance_pretty}, {"name": "Testnet", "value": testnet_balance_pretty}]}
-
-# UPDATE.clear(stream)
-# UPDATE.push_line(stream,point)
-
-
-mainnet_stream = 'rByg08Tv'
-
-# UPDATE.clear(mainnet_stream)
-UPDATE.push_line(mainnet_stream,mainnet_balance_pretty)
-
-testnet_stream = 'eefc149161'
-
-# UPDATE.clear(testnet_stream)
-UPDATE.push_line(testnet_stream,testnet_balance_pretty)

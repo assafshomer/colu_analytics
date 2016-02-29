@@ -9,6 +9,8 @@ require __dir__+'/helpers/date_helper'
 include DateHelper
 require __dir__+'/helpers/config_loader'
 include ConfigLoader
+require __dir__+'/helpers/api_helper'
+include ApiHelper
 require 'byebug'
 
 # APP_CONFIG = YAML.load(File.read(File.expand_path('../config.yml', __FILE__)))

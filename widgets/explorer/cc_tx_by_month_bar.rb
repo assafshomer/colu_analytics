@@ -11,7 +11,7 @@ timeout = 90
 
 [:mainnet, :testnet].each do |network|
 	# next if network == :mainnet
-	print_box("Processing #{network}")	
+	print_box "Processing #{network}"
 	begin
 	  Timeout::timeout(timeout) do			
 			result = []
@@ -33,6 +33,6 @@ timeout = 90
 			UPDATE.push_line(stream,point)  		
 	  end
 	rescue Timeout::Error
-		p "#{network} Explorer call timed out after #{timeout} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
 	end		
 end

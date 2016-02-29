@@ -23,6 +23,6 @@ timeout = {mainnet: 30, testnet: 30}
 			UPDATE.push_number(stream,status_to_i(status))	
 	  end
 	rescue Timeout::Error
-		p "#{network} Jenkins call timed out after #{timeout[network]} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
 	end		
 end

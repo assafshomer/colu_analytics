@@ -85,6 +85,9 @@ module ViewsHelper
 	      end
 	    end
 	  " , b)
-	end	
+	end
+	def filename(path)
+		File.basename(path,'.*')
+	end
 
 end

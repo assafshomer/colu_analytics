@@ -32,6 +32,6 @@ timeout = {mainnet: 120, testnet: 180}
 		UPDATE.push_html stream, html
   end
 	rescue Timeout::Error
-		p "#{network} Explorer API call timed out after #{timeout[network]} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
 	end
 end

@@ -5,10 +5,7 @@ include ExplorerHelper
 require __dir__+'/../../helpers/leaderboard_helper'
 include LeaderboardHelper
 
-
-streams = {mainnet: {issuance: 'wbCblg7t', transfer: 'AIceGGMQ'}, testnet: {issuance: '82934b53b9', transfer: '932cbb34fe'}}
-
-# assets_stream = 'aEu4sfdm'
+streams={mainnet:{issuance:'wbCblg7t',transfer:'AIceGGMQ'},			 		testnet:{issuance:'82934b53b9',transfer:'932cbb34fe'}}
 
 number_of_assets = 6
 number_of_hours = 24
@@ -18,7 +15,7 @@ timeout = {mainnet: 30, testnet: 60}
 
 [:mainnet, :testnet].each do |network|
 	# next if network == :mainnet
-	print_box("Processing #{network}")
+	print_box "Processing #{network}"
 	begin
 	  Timeout::timeout(timeout[network]) do			
 			raw_data = get_cc_tx_last_hours(limit: number_of_hours,offset: start_days_past*24,debug: debug,network: network)
@@ -38,6 +35,6 @@ timeout = {mainnet: 30, testnet: 60}
 			end		
 	  end
 	rescue Timeout::Error
-		p "#{network} Explorer call timed out after #{timeout} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
 	end		
 end

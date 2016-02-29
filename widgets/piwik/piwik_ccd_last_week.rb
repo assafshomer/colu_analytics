@@ -10,10 +10,9 @@ number_of_days = 7
 
 [:mainnet, :testnet].each do |network|
 	# next if network == :mainnet
-	print_box("Processing #{network}")
+	print_box "Processing #{network}" 
 	begin
 	  Timeout::timeout(timeout[network]) do
-
 			result = []
 			number_of_days.times do |n|	
 				curdate = Time.at(Time.now.to_i - 3600*24*n)
@@ -27,5 +26,7 @@ number_of_days = 7
 			UPDATE.clear(stream)
 			UPDATE.push_line(stream,result)
 		end
-	end
+	rescue Timeout::Error
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
+	end		
 end
