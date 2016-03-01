@@ -43,7 +43,14 @@ module ApiHelper
 		p "JENKINS API replied within [#{time_diff(init_time)}]"
 		reply
 	end
-
+	def query_npm_api(period,opts={})
+		init_time = Time.now
+		url = npm_url+"#{period}"+'/colu'
+		p url		
+		reply = HTTParty.get(url)		
+		p "NPM API replied within [#{time_diff(init_time)}]"
+		reply.parsed_response
+	end
 	def explorer_api(network)
 		case network.to_sym
 		when :mainnet
@@ -86,6 +93,9 @@ module ApiHelper
 		else
 			return 'https://testnet3.toshi.io/api/v0/'
 		end	
-	end	
+	end
+	def npm_url
+		'https://api.npmjs.org/downloads/point/'
+	end		
 end
 

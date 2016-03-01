@@ -22,6 +22,8 @@ active_widgets = %w(
 	piwik_countries_today
 	piwik_mobile_send_last_week	
 	piwik_transmit_last_week
+	  ##NPM##
+	npm_downloads
 		##EXPLORER_and_PIWIK##
 	asset_leaderboard
 )
