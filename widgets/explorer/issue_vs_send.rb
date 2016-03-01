@@ -35,6 +35,6 @@ timeout = {mainnet: 30, testnet: 60}
 			end		
 	  end
 	rescue Timeout::Error
-		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout[network]} seconds"
 	end		
 end

@@ -27,6 +27,6 @@ number_of_days = 7
 			UPDATE.push_line(stream,result)
 		end
 	rescue Timeout::Error
-		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout} seconds"
+		p "#{filename(__FILE__).upcase} (#{network.upcase}) timed out after #{timeout[network]} seconds"
 	end		
 end
