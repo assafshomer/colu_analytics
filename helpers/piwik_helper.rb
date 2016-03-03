@@ -3,7 +3,9 @@ module PiwikHelper
 	include ViewsHelper
 	require __dir__+'/api_helper'
 	include ApiHelper
-	
+	require __dir__+'/leftronic_helper'
+	include LeftronicHelper
+
 	PIWIK_FILTER_LIMIT = 9999
 
 	PIWIK_BASE = "https://analytics.colu.co/?module=API&format=json&token_auth=#{APP_CONFIG['piwik_auth_token']}"
@@ -71,8 +73,7 @@ module PiwikHelper
 	def count_hits(piwik_response,date)
 		hits = piwik_response.map{|r| r['nb_hits']}.inject(:+)
 		date_midnight = Time.parse(date.strftime("%Y-%m-%d")).to_i
-		hash = {"number" => hits, "timestamp" => date_midnight}	
-		JSON.parse(hash.to_json)
+		prepare_point(hits,date_midnight)
 	end
 
 	def extract_country_data(piwik_response)
@@ -89,8 +90,7 @@ module PiwikHelper
 		response = HTTParty.get(piwik_url).parsed_response
 		hits = response.map{|r| r['nb_hits']}.inject(:+)
 		date_midnight = Time.parse(date.strftime("%Y-%m-%d")).to_i
-		hash = {"number" => hits, "timestamp" => date_midnight}	
-		JSON.parse(hash.to_json)				
+		prepare_point(hits,date_midnight)			
 	end
 
 	def call_piwik_api(url,opts={})
@@ -264,19 +264,3 @@ module PiwikHelper
 	end
 
 end
-
-=begin
-
-{"user_phone"=>"", "user_company"=>"CARDIWEB", "user_email"=>"awalter@cardiweb.com", "user_name"=>"awalter@cardiweb.com", "user_full_name"=>"", "user_extended_key"=>"xpub6CGKKDJuUSojK87egjA3BDs2p89Zj4sFu2r5b2QLHaHpgnQGoRPhcPVudYwgPTUnfMGiL6V38PE3rKFvDGJvcmpAdzQsaPxQUhh7aePGrTU", "user_encrypted_seed"=>"6PYKX7eWEGYpVU41tWeM494gaJ3kFvaz54poo5CCKkHQW1FaehoNiETgtR", "user_asset_templates"=>[]}
-
-this is a link to a specific visitor id
-https://analytics.colu.co/index.php?module=API&method=Live.getVisitorProfile&format=JSON&idSite=7&visitorId=a326f7ed4a73c0f1&token_auth=04ed96c9526091a248bc30f4dff36ed6	
-
-https://analytics.colu.co/index.php?module=CoreHome&action=index&idSite=7&period=day&date=today&segment=visitorId%3D%3Da326f7ed4a73c0f1#?module=Live&action=indexVisitorLog&idSite=7&period=day&date=today&visitorId=123&segment=visitorId%3D%3Da326f7ed4a73c0f1
-
-https://analytics.colu.co/index.php?module=CoreHome&action=index&idSite=7&period=year&date=2016-02-04&segment=visitorId%3D%3Da326f7ed4a73c0f1#?module=Live&action=indexVisitorLog&idSite=7&segment=visitorId%3D%3Da326f7ed4a73c0f1&period=year&date=2016-02-04
-
-https://analytics.colu.co/index.php?module=CoreHome&action=index&idSite=7&period=year&date=2016-02-04&segment=visitorId%3D%3Da326f7ed4a73c0f1#?module=Live&action=indexVisitorLog&idSite=7&segment=visitorId%3D%3Da326f7ed4a73c0f1&period=year&date=2016-02-04
-
-=end
-

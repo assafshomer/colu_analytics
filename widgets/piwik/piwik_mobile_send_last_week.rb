@@ -13,7 +13,6 @@ number_of_days = 7
 	print_box "Processing #{network}"
 	begin
 	  Timeout::timeout(timeout[network]) do
-
 			result = []
 			number_of_days.times do |n|	
 				curdate = Time.at(Time.now.to_i - 3600*24*n)

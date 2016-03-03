@@ -15,7 +15,6 @@ debug = true
 	  Timeout::timeout(timeout[network]) do
 			result = finance_stats_bar(number_of_days)
 			[:total, :average].each do |ta|
-				print_box result[ta], "processing #{ta}"
 				stream = streams[network][ta]
 				UPDATE.clear(stream)
 				UPDATE.push_line(stream,result[ta])				

@@ -17,8 +17,7 @@ module NpmHelper
 		next_month_number = (start_month_number % 12) + 1
 		next_month_year = start_month_number == 12 ? start_year.to_i + 1 : start_year
 		period = "#{start_year}-#{pad(start_month_number)}-01:#{next_month_year}-#{pad(next_month_number)}-01"
-		p period
-		p query_npm_api(period)
+		query_npm_api(period)
 	end
 	def pad(month)
 		month < 10 ? "0#{month}" : month.to_s
