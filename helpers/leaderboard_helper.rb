@@ -272,7 +272,7 @@ module LeaderboardHelper
 				else
 					'N/A'
 				end
-				result[:user_name] = abbreviate(name_for_display,20)
+				result[:user_name] = abbreviate(name_for_display,16)
 				h = user_data.map{|k,v| {"#{k}": v}}
 				title = create_multiline_title(h,user_data.keys.map{|k| k.to_sym})
 				result[:user_title] = title
