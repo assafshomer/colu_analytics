@@ -260,6 +260,8 @@ module PiwikHelper
 			return if user_link.blank?
 			# print_box(user_link,'user_link')
 			data = query_api(user_link.first)
+			# print_box data, "data"
+			return unless data.is_a?(Hash)
 			return data.select{|k,v| k =~ /^user/ && k !~ /key|seed|asset/ }
 	end
 
