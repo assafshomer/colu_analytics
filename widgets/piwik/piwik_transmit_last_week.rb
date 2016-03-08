@@ -3,7 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/piwik_helper'
 include PiwikHelper
 
-streams = {mainent: 'hJLMFq8z', testnet: '479cf0445d'}
+streams = {mainnet: 'w1vcz2EO', testnet: '479cf0445d'}
 id_site = {mainnet: 7, testnet: 6}
 timeout = {mainnet: 120, testnet: 180}
 number_of_days = 7
