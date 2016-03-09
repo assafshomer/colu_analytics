@@ -171,6 +171,7 @@ module ExplorerHelper
 		network = opts[:network] || :mainnet			
 		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}",debug: debug, network: network)['issuances'].first		
 		return unless issuances
+		print_box issuances
 		txid = issuances['txid']
 		vout = issuances['vout'].select do |vout|
 			!vout['assets'].empty? 
