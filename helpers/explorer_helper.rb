@@ -172,7 +172,6 @@ module ExplorerHelper
 		issuances = query_explorer_api("getassetinfowithtransactions?assetId=#{asset_id}",debug: debug, network: network)['issuances']
 		issuances = issuances.first if issuances.is_a?(Array)
 		return unless issuances
-		print_box issuances
 		txid = issuances['txid']
 		vout = issuances['vout'].select do |vout|
 			!vout['assets'].empty? 
