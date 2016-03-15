@@ -10,7 +10,7 @@ timeout = 90
 debug = true
 
 [:mainnet, :testnet].each do |network|
-	next unless network == :testnet
+	# next unless network == :testnet
 	print_box "Processing #{network}"
 	begin
 	  Timeout::timeout(timeout) do			
