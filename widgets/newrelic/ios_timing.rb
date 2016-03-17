@@ -31,25 +31,33 @@ oss.each do |os|
 	metrics.each do |metric|
 		metric_name = params[os].select{|m| m =~ /#{metric}/i}.first
 		row_name = rows_titles.select{|rt| rt =~ /#{metric}/i}.first
-		if metric_name			
+		if metric_name
+			p "metric name: #{metric_name}"
 			metric_raw_data = newrelic_mobile_data(ids[os],prefixes[os]+metric_name,{debug: false,to: datestamp(+1),from: datestamp(1-number_of_days)})
+			p "metric raw data: #{metric_raw_data}"
 			if metric_raw_data.keys.first == 'error'
-				p "#{os} | #{metric_name}: --" if debug
 				columns.each_with_index do |c,i|
 					rows[row_name][i+1] = '--'
 				end				
 			else
-				metric_values = metric_raw_data['metric_data']['metrics'].first['timeslices'].first['values']
-				p "metric_values: #{metric_values}"
-				cats = ['average_value','min_value','max_value','count']
-				units = [' sec',' sec',' sec',nil]
-				display = cats.each_with_index.map do |c,i|
-					r = units[i].nil? ? 0 : 1
-					[c.to_sym,metric_values[c].to_i.round(r).to_s+units[i].to_s]
-				end.to_h
-				cats.each_with_index do |category,i|
-					rows[row_name][i+1] = display[category.to_sym]	
-				end				
+				metric_data = metric_raw_data['metric_data']['metrics']
+				if metric_data.empty?
+					columns.each_with_index do |c,i|
+						rows[row_name][i+1] = '--'
+					end				
+				else					
+					metric_values = metric_data.first['timeslices'].first['values']
+					p "metric_values: #{metric_values}" if debug
+					cats = ['average_value','min_value','max_value','count']
+					units = [' sec',' sec',' sec',nil]
+					display = cats.each_with_index.map do |c,i|
+						r = units[i].nil? ? 0 : 1
+						[c.to_sym,metric_values[c].to_i.round(r).to_s+units[i].to_s]
+					end.to_h
+					cats.each_with_index do |category,i|
+						rows[row_name][i+1] = display[category.to_sym]	
+					end
+				end
 			end
 		else
 			p "#{os} | #{metric_name}: --" if debug
