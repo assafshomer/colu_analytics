@@ -7,7 +7,7 @@ require 'active_support/core_ext/integer/inflections'
 
 module EngineHelper
 
-	def finance_stats_bar(number_of_days)
+	def finance_stats(number_of_days)
 		total = []
 		average = []	
 		period = 'day'
@@ -26,8 +26,30 @@ module EngineHelper
 		{total: {chart: bar_chart}, average: average}
 	end
 
+	def confirmation_stats(number_of_days)
+		maximal = []
+		average = []	
+		period = 'day'
+		data = query_engine_api('get_engine_stats',params: "&interval=#{period}")
+		relevant = data.each do |dp|
+			date = dp["_id"]
+			h,d,m,y = date["hour"].to_s,date["day"],date["month"],date["year"]
+			timestamp = Time.parse("#{d}/#{m}/#{y} #{h}")
+			time = timestamp.strftime("#{Time.at(timestamp).day.ordinalize}")
+			max = (dp["max_cc_time_to_confirmation"]).to_i
+			avg = (dp["average_cc_time_to_confirmation"]).to_i
+			maximal << prepare_point(minutes(max),timestamp.to_i)
+			average << prepare_point(minutes(avg),timestamp.to_i)
+		end
+		{maximal: maximal, average: average}
+	end
+
 	def mbtc(satoshis)
 		(satoshis/100000)
+	end
+
+	def minutes(miliseconds)
+		(miliseconds/(1000*60)).to_i
 	end
 
 end
