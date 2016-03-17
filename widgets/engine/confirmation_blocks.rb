@@ -3,7 +3,7 @@ require __dir__+'/../../setup'
 require __dir__+'/../../helpers/engine_helper'
 include EngineHelper
 
-streams={mainnet:{average: 'H7cuSzhI',maximal: 'fReTAmuf'}}
+streams={mainnet:{average: 'e583dc1162',maximal: '04d8b760c5'}}
 timeout = {mainnet: 30, testnet: 30}
 number_of_days = 9
 debug = true
@@ -12,7 +12,7 @@ debug = true
 	print_box "Processing #{network}"
 	begin
 	  Timeout::timeout(timeout[network]) do
-			result = confirmation_timing(number_of_days)
+			result = confirmation_blocks(number_of_days)
 			print_box result, "result"
 			[:average, :maximal].each do |ta|
 				stream = streams[network][ta]

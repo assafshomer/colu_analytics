@@ -26,7 +26,7 @@ module EngineHelper
 		{total: {chart: bar_chart}, average: average}
 	end
 
-	def confirmation_stats(number_of_days)
+	def confirmation_timing(number_of_days)
 		maximal = []
 		average = []	
 		period = 'day'
@@ -40,6 +40,24 @@ module EngineHelper
 			avg = (dp["average_cc_time_to_confirmation"]).to_i
 			maximal << prepare_point(minutes(max),timestamp.to_i)
 			average << prepare_point(minutes(avg),timestamp.to_i)
+		end
+		{maximal: maximal, average: average}
+	end
+
+	def confirmation_blocks(number_of_days)
+		maximal = []
+		average = []	
+		period = 'day'
+		data = query_engine_api('get_engine_stats',params: "&interval=#{period}")
+		relevant = data.each do |dp|
+			date = dp["_id"]
+			h,d,m,y = date["hour"].to_s,date["day"],date["month"],date["year"]
+			timestamp = Time.parse("#{d}/#{m}/#{y} #{h}")
+			time = timestamp.strftime("#{Time.at(timestamp).day.ordinalize}")
+			max = (dp["max_cc_blocks_to_confirmation"]).to_i
+			avg = (dp["average_cc_blocks_to_confirmation"]).to_i
+			maximal << prepare_point(max.round(2),timestamp.to_i)
+			average << prepare_point(avg.round(2),timestamp.to_i)
 		end
 		{maximal: maximal, average: average}
 	end
