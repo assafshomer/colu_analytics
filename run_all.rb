@@ -17,6 +17,7 @@ active_widgets = %w(
 	cc_tx_last_week
 	issue_vs_send
 	financing_costs
+	confirmation_timing
 		##PIWIK##
 	piwik_ccd_last_week
 	piwik_countries_today
