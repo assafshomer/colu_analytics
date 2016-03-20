@@ -1,17 +1,17 @@
-leftronic_key
-mainnet_explorer_api_url
-testnet_explorer_api_url
-mainnet_cc_api_url
-testnet_cc_api_url
-mainnet_engine_api_url
-mainnet_engine_admin_token
-testnet_engine_admin_token
-piwik_auth_token
-mainnet_prod_address
-testnet_prod_address
-jenkins_ip
-jenkins_username
-jenkins_password
-newrelic_api_key
-newrelic_android_app_id
-newrelic_ios_app_id
+leftronic_key: *******
+mainnet_explorer_api_url: *******
+testnet_explorer_api_url: *******
+mainnet_cc_api_url: *******
+testnet_cc_api_url: *******
+mainnet_engine_api_url: *******
+mainnet_engine_admin_token: *******
+testnet_engine_admin_token: *******
+piwik_auth_token: *******
+mainnet_prod_address: *******
+testnet_prod_address: *******
+jenkins_ip: *******
+jenkins_username: *******
+jenkins_password: *******
+newrelic_api_key: *******
+newrelic_android_app_id: *******
+newrelic_ios_app_id: *******
