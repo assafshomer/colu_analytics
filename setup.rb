@@ -20,5 +20,3 @@ KEY = APP_CONFIG['leftronic_key']
 URL = 'https://www.leftronic.com/customSend/'
 CURL = 'curl -i -X POST -k -d'
 UPDATE = Leftronic.new KEY
-
-
