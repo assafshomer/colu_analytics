@@ -13,7 +13,6 @@ debug = true
 	begin
 	  Timeout::timeout(timeout[network]) do
 			result = confirmation_timing(number_of_days)
-			print_box result, "result"
 			[:average, :maximal].each do |ta|
 				stream = streams[network][ta]
 				UPDATE.clear(stream)

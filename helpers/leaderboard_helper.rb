@@ -209,9 +209,9 @@ module LeaderboardHelper
 		start_hours_past = opts[:start_hours_past] || 0
 
 		raw_data = get_cc_tx_last_hours(limit: number_of_hours,offset: start_hours_past,debug: debug, network: network)
-		# p "#"*60
-		# p raw_data
-		# p "#"*60
+		p "#"*60
+		p raw_data
+		p "#"*60
 		ordered_asset_ids = order_asset_ids(raw_data).first(number_of_assets)
 		curdate = Time.at(Time.now.to_i)
 		number_of_piwik_results = 9999
